@@ -740,18 +740,6 @@ function drawOrbitMap(sat, history) {
     // terminator helper
     drawTerminator(ctx, width, height, sat);
 
-    // Kyiv ground station marker
-    const kyiv = project(KYIV.lon, KYIV.lat, width, height);
-    ctx.fillStyle = '#00ff88';
-    ctx.beginPath();
-    ctx.moveTo(kyiv.x, kyiv.y - 9);
-    ctx.lineTo(kyiv.x - 8, kyiv.y + 7);
-    ctx.lineTo(kyiv.x + 8, kyiv.y + 7);
-    ctx.closePath();
-    ctx.fill();
-    ctx.font = "11px 'Share Tech Mono'";
-    ctx.fillStyle = '#9debc6';
-    ctx.fillText('KYIV GS', kyiv.x + 12, kyiv.y + 3);
 
     // history ground track
     drawTrack(ctx, width, height, history, 'rgba(34,211,238,.90)', false);
@@ -788,7 +776,7 @@ function drawOrbitMap(sat, history) {
     ctx.fill();
     ctx.strokeStyle = '#22d3ee';
     ctx.lineWidth = 1;
-    ctx.strokeRect(p.x - 10, p.y - 10, 20, 20);
+    //ctx.strokeRect(p.x - 10, p.y - 10, 20, 20);
     ctx.font = "12px 'Share Tech Mono'";
     ctx.fillStyle = '#e2eeff';
     ctx.fillText('ISS', p.x + 13, p.y - 13);
