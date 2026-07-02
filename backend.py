@@ -2,7 +2,6 @@ from __future__ import annotations
 
 import threading
 from collections import deque
-from dataclasses import asdict
 from pathlib import Path
 from typing import Any
 
@@ -187,11 +186,14 @@ def styles() -> FileResponse:
     return FileResponse(BASE_DIR / "styles.css", media_type="text/css")
 
 
-
-
 @app.get("/index.js")
 def index_js() -> FileResponse:
     return FileResponse(BASE_DIR / "index.js", media_type="application/javascript")
+
+
+@app.get("/earth.jpg")
+def earth_photo() -> FileResponse:
+    return FileResponse(BASE_DIR / "earth.jpg")
 
 
 @app.get("/api/meta")
