@@ -291,12 +291,12 @@ class SatelliteSimulator:
             self.drag_altitude_loss_km *= 0.995
 
         altitude_km = (
-            cfg.mean_altitude_km
-            + sc.altitude_bias_km
-            - self.drag_altitude_loss_km
-            + 4.8 * math.sin(0.31 * theta + 0.70)
-            + 2.0 * math.sin(1.75 * theta + 2.10)
-            + sc.altitude_wave_km * math.sin(0.018 * t + 0.8)
+                cfg.mean_altitude_km
+                + sc.altitude_bias_km
+                - self.drag_altitude_loss_km
+                + 4.8 * math.sin(0.31 * theta + 0.70)
+                + 2.0 * math.sin(1.75 * theta + 2.10)
+                + sc.altitude_wave_km * math.sin(0.018 * t + 0.8)
         )
         altitude_km = clamp(altitude_km, 405.0, 431.0)
 
@@ -339,7 +339,8 @@ class SatelliteSimulator:
         cloud_target = 42.0 + 30.0 * math.sin(0.00082 * t + math.radians(longitude_deg * 0.9))
         cloud_target += 16.0 * math.cos(math.radians(latitude_deg * 1.25))
         cloud_target += 10.0 * (1.0 - solar_factor)
-        self.cloud_cover_pct = clamp(phase_smooth(self.cloud_cover_pct, clamp(cloud_target, 0.0, 100.0), 0.13, 0.7), 0.0, 100.0)
+        self.cloud_cover_pct = clamp(phase_smooth(self.cloud_cover_pct, clamp(cloud_target, 0.0, 100.0), 0.13, 0.7),
+                                     0.0, 100.0)
 
         # Onboard environment.
         crew_cycle = 0.5 + 0.5 * math.sin(2.0 * math.pi * (utc_hours - 6.0) / 24.0)
@@ -347,14 +348,17 @@ class SatelliteSimulator:
         thermal_load = 0.40 * daylight_factor + 0.35 * experiment_load + 0.20 * crew_cycle
 
         temp_target = 22.8 + 1.0 * thermal_load + 0.45 * math.sin(0.0009 * t + 0.3) + sc.thermal_bias_c
-        self.cabin_temp_c = clamp(phase_smooth(self.cabin_temp_c, clamp(temp_target, 20.8, 29.5), 0.13, 0.025), 20.5, 30.0)
+        self.cabin_temp_c = clamp(phase_smooth(self.cabin_temp_c, clamp(temp_target, 20.8, 29.5), 0.13, 0.025), 20.5,
+                                  30.0)
 
         humidity_target = 43.0 + 8.5 * crew_cycle + 3.0 * math.sin(0.0011 * t + 1.0) + sc.humidity_bias
         humidity_target -= 0.9 * (self.cabin_temp_c - 23.0)
-        self.cabin_humidity_pct = clamp(phase_smooth(self.cabin_humidity_pct, clamp(humidity_target, 28.0, 72.0), 0.13, 0.10), 24.0, 75.0)
+        self.cabin_humidity_pct = clamp(
+            phase_smooth(self.cabin_humidity_pct, clamp(humidity_target, 28.0, 72.0), 0.13, 0.10), 24.0, 75.0)
 
         pressure_target = 14.70 + 0.04 * math.sin(0.00045 * t + 2.3) + sc.pressure_bias
-        self.cabin_pressure_psi = clamp(phase_smooth(self.cabin_pressure_psi, pressure_target, 0.10, 0.0025), 14.45, 14.98)
+        self.cabin_pressure_psi = clamp(phase_smooth(self.cabin_pressure_psi, pressure_target, 0.10, 0.0025), 14.45,
+                                        14.98)
 
         co2_target = 2.8 + 1.05 * crew_cycle + 0.75 * experiment_load + sc.co2_bias
         co2_target += 0.32 * max(0.0, math.sin(0.0023 * t + 2.1))
@@ -372,7 +376,8 @@ class SatelliteSimulator:
             solar_target = 23.0 + 8.0 * math.sin(0.0013 * t + 0.9)
             solar_target *= sc.eclipse_power_multiplier
 
-        self.solar_power_kw = clamp(phase_smooth(self.solar_power_kw, clamp(solar_target, 2.0, 124.0), 0.18, 0.22), 0.0, 128.0)
+        self.solar_power_kw = clamp(phase_smooth(self.solar_power_kw, clamp(solar_target, 2.0, 124.0), 0.18, 0.22), 0.0,
+                                    128.0)
 
         station_load_kw = 72.0 + 8.0 * crew_cycle + 5.5 * experiment_load
         if sc.key == "thermal":
@@ -399,13 +404,15 @@ class SatelliteSimulator:
         radiation_target += 4.0 * max(0.0, self.geomagnetic_kp - 4.0)
         radiation_target *= sc.radiation_multiplier
         radiation_target += sc.radiation_spike * max(0.0, math.sin(0.0035 * t + 1.0))
-        self.radiation_index = clamp(phase_smooth(self.radiation_index, clamp(radiation_target, 3.0, 100.0), 0.18, 0.35), 0.0, 100.0)
+        self.radiation_index = clamp(
+            phase_smooth(self.radiation_index, clamp(radiation_target, 3.0, 100.0), 0.18, 0.35), 0.0, 100.0)
 
         comm_target = 97.0 - 0.18 * self.radiation_index - 3.5 * max(0.0, self.geomagnetic_kp - 5.0)
         comm_target += sc.comm_quality_bias
         if random.random() < sc.comm_drop_chance:
             comm_target -= random.uniform(12.0, 35.0)
-        self.comm_quality_pct = clamp(phase_smooth(self.comm_quality_pct, clamp(comm_target, 0.0, 100.0), 0.20, 0.55), 0.0, 100.0)
+        self.comm_quality_pct = clamp(phase_smooth(self.comm_quality_pct, clamp(comm_target, 0.0, 100.0), 0.20, 0.55),
+                                      0.0, 100.0)
 
         # Attitude / maneuver model.
         maneuver_active = False
@@ -427,7 +434,8 @@ class SatelliteSimulator:
         co2_ok = gauss_score(self.co2_mmhg, 3.1, 1.15)
         o2_ok = gauss_score(self.o2_mmhg, 159.0, 2.0)
 
-        life_support_score = clamp(100.0 * (0.25 * temp_ok + 0.16 * hum_ok + 0.23 * pressure_ok + 0.18 * co2_ok + 0.18 * o2_ok), 0.0, 100.0)
+        life_support_score = clamp(
+            100.0 * (0.25 * temp_ok + 0.16 * hum_ok + 0.23 * pressure_ok + 0.18 * co2_ok + 0.18 * o2_ok), 0.0, 100.0)
 
         alt_ok = gauss_score(altitude_km, 419.0, 7.2)
         vel_ok = gauss_score(velocity_kmh, 27570.0, 78.0)
@@ -436,9 +444,9 @@ class SatelliteSimulator:
         orbit_score = clamp(100.0 * (0.34 * alt_ok + 0.28 * vel_ok + 0.22 * period_ok + 0.16 * attitude_ok), 0.0, 100.0)
 
         power_score = clamp(100.0 * (
-            0.52 * gauss_score(self.battery_soc_pct, 88.0, 19.0)
-            + 0.30 * gauss_score(self.solar_power_kw, 88.0, 42.0)
-            + 0.18 * gauss_score(self.power_balance_kw, 5.0, 45.0)
+                0.52 * gauss_score(self.battery_soc_pct, 88.0, 19.0)
+                + 0.30 * gauss_score(self.solar_power_kw, 88.0, 42.0)
+                + 0.18 * gauss_score(self.power_balance_kw, 5.0, 45.0)
         ), 0.0, 100.0)
 
         comm_score = clamp(self.comm_quality_pct, 0.0, 100.0)
@@ -578,6 +586,7 @@ class DroneTelemetry:
     battery_soc_percent: float
     rpm: float
     throttle_percent: float
+    horizontal_speed_kmh: float
 
     magnet_health_percent: float
     demag_risk: float
@@ -645,11 +654,16 @@ class MissionProfile:
 
     def scenario_params(self) -> Dict[str, float]:
         presets = {
-            "Normal mission": {"current_multiplier": 1.00, "burst_chance": 0.020, "burst_min": 2.0, "burst_max": 7.0, "wind_wave": 0.7},
-            "Hot day": {"current_multiplier": 1.03, "burst_chance": 0.020, "burst_min": 3.0, "burst_max": 7.5, "wind_wave": 0.8},
-            "Wind gusts": {"current_multiplier": 1.08, "burst_chance": 0.050, "burst_min": 4.0, "burst_max": 10.0, "wind_wave": 2.4},
-            "Payload stress": {"current_multiplier": 1.17, "burst_chance": 0.045, "burst_min": 5.0, "burst_max": 11.0, "wind_wave": 1.5},
-            "Emergency test": {"current_multiplier": 1.30, "burst_chance": 0.070, "burst_min": 6.0, "burst_max": 13.0, "wind_wave": 2.0},
+            "Normal mission": {"current_multiplier": 1.00, "burst_chance": 0.020, "burst_min": 2.0, "burst_max": 7.0,
+                               "wind_wave": 0.7},
+            "Hot day": {"current_multiplier": 1.03, "burst_chance": 0.020, "burst_min": 3.0, "burst_max": 7.5,
+                        "wind_wave": 0.8},
+            "Wind gusts": {"current_multiplier": 1.08, "burst_chance": 0.050, "burst_min": 4.0, "burst_max": 10.0,
+                           "wind_wave": 2.4},
+            "Payload stress": {"current_multiplier": 1.17, "burst_chance": 0.045, "burst_min": 5.0, "burst_max": 11.0,
+                               "wind_wave": 1.5},
+            "Emergency test": {"current_multiplier": 1.30, "burst_chance": 0.070, "burst_min": 6.0, "burst_max": 13.0,
+                               "wind_wave": 2.0},
         }
         return presets.get(self.scenario_name, presets["Normal mission"])
 
@@ -775,6 +789,10 @@ class DroneSimulator:
         rpm = voltage * cfg.motor_kv * (0.16 + 0.84 * throttle) * heat_derate + random.gauss(0.0, 45.0)
         rpm = max(0.0, rpm)
 
+        # Horizontal speed depends on RPM (8-75 km/h range)
+        horizontal_speed_kmh = 8.0 + (rpm / 15000.0) * 67.0
+        horizontal_speed_kmh = clamp(horizontal_speed_kmh, 5.0, 75.0)
+
         risk = calculate_drone_risk(Tcurrent, Icurrent, cfg)
         status = status_from_drone_risk(risk)
 
@@ -800,6 +818,7 @@ class DroneSimulator:
             voltage_V=voltage,
             battery_soc_percent=self.battery_soc,
             rpm=rpm,
+            horizontal_speed_kmh=horizontal_speed_kmh,
             throttle_percent=throttle * 100.0,
             magnet_health_percent=self.magnet_health,
             demag_risk=demag_risk,
