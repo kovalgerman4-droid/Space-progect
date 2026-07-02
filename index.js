@@ -743,7 +743,7 @@ function drawOrbitMap(sat, history) {
 
     // history ground track
     drawTrack(ctx, width, height, history, 'rgba(34,211,238,.90)', false);
-    drawPredictedTrack(ctx, width, height, sat, history);
+    //drawPredictedTrack(ctx, width, height, sat, history);
 
     // solar point
     const sun = project(sat.solar_lon_deg, sat.solar_lat_deg, width, height);
