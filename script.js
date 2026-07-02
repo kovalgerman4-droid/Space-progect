@@ -348,13 +348,7 @@ function updateSatellite(sat, history) {
 function updateDrone(drone, history) {
     setText('uavScenarioName', drone.scenario);
     const geo = dronePseudoGeo(drone);
-    setText('uavLat', `${fmt(geo.lat, 2, '°')} N`);
-    setText('uavLon', `${fmt(geo.lon, 2, '°')} E`);
-    setText('uavAlt', fmt(geo.alt, 1, ' м'));
-    setText('uavSpeed', fmt(geo.speed, 1, ' км/год'));
-    setText('uavHeading', fmt(geo.heading, 1, '°'));
-    setText('uavRange', fmt(geo.range, 1, ' км'));
-    setText('uavRangeSide', fmt(geo.range, 1, ' км'));
+
     setText('uavRssi', `${fmt(-52 - drone.risk * 38 - Math.sin(drone.t * .1) * 4, 0)} dBm`);
     setText('uavLink', drone.risk > .75 ? 'НЕСТАБІЛЬНИЙ' : 'НАДІЙНИЙ');
     setText('uavSummaryLine', `t=${fmt(drone.t, 1, 's')} | I=${fmt(drone.Icurrent, 2)}A/45A | T=${fmt(drone.Tcurrent, 1)}°C/90°C | P_heat=${fmt(drone.heat_power_W, 1)}W | V=${fmt(drone.voltage_V, 2)}V | RPM=${fmtInt(drone.rpm)} | η=${fmt(drone.efficiency_percent, 1)}% | SOC=${fmt(drone.battery_soc_percent, 1)}%`);
