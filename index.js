@@ -416,7 +416,7 @@ function dronePseudoGeo(drone) {
     const lat = KYIV.lat + Math.sin(t * .018) * r + Math.sin(t * .071) * .006;
     const lon = KYIV.lon + Math.cos(t * .016) * r * 1.55;
     const alt = 30 + (drone.throttle_percent || 50) * 1.25 + Math.sin(t * .07) * 7;
-    const speed = 12 + (drone.Icurrent || 20) * 1.35 + Math.sin(t * .11) * 5;
+    const speed = 15 + (drone.rpm || 10000) * 0.004 + Math.sin(t * .11) * 3;
     const heading = (90 + t * 2.7 + Math.sin(t * .05) * 35) % 360;
     const dx = (lon - KYIV.lon) * 72;
     const dy = (lat - KYIV.lat) * 111;
