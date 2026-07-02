@@ -191,9 +191,9 @@ def index_js() -> FileResponse:
     return FileResponse(BASE_DIR / "index.js", media_type="application/javascript")
 
 
-@app.get("/earth.jpg")
+@app.get("/Earth.jpg")
 def earth_photo() -> FileResponse:
-    return FileResponse(BASE_DIR / "earth.jpg")
+    return FileResponse(BASE_DIR / "Earth.jpg")
 
 
 @app.get("/api/meta")
