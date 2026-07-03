@@ -1,4 +1,4 @@
-!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="uk">
 <head>
     <meta charset="utf-8"/>
@@ -66,12 +66,12 @@
     <section class="page active" id="page-sat">
         <div class="sat-grid">
             <aside class="col-left stack">
-                <section class="panel telemetry-panel">
+                <section class="panel">
                     <div class="panel-head">
         <span class="led">
         </span>
                         <h2>
-                            ТЕЛЕМЕТРІЯ
+                            ОРБІТАЛЬНА ТЕЛЕМЕТРІЯ
                         </h2>
                         <em>
                             LIVE
@@ -80,21 +80,91 @@
                     <div class="telemetry-list">
                         <div class="telemetry-row">
                             <i>
-                                ☢
+                                ✣
                             </i>
                             <div>
                                 <b>
-                                    РАДІАЦІЯ
+                                    ШИРОТА
                                 </b>
                                 <small>
-                                    RAD
+                                    LAT
                                 </small>
                             </div>
-                            <strong id="satRad">
+                            <strong id="satLat">
                                 --
                             </strong>
-                            <canvas class="micro" id="satRadSpark">
+                            <canvas class="micro" id="satLatSpark">
                             </canvas>
+                        </div>
+                        <div class="telemetry-row">
+                            <i>
+                                🌐
+                            </i>
+                            <div>
+                                <b>
+                                    ДОВГОТА
+                                </b>
+                                <small>
+                                    LON
+                                </small>
+                            </div>
+                            <strong id="satLon">
+                                --
+                            </strong>
+                            <canvas class="micro" id="satLonSpark">
+                            </canvas>
+                        </div>
+                        <div class="telemetry-row">
+                            <i>
+                                ↥
+                            </i>
+                            <div>
+                                <b>
+                                    ВИСОТА ОРБІТИ
+                                </b>
+                                <small>
+                                    ALT
+                                </small>
+                            </div>
+                            <strong id="satAlt">
+                                --
+                            </strong>
+                            <canvas class="micro" id="satAltSpark">
+                            </canvas>
+                        </div>
+                        <div class="telemetry-row">
+                            <i>
+                                ⚡
+                            </i>
+                            <div>
+                                <b>
+                                    ШВИДКІСТЬ
+                                </b>
+                                <small>
+                                    VEL
+                                </small>
+                            </div>
+                            <strong id="satVel">
+                                --
+                            </strong>
+                            <canvas class="micro" id="satVelSpark">
+                            </canvas>
+                        </div>
+                        <div class="telemetry-row">
+                            <i>
+                                ◐
+                            </i>
+                            <div>
+                                <b>
+                                    ОСВІТЛЕНІСТЬ
+                                </b>
+                                <small>
+                                    ILLUM
+                                </small>
+                            </div>
+                            <strong id="satVis">
+                                --
+                            </strong>
                         </div>
                         <div class="telemetry-row">
                             <i>
@@ -116,6 +186,24 @@
                         </div>
                         <div class="telemetry-row">
                             <i>
+                                ☢
+                            </i>
+                            <div>
+                                <b>
+                                    РАДІАЦІЯ
+                                </b>
+                                <small>
+                                    RAD
+                                </small>
+                            </div>
+                            <strong id="satRad">
+                                --
+                            </strong>
+                            <canvas class="micro" id="satRadSpark">
+                            </canvas>
+                        </div>
+                        <div class="telemetry-row">
+                            <i>
                                 ≋
                             </i>
                             <div>
@@ -134,30 +222,39 @@
                         </div>
                     </div>
                 </section>
-                <section class="mini-systems">
-                    <div>
-                        <small>
-                            РЕЖИМ
-                        </small>
-                        <b id="satScenarioName">
-                            Normal
-                        </b>
+                <section class="panel algorithms-panel compact-ai">
+                    <div class="panel-head">
+        <span class="led">
+        </span>
+                        <h2>
+                            ШІ-АНАЛІЗ ТЕЛЕМЕТРІЇ
+                        </h2>
                     </div>
-                    <div>
-                        <small>
-                            ЗВ'ЯЗОК
-                        </small>
-                        <b>
-                            UHF / S-band
-                        </b>
-                    </div>
-                    <div>
-                        <small>
-                            ПОКРИТТЯ
-                        </small>
-                        <b>
-                            Global
-                        </b>
+                    <div class="algorithm-list">
+                        <div>
+                            <i class="orange">♨</i>
+                            <span>
+                                <b>Thermal Anomaly Detector</b>
+                                <small>Аналіз нагріву кабіни та платформи</small>
+                            </span>
+                            <em>АКТИВНИЙ</em>
+                        </div>
+                        <div>
+                            <i class="cyan">∿</i>
+                            <span>
+                                <b>Signal Stability Analyzer</b>
+                                <small>Моніторинг згасання зв'язку</small>
+                            </span>
+                            <em>АКТИВНИЙ</em>
+                        </div>
+                        <div>
+                            <i class="green">▣</i>
+                            <span>
+                                <b>Battery Decay Predictor</b>
+                                <small>Прогноз деградації сонячних АКБ</small>
+                            </span>
+                            <em class="idle">ОЧІКУВАННЯ</em>
+                        </div>
                     </div>
                 </section>
             </aside>
@@ -169,9 +266,6 @@
                         <h2>
                             ОРБІТАЛЬНИЙ МОНІТОР (ISS MISSION CONTROL)
                         </h2>
-                        <em>
-                            LIVE
-                        </em>
                         <strong id="satMapTime">
                             -- UTC
                         </strong>
@@ -186,19 +280,17 @@
                                 ISS поточна позиція
                             </p>
                             <p>
-          <span class="triangle">
+          <span class="line amber">
           </span>
-                                Підсонячна точка
+                                Підбиття точки
                             </p>
                             <p>
-          <span class="line amber">
+          <span class="triangle">
           </span>
                                 Слід орбіти / зона видимості
                             </p>
                             <p>
-          <span class="line purple">
-          </span>
-                                Термінатор
+                                Термінатор — пунктир
                             </p>
                             <p class="muted">
                                 [Space] пауза · [R] скидання
@@ -214,245 +306,114 @@
                         </div>
                     </div>
                 </section>
-                <section class="panel">
+                <section class="panel log-panel">
                     <div class="panel-head">
         <span class="led">
         </span>
                         <h2>
-                            ДОДАТКОВА ТЕЛЕМЕТРІЯ
+                            ГОЛОВНИЙ ЖУРНАЛ СИСТЕМИ (MISSION LOG)
                         </h2>
-                        <em>
-                            LIVE
-                        </em>
                     </div>
-                    <div class="telemetry-list">
-                        <div class="telemetry-row">
-                            <i>
-                                ◐
-                            </i>
-                            <div>
-                                <b>
-                                    ОСВІТЛЕНІСТЬ
-                                </b>
-                                <small>
-                                    ILLUM
-                                </small>
-                            </div>
-                            <strong id="satVis">
-                                --
-                            </strong>
-                        </div>
-                        <div class="telemetry-row">
-                            <i>
-                                ≈
-                            </i>
-                            <div>
-                                <b>
-                                    ЩІЛЬНІСТЬ АТМОСФЕРИ
-                                </b>
-                                <small>
-                                    ATM
-                                </small>
-                            </div>
-                            <strong id="atmDensity">
-                                --
-                            </strong>
-                            <canvas class="micro" id="densSpark">
-                            </canvas>
-                        </div>
+                    <div class="event-log" id="satEventLog">
                     </div>
                 </section>
-                <aside class="col-right stack">
-                    <section class="panel orbital-panel">
-                        <div class="panel-head">
-        <span class="led">
-        </span>
-                            <h2>
-                                ОРБІТАЛЬНІ ПАРАМЕТРИ
-                            </h2>
-                            <em>
-                                LIVE
-                            </em>
+            </section>
+            <aside class="col-right stack">
+                <section class="panel status-panel">
+                    <div class="panel-head">
+                        <h2>
+                            ЗАГАЛЬНИЙ СТАТУС МІСІЇ
+                        </h2>
+                        <em id="satStatusBadge">
+                            NOMINAL
+                        </em>
+                    </div>
+                    <div class="ring" id="satRing">
+                        <div>
+                            <strong id="missionScore">
+                                --%
+                            </strong>
+                            <small>
+                                MISSION INDEX
+                            </small>
                         </div>
-                        <div class="telemetry-list">
-                            <div class="telemetry-row">
-                                <i>
-                                    ↥
-                                </i>
-                                <div>
-                                    <b>
-                                        ВИСОТА ОРБІТИ
-                                    </b>
-                                    <small>
-                                        ALT
-                                    </small>
-                                </div>
-                                <strong id="satAlt">
-                                    --
-                                </strong>
-                                <canvas class="micro" id="satAltSpark">
-                                </canvas>
-                            </div>
-                            <div class="telemetry-row">
-                                <i>
-                                    ⚡
-                                </i>
-                                <div>
-                                    <b>
-                                        ШВИДКІСТЬ
-                                    </b>
-                                    <small>
-                                        VEL
-                                    </small>
-                                </div>
-                                <strong id="satVel">
-                                    --
-                                </strong>
-                                <canvas class="micro" id="satVelSpark">
-                                </canvas>
-                            </div>
-                            <div class="telemetry-row">
-                                <i>
-                                    ✣
-                                </i>
-                                <div>
-                                    <b>
-                                        ШИРОТА
-                                    </b>
-                                    <small>
-                                        LAT
-                                    </small>
-                                </div>
-                                <strong id="satLat">
-                                    --
-                                </strong>
-                                <canvas class="micro" id="satLatSpark">
-                                </canvas>
-                            </div>
-                            <div class="telemetry-row">
-                                <i>
-                                    🌐
-                                </i>
-                                <div>
-                                    <b>
-                                        ДОВГОТА
-                                    </b>
-                                    <small>
-                                        LON
-                                    </small>
-                                </div>
-                                <strong id="satLon">
-                                    --
-                                </strong>
-                                <canvas class="micro" id="satLonSpark">
-                                </canvas>
-                            </div>
-                        </div>
-                    </section>
-                    <section class="panel status-panel">
-                        <div class="panel-head">
-                            <h2>
-                                СТАТУС МІСІЇ
-                            </h2>
-                            <em id="satStatusBadge">
-                                NOMINAL
-                            </em>
-                        </div>
-                        <div class="ring" id="satRing">
-                            <div>
-                                <strong id="missionScore">
-                                    --%
-                                </strong>
-                                <small>
-                                    MISSION INDEX
-                                </small>
-                            </div>
-                        </div>
-                        <div class="param-list">
-                            <p>
+                    </div>
+                    <div class="param-list">
+                        <p>
           <span>
            Температура кабіни
           </span>
-                                <b id="cabinTemp">
-                                    --
-                                </b>
-                            </p>
-                            <p>
+                            <b id="cabinTemp">
+                                --
+                            </b>
+                        </p>
+                        <p>
           <span>
            Вологість повітря
           </span>
-                                <b id="cabinHum">
-                                    --
-                                </b>
-                            </p>
-                            <p>
+                            <b id="cabinHum">
+                                --
+                            </b>
+                        </p>
+                        <p>
           <span>
            Тиск у відсіку
           </span>
-                                <b id="cabinPress">
-                                    --
-                                </b>
-                            </p>
-                            <p>
+                            <b id="cabinPress">
+                                --
+                            </b>
+                        </p>
+                        <p>
           <span>
            CO₂ рівень
           </span>
-                                <b id="co2Level">
-                                    --
-                                </b>
-                            </p>
-                            <p>
+                            <b id="co2Level">
+                                --
+                            </b>
+                        </p>
+                        <p>
           <span>
            Похибка орієнтації
           </span>
-                                <b id="attErr">
-                                    --
-                                </b>
-                            </p>
-                            <p>
+                            <b id="attErr">
+                                --
+                            </b>
+                        </p>
+                        <p>
           <span>
            Delta-V
           </span>
-                                <b id="deltaV">
-                                    --
-                                </b>
-                            </p>
-                            <p>
+                            <b id="deltaV">
+                                --
+                            </b>
+                        </p>
+                        <p>
           <span>
            Стан систем
           </span>
-                                <b id="statusText">
-                                    --
-                                </b>
-                            </p>
-                        </div>
-                    </section>
-                    <section class="panel scenario-panel">
-                        <div class="panel-head">
-                            <h2>
-                                СЦЕНАРІЙ МІСІЇ
-                            </h2>
-                        </div>
-                        <select class="scenario-select" id="satScenarioSelect">
-                        </select>
-                        <div class="scenario-grid" id="satScenarioButtons">
-                        </div>
-                    </section>
-                </aside>
-            </section>
+                            <b id="statusText">
+                                --
+                            </b>
+                        </p>
+                    </div>
+                </section>
+                <section class="panel scenario-panel">
+                    <div class="panel-head">
+                        <h2>
+                            РЕЖИМ МІСІЇ (SCENARIOS)
+                        </h2>
+                    </div>
+                    <select class="scenario-select" id="satScenarioSelect">
+                    </select>
+                    <div class="scenario-grid" id="satScenarioButtons">
+                    </div>
+                </section>
+            </aside>
         </div>
         <footer class="metric-strip">
             <div>
                 <small>
                     СОНЯЧНА АКТИВНІСТЬ
-                </small>
-                <b id="solarActivityValue">
-                    --
-                </b>
-            </div>
-            <div>
-                <small>
-                    KP
                 </small>
                 <b id="kpValue">
                     Kp --
@@ -462,7 +423,7 @@
             </div>
             <div>
                 <small>
-                    BZ
+                    МАГНІТНЕ ПОЛЕ
                 </small>
                 <b id="bzValue">
                     Bz -1.2 nT
@@ -472,21 +433,23 @@
             </div>
             <div>
                 <small>
-                    ORBIT
+                    ЩІЛЬНІСТЬ АТМОСФЕРИ
+                </small>
+                <b id="atmDensity">
+                    -- kg/m³
+                </b>
+                <canvas class="mini-wave" id="densSpark">
+                </canvas>
+            </div>
+            <div>
+                <small>
+                    ОРБІТАЛЬНИЙ ПЕРІОД
                 </small>
                 <b id="orbitalPeriodFoot">
                     -- хв
                 </b>
                 <canvas class="mini-wave" id="periodSpark">
                 </canvas>
-            </div>
-            <div>
-                <small>
-                    ECLIPSE
-                </small>
-                <b id="eclipseStatus">
-                    --
-                </b>
             </div>
         </footer>
     </section>
