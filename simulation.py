@@ -757,6 +757,63 @@ class DroneSimulator:
         dt = cfg.dt
         self.t += dt
 
+        # ==========================================================
+        # === ІНТЕГРОВАНО: РЕАЛІСТИЧНЕ ЗНЕСТРУМЛЕННЯ (BLACKOUT) ===
+        # ==========================================================
+        if self.battery_soc <= 0.0:
+            self.battery_soc = 0.0
+
+            # Електричні метрики в нуль
+            self.current = 0.0
+            Icurrent = 0.0
+            voltage = 0.0
+            heat_power = 0.0
+            heating_rate = 0.0
+
+            # Прискорене експоненційне охолодження прямо до 0°C
+            cooling_rate = self.temperature * 0.15
+            self.temperature = max(0.0, self.temperature - cooling_rate * dt)
+            Tcurrent = self.temperature
+
+            # Інерційне згасання обертів на основі попереднього кадру
+            rpm = 0.0
+            if self.last_sample:
+                rpm = max(0.0, self.last_sample.rpm - 2500.0 * dt)
+            horizontal_speed_kmh = max(0.0, (rpm / 15000.0) * 67.0)
+
+            # Обнулення ризиків та ефективності системи
+            risk = 0.0
+            status = "SAFE (OFFLINE)"
+            efficiency = 0.0
+            demag_risk = 0.0
+            thermal_margin = cfg.Tmax - Tcurrent
+
+            sample = DroneTelemetry(
+                t=self.t,
+                scenario=self.scenario_name,
+                Tcurrent=Tcurrent,
+                Icurrent=Icurrent,
+                risk=risk,
+                status=status,
+                mission_phase="SYSTEM SHUTDOWN",
+                heat_power_W=heat_power,
+                heat_energy_J=self.heat_energy,
+                voltage_V=voltage,
+                battery_soc_percent=0.0,
+                rpm=rpm,
+                horizontal_speed_kmh=horizontal_speed_kmh,
+                throttle_percent=0.0,
+                magnet_health_percent=self.magnet_health,
+                demag_risk=demag_risk,
+                thermal_margin_C=thermal_margin,
+                cooling_rate_C_per_s=cooling_rate,
+                heating_rate_C_per_s=heating_rate,
+                efficiency_percent=efficiency,
+            )
+            self.last_sample = sample
+            return sample
+        # ==========================================================
+
         target_current, phase = self.mission.next_target_current(self.t, self.temperature)
 
         natural_delta = (target_current - self.current) * 0.14 + random.gauss(0.0, 0.12)
