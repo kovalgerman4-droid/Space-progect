@@ -66,6 +66,74 @@
     <section class="page active" id="page-sat">
         <div class="sat-grid">
             <aside class="col-left stack">
+                <section class="panel telemetry-panel">
+                    <div class="panel-head">
+        <span class="led">
+        </span>
+                        <h2>
+                            ТЕЛЕМЕТРІЯ
+                        </h2>
+                        <em>
+                            LIVE
+                        </em>
+                    </div>
+                    <div class="telemetry-list">
+                        <div class="telemetry-row">
+                            <i>
+                                ☢
+                            </i>
+                            <div>
+                                <b>
+                                    РАДІАЦІЯ
+                                </b>
+                                <small>
+                                    RAD
+                                </small>
+                            </div>
+                            <strong id="satRad">
+                                --
+                            </strong>
+                            <canvas class="micro" id="satRadSpark">
+                            </canvas>
+                        </div>
+                        <div class="telemetry-row">
+                            <i>
+                                ▣
+                            </i>
+                            <div>
+                                <b>
+                                    ЗАРЯД АКБ
+                                </b>
+                                <small>
+                                    BATT
+                                </small>
+                            </div>
+                            <strong id="satBatt">
+                                --
+                            </strong>
+                            <div class="tiny-bars" id="satBattBars">
+                            </div>
+                        </div>
+                        <div class="telemetry-row">
+                            <i>
+                                ≋
+                            </i>
+                            <div>
+                                <b>
+                                    ЯКІСТЬ ЗВ'ЯЗКУ
+                                </b>
+                                <small>
+                                    COMMS
+                                </small>
+                            </div>
+                            <strong id="satComm">
+                                --
+                            </strong>
+                            <div class="tiny-bars" id="satCommBars">
+                            </div>
+                        </div>
+                    </div>
+                </section>
                 <section class="mini-systems">
                     <div>
                         <small>
@@ -146,85 +214,13 @@
         <span class="led">
         </span>
                         <h2>
-                            ОРБІТАЛЬНА ТЕЛЕМЕТРІЯ
+                            ДОДАТКОВА ТЕЛЕМЕТРІЯ
                         </h2>
                         <em>
                             LIVE
                         </em>
                     </div>
                     <div class="telemetry-list">
-                        <div class="telemetry-row">
-                            <i>
-                                ✣
-                            </i>
-                            <div>
-                                <b>
-                                    ШИРОТА
-                                </b>
-                                <small>
-                                    LAT
-                                </small>
-                            </div>
-                            <strong id="satLat">
-                                --
-                            </strong>
-                            <canvas class="micro" id="satLatSpark">
-                            </canvas>
-                        </div>
-                        <div class="telemetry-row">
-                            <i>
-                                🌐
-                            </i>
-                            <div>
-                                <b>
-                                    ДОВГОТА
-                                </b>
-                                <small>
-                                    LON
-                                </small>
-                            </div>
-                            <strong id="satLon">
-                                --
-                            </strong>
-                            <canvas class="micro" id="satLonSpark">
-                            </canvas>
-                        </div>
-                        <div class="telemetry-row">
-                            <i>
-                                ↥
-                            </i>
-                            <div>
-                                <b>
-                                    ВИСОТА ОРБІТИ
-                                </b>
-                                <small>
-                                    ALT
-                                </small>
-                            </div>
-                            <strong id="satAlt">
-                                --
-                            </strong>
-                            <canvas class="micro" id="satAltSpark">
-                            </canvas>
-                        </div>
-                        <div class="telemetry-row">
-                            <i>
-                                ⚡
-                            </i>
-                            <div>
-                                <b>
-                                    ШВИДКІСТЬ
-                                </b>
-                                <small>
-                                    VEL
-                                </small>
-                            </div>
-                            <strong id="satVel">
-                                --
-                            </strong>
-                            <canvas class="micro" id="satVelSpark">
-                            </canvas>
-                        </div>
                         <div class="telemetry-row">
                             <i>
                                 ◐
@@ -241,63 +237,95 @@
                                 --
                             </strong>
                         </div>
-                        <div class="telemetry-row">
-                            <i>
-                                ▣
-                            </i>
-                            <div>
-                                <b>
-                                    ЗАРЯД АКБ
-                                </b>
-                                <small>
-                                    BATT
-                                </small>
-                            </div>
-                            <strong id="satBatt">
-                                --
-                            </strong>
-                            <div class="tiny-bars" id="satBattBars">
-                            </div>
-                        </div>
-                        <div class="telemetry-row">
-                            <i>
-                                ☢
-                            </i>
-                            <div>
-                                <b>
-                                    РАДІАЦІЯ
-                                </b>
-                                <small>
-                                    RAD
-                                </small>
-                            </div>
-                            <strong id="satRad">
-                                --
-                            </strong>
-                            <canvas class="micro" id="satRadSpark">
-                            </canvas>
-                        </div>
-                        <div class="telemetry-row">
-                            <i>
-                                ≋
-                            </i>
-                            <div>
-                                <b>
-                                    ЯКІСТЬ ЗВ'ЯЗКУ
-                                </b>
-                                <small>
-                                    COMMS
-                                </small>
-                            </div>
-                            <strong id="satComm">
-                                --
-                            </strong>
-                            <div class="tiny-bars" id="satCommBars">
-                            </div>
-                        </div>
                     </div>
                 </section>
                 <aside class="col-right stack">
+                    <section class="panel orbital-panel">
+                        <div class="panel-head">
+        <span class="led">
+        </span>
+                            <h2>
+                                ОРБІТАЛЬНІ ПАРАМЕТРИ
+                            </h2>
+                            <em>
+                                LIVE
+                            </em>
+                        </div>
+                        <div class="telemetry-list">
+                            <div class="telemetry-row">
+                                <i>
+                                    ↥
+                                </i>
+                                <div>
+                                    <b>
+                                        ВИСОТА ОРБІТИ
+                                    </b>
+                                    <small>
+                                        ALT
+                                    </small>
+                                </div>
+                                <strong id="satAlt">
+                                    --
+                                </strong>
+                                <canvas class="micro" id="satAltSpark">
+                                </canvas>
+                            </div>
+                            <div class="telemetry-row">
+                                <i>
+                                    ⚡
+                                </i>
+                                <div>
+                                    <b>
+                                        ШВИДКІСТЬ
+                                    </b>
+                                    <small>
+                                        VEL
+                                    </small>
+                                </div>
+                                <strong id="satVel">
+                                    --
+                                </strong>
+                                <canvas class="micro" id="satVelSpark">
+                                </canvas>
+                            </div>
+                            <div class="telemetry-row">
+                                <i>
+                                    ✣
+                                </i>
+                                <div>
+                                    <b>
+                                        ШИРОТА
+                                    </b>
+                                    <small>
+                                        LAT
+                                    </small>
+                                </div>
+                                <strong id="satLat">
+                                    --
+                                </strong>
+                                <canvas class="micro" id="satLatSpark">
+                                </canvas>
+                            </div>
+                            <div class="telemetry-row">
+                                <i>
+                                    🌐
+                                </i>
+                                <div>
+                                    <b>
+                                        ДОВГОТА
+                                    </b>
+                                    <small>
+                                        LON
+                                    </small>
+                                </div>
+                                <strong id="satLon">
+                                    --
+                                </strong>
+                                <canvas class="micro" id="satLonSpark">
+                                </canvas>
+                            </div>
+                        </div>
+                    </section>
                     <section class="panel status-panel">
                         <div class="panel-head">
                             <h2>
@@ -395,6 +423,14 @@
                 <small>
                     СОНЯЧНА АКТИВНІСТЬ
                 </small>
+                <b id="solarActivityValue">
+                    --
+                </b>
+            </div>
+            <div>
+                <small>
+                    KP
+                </small>
                 <b id="kpValue">
                     Kp --
                 </b>
@@ -403,7 +439,7 @@
             </div>
             <div>
                 <small>
-                    МАГНІТНЕ ПОЛЕ
+                    BZ
                 </small>
                 <b id="bzValue">
                     Bz -1.2 nT
@@ -413,22 +449,30 @@
             </div>
             <div>
                 <small>
+                    ORBIT
+                </small>
+                <b id="orbitalPeriodFoot">
+                    -- хв
+                </b>
+                <canvas class="mini-wave" id="periodSpark">
+                </canvas>
+            </div>
+            <div>
+                <small>
+                    ECLIPSE
+                </small>
+                <b id="eclipseStatus">
+                    --
+                </b>
+            </div>
+            <div>
+                <small>
                     ЩІЛЬНІСТЬ АТМОСФЕРИ
                 </small>
                 <b id="atmDensity">
                     -- kg/m³
                 </b>
                 <canvas class="mini-wave" id="densSpark">
-                </canvas>
-            </div>
-            <div>
-                <small>
-                    ОРБІТАЛЬНИЙ ПЕРІОД
-                </small>
-                <b id="orbitalPeriodFoot">
-                    -- хв
-                </b>
-                <canvas class="mini-wave" id="periodSpark">
                 </canvas>
             </div>
         </footer>
