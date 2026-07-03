@@ -8,7 +8,8 @@
 </head>
 <body>
 <div class="stars" aria-hidden="true"></div>
-<header class="topbar">
+
+<header>
     <div class="brand">
         <div class="brand-icon">◈</div>
         <div>
@@ -22,330 +23,409 @@
     </div>
 </header>
 
-<nav class="tabs" aria-label="Dashboard sections">
+<nav class="tabs">
     <button class="tab active" data-page="sat"><span>🛰</span> MINISAT LAB <b>LIVE</b></button>
     <button class="tab" data-page="uav"><span>🚁</span> UAV SYSTEMS <b>LIVE</b></button>
     <button class="tab" data-page="ai"><span>🧠</span> AI ANALYTICS</button>
 </nav>
 
 <main>
+    <!-- ════════════════════════════════════════ SATELLITE PAGE ════════════════════════════════════════ -->
     <section id="page-sat" class="page active">
-        <div class="sat-grid">
-            <aside class="col-left stack">
-                <section class="panel">
-                    <div class="panel-head"><span class="led"></span>
-                        <h2>ОРБІТАЛЬНА ТЕЛЕМЕТРІЯ</h2><em>LIVE</em></div>
-                    <div class="telemetry-list">
-                        <div class="telemetry-row"><i>✣</i>
-                            <div><b>ШИРОТА</b><small>LAT</small></div>
-                            <strong id="satLat">--</strong>
-                            <canvas class="micro" id="satLatSpark"></canvas>
-                        </div>
-                        <div class="telemetry-row"><i>🌐</i>
-                            <div><b>ДОВГОТА</b><small>LON</small></div>
-                            <strong id="satLon">--</strong>
-                            <canvas class="micro" id="satLonSpark"></canvas>
-                        </div>
-                        <div class="telemetry-row"><i>↥</i>
-                            <div><b>ВИСОТА ОРБІТИ</b><small>ALT</small></div>
-                            <strong id="satAlt">--</strong>
-                            <canvas class="micro" id="satAltSpark"></canvas>
-                        </div>
-                        <div class="telemetry-row"><i>⚡</i>
-                            <div><b>ШВИДКІСТЬ</b><small>VEL</small></div>
-                            <strong id="satVel">--</strong>
-                            <canvas class="micro" id="satVelSpark"></canvas>
-                        </div>
-                        <div class="telemetry-row"><i>◐</i>
-                            <div><b>ОСВІТЛЕНІСТЬ</b><small>ILLUM</small></div>
-                            <strong id="satVis">--</strong></div>
-                        <div class="telemetry-row"><i>▣</i>
-                            <div><b>ЗАРЯД АКБ</b><small>BATT</small></div>
-                            <strong id="satBatt">--</strong>
-                            <div class="tiny-bars" id="satBattBars"></div>
-                        </div>
-                        <div class="telemetry-row"><i>☢</i>
-                            <div><b>РАДІАЦІЯ</b><small>RAD</small></div>
-                            <strong id="satRad">--</strong>
-                            <canvas class="micro" id="satRadSpark"></canvas>
-                        </div>
-                        <div class="telemetry-row"><i>≋</i>
-                            <div><b>ЯКІСТЬ ЗВ'ЯЗКУ</b><small>COMMS</small></div>
-                            <strong id="satComm">--</strong>
-                            <div class="tiny-bars" id="satCommBars"></div>
+        <div style="display: grid; grid-template-columns: 1fr 2fr; gap: 16px;">
+            <!-- LEFT COLUMN - ТЕЛЕМЕТРІЯ -->
+            <div class="col-left">
+                <div class="card">
+                    <div class="card-header">
+                        <span class="card-title"><span class="live-dot"></span> ОРБІТАЛЬНА ТЕЛЕМЕТРІЯ</span>
+                    </div>
+                    <div class="card-body">
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; row-gap: 8px;">
+                            <div style="padding: 10px 12px; background: rgba(14, 165, 233, 0.05); border: 1px solid var(--border); border-radius: 4px;">
+                                <small style="display: block; font-size: 11px; color: var(--text-secondary); margin-bottom: 2px;">ШИРОТА</small>
+                                <b style="display: block; font-family: 'Share Tech Mono', monospace; color: var(--accent-cyan);"
+                                   id="satLat">--</b>
+                            </div>
+                            <div style="padding: 10px 12px; background: rgba(14, 165, 233, 0.05); border: 1px solid var(--border); border-radius: 4px;">
+                                <small style="display: block; font-size: 11px; color: var(--text-secondary); margin-bottom: 2px;">ДОВГОТА</small>
+                                <b style="display: block; font-family: 'Share Tech Mono', monospace; color: var(--accent-cyan);"
+                                   id="satLon">--</b>
+                            </div>
+                            <div style="padding: 10px 12px; background: rgba(14, 165, 233, 0.05); border: 1px solid var(--border); border-radius: 4px;">
+                                <small style="display: block; font-size: 11px; color: var(--text-secondary); margin-bottom: 2px;">ВИСОТА
+                                    ОРБІТИ</small>
+                                <b style="display: block; font-family: 'Share Tech Mono', monospace; color: var(--accent-cyan);"
+                                   id="satAlt">--</b>
+                            </div>
+                            <div style="padding: 10px 12px; background: rgba(14, 165, 233, 0.05); border: 1px solid var(--border); border-radius: 4px;">
+                                <small style="display: block; font-size: 11px; color: var(--text-secondary); margin-bottom: 2px;">ШВИДКІСТЬ</small>
+                                <b style="display: block; font-family: 'Share Tech Mono', monospace; color: var(--accent-cyan);"
+                                   id="satVel">--</b>
+                            </div>
+                            <div style="padding: 10px 12px; background: rgba(14, 165, 233, 0.05); border: 1px solid var(--border); border-radius: 4px;">
+                                <small style="display: block; font-size: 11px; color: var(--text-secondary); margin-bottom: 2px;">ОСВІТЛЕНІСТЬ</small>
+                                <b style="display: block; font-family: 'Share Tech Mono', monospace; color: var(--accent-cyan);"
+                                   id="satVis">--</b>
+                            </div>
+                            <div style="padding: 10px 12px; background: rgba(14, 165, 233, 0.05); border: 1px solid var(--border); border-radius: 4px;">
+                                <small style="display: block; font-size: 11px; color: var(--text-secondary); margin-bottom: 2px;">ЗАРЯД
+                                    АКБ</small>
+                                <b style="display: block; font-family: 'Share Tech Mono', monospace; color: var(--accent-cyan);"
+                                   id="satBatt">--</b>
+                            </div>
+                            <div style="padding: 10px 12px; background: rgba(14, 165, 233, 0.05); border: 1px solid var(--border); border-radius: 4px;">
+                                <small style="display: block; font-size: 11px; color: var(--text-secondary); margin-bottom: 2px;">РАДІАЦІЯ</small>
+                                <b style="display: block; font-family: 'Share Tech Mono', monospace; color: var(--accent-cyan);"
+                                   id="satRad">--</b>
+                            </div>
+                            <div style="padding: 10px 12px; background: rgba(14, 165, 233, 0.05); border: 1px solid var(--border); border-radius: 4px;">
+                                <small style="display: block; font-size: 11px; color: var(--text-secondary); margin-bottom: 2px;">ЯКІСТЬ
+                                    ЗВ'ЯЗКУ</small>
+                                <b style="display: block; font-family: 'Share Tech Mono', monospace; color: var(--accent-cyan);"
+                                   id="satComm">--</b>
+                            </div>
                         </div>
                     </div>
-                </section>
+                </div>
 
-                <section class="mini-systems">
-                    <div><small>РЕЖИМ</small><b id="satScenarioName">Normal</b></div>
-                    <div><small>ЗВ'ЯЗОК</small><b>UHF / S-band</b></div>
-                    <div><small>ПОКРИТТЯ</small><b>Global</b></div>
-                </section>
-
-
-            </aside>
-
-            <section class="col-center stack">
-                <section class="panel map-panel">
-                    <div class="panel-head"><span class="led"></span>
-                        <h2>ТРАЄКТОРІЯ ОРБІТИ</h2><em>LIVE</em><strong id="satMapTime">-- UTC</strong></div>
-                    <div class="map-wrap">
-                        <canvas id="orbitCanvas"></canvas>
-                        <div class="map-legend">
-                            <p><span class="line cyan"></span> поточна позиція</p>
-                            <p><span class="line amber"></span> прогноз траєкторії</p>
-                            <p><span class="triangle"></span> наземна станція</p>
-                            <p class="muted">[Space] пауза · [R] reset</p>
+                <div class="card">
+                    <div class="card-body"
+                         style="padding: 20px; display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; text-align: center;">
+                        <div>
+                            <small style="display: block; font-size: 10px; color: var(--text-secondary); margin-bottom: 6px;">РЕЖИМ</small>
+                            <b style="display: block; color: var(--accent-cyan); font-size: 14px;" id="satScenarioName">Normal</b>
                         </div>
-                        <div class="map-readout" id="mapReadout">LAT --<br>LON --</div>
-                        <div class="paused-flag" id="pausedFlag">PAUSED</div>
+                        <div>
+                            <small style="display: block; font-size: 10px; color: var(--text-secondary); margin-bottom: 6px;">ЗВ'ЯЗОК</small>
+                            <b style="display: block; color: var(--accent-cyan); font-size: 14px;">UHF / S-band</b>
+                        </div>
+                        <div>
+                            <small style="display: block; font-size: 10px; color: var(--text-secondary); margin-bottom: 6px;">ПОКРИТТЯ</small>
+                            <b style="display: block; color: var(--accent-cyan); font-size: 14px;">Global</b>
+                        </div>
                     </div>
-                    
-                </section>
+                </div>
 
+                <div class="card">
+                    <div class="card-body" style="padding: 20px; text-align: center;">
+                        <div style="font-size: 24px; margin-bottom: 12px;">◜</div>
+                        <small style="display: block; font-size: 10px; color: var(--text-secondary); margin-bottom: 6px;">НАСТУПНИЙ
+                            СЕАНС ЗВ'ЯЗКУ</small>
+                        <strong style="display: block; color: var(--accent-cyan); font-size: 16px;" id="nextPassSat">00:12:36</strong>
+                        <span style="display: block; font-size: 11px; color: var(--text-secondary); margin-top: 8px;">KYIV GROUND STATION · S-BAND</span>
+                    </div>
+                </div>
+            </div>
 
-                <aside class="col-right stack">
-                    <section class="panel status-panel">
-                        <div class="panel-head"><h2>СТАТУС МІСІЇ</h2><em id="satStatusBadge">NOMINAL</em></div>
-                        <div class="ring" id="satRing">
-                            <div><strong id="missionScore">--%</strong><small>MISSION INDEX</small></div>
+            <!-- RIGHT COLUMN - КАРТА + СТАТУС -->
+            <div class="col-center">
+                <div class="card">
+                    <div class="card-header">
+                        <span class="card-title"><span class="live-dot"></span> ТРАЄКТОРІЯ ОРБІТИ</span>
+                        <span style="font-size: 11px; color: var(--text-secondary);" id="satMapTime">-- UTC</span>
+                    </div>
+                    <div class="card-body" style="padding: 0;">
+                        <div class="map-wrap">
+                            <canvas id="orbitCanvas"></canvas>
+                            <div class="map-legend">
+                                <p><span class="line cyan"></span> поточна позиція</p>
+                                <p><span class="line amber"></span> прогноз траєкторії</p>
+                                <p><span class="triangle"></span> наземна станція</p>
+                                <p class="muted">[Space] пауза · [R] reset</p>
+                            </div>
+                            <div class="map-readout" id="mapReadout">LAT --<br>LON --</div>
+                            <div class="paused-flag" id="pausedFlag">PAUSED</div>
                         </div>
-                        <div class="param-list">
-                            <p><span>Температура кабіни</span><b id="cabinTemp">--</b></p>
-                            <p><span>Вологість повітря</span><b id="cabinHum">--</b></p>
-                            <p><span>Тиск у відсіку</span><b id="cabinPress">--</b></p>
-                            <p><span>CO₂ рівень</span><b id="co2Level">--</b></p>
-                            <p><span>Похибка орієнтації</span><b id="attErr">--</b></p>
-                            <p><span>Delta-V</span><b id="deltaV">--</b></p>
-                            <p><span>Стан систем</span><b id="statusText">--</b></p>
-                        </div>
-                    </section>
+                    </div>
+                </div>
 
-                    <section class="panel scenario-panel">
-                        <div class="panel-head"><h2>СЦЕНАРІЙ МІСІЇ</h2></div>
-                        <select id="satScenarioSelect" class="scenario-select"></select>
-                        <div class="scenario-grid" id="satScenarioButtons"></div>
-                    </section>
-                </aside>
+                <!-- Два блоки під картою в ряд -->
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+                    <div class="card">
+                        <div class="card-header">
+                            <span class="card-title"><span class="live-dot"></span> ЖУРНАЛ ПОДІЙ</span>
+                        </div>
+                        <div class="card-body" style="padding: 0;">
+                            <div class="event-list" id="satEventLog"></div>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-header">
+                            <span class="card-title">СТАТУС МІСІЇ</span>
+                            <span style="font-size: 11px; padding: 2px 8px; border-radius: 3px; background: rgba(0, 255, 136, 0.1); color: var(--neon-green);"
+                                  id="satStatusBadge">NOMINAL</span>
+                        </div>
+                        <div class="card-body">
+                            <div class="ring" id="satRing">
+                                <div>
+                                    <strong id="missionScore">--%</strong>
+                                    <small>MISSION INDEX</small>
+                                </div>
+                            </div>
+                            <div style="padding-top: 12px; border-top: 1px solid rgba(30, 95, 168, 0.3);">
+                                <div class="metric">
+                                    <span class="metric-label">Температура</span>
+                                    <span class="metric-value" id="cabinTemp">--</span>
+                                </div>
+                                <div class="metric">
+                                    <span class="metric-label">Вологість</span>
+                                    <span class="metric-value" id="cabinHum">--</span>
+                                </div>
+                                <div class="metric">
+                                    <span class="metric-label">Тиск</span>
+                                    <span class="metric-value" id="cabinPress">--</span>
+                                </div>
+                                <div class="metric">
+                                    <span class="metric-label">CO₂ рівень</span>
+                                    <span class="metric-value" id="co2Level">--</span>
+                                </div>
+                                <div class="metric">
+                                    <span class="metric-label">Орієнтація</span>
+                                    <span class="metric-value" id="attErr">--</span>
+                                </div>
+                                <div class="metric">
+                                    <span class="metric-label">Delta-V</span>
+                                    <span class="metric-value" id="deltaV">--</span>
+                                </div>
+                                <div class="metric">
+                                    <span class="metric-label">Статус систем</span>
+                                    <span class="metric-value" id="statusText">--</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
 
         <footer class="metric-strip">
-            <div><small>СОНЯЧНА АКТИВНІСТЬ</small><b id="kpValue">Kp --</b>
-                <canvas class="mini-wave" id="kpSpark"></canvas>
+            <div>
+                <small>СОНЯЧНА АКТИВНІСТЬ</small>
+                <b id="kpValue">Kp --</b>
             </div>
-            <div><small>МАГНІТНЕ ПОЛЕ</small><b id="bzValue">Bz -1.2 nT</b>
-                <canvas class="mini-wave" id="bzSpark"></canvas>
+            <div>
+                <small>МАГНІТНЕ ПОЛЕ</small>
+                <b id="bzValue">Bz -1.2 nT</b>
             </div>
-            <div><small>ЩІЛЬНІСТЬ АТМОСФЕРИ</small><b id="atmDensity">-- kg/m³</b>
-                <canvas class="mini-wave" id="densSpark"></canvas>
+            <div>
+                <small>ЩІЛЬНІСТЬ АТМОСФЕРИ</small>
+                <b id="atmDensity">-- kg/m³</b>
             </div>
-            <div><small>ОРБІТАЛЬНИЙ ПЕРІОД</small><b id="orbitalPeriodFoot">-- хв</b>
-                <canvas class="mini-wave" id="periodSpark"></canvas>
+            <div>
+                <small>ОРБІТАЛЬНИЙ ПЕРІОД</small>
+                <b id="orbitalPeriodFoot">-- хв</b>
             </div>
-
+            <div>
+                <small>ПРОГНОЗ ПРОЛЬОТУ</small>
+                <b id="kyivPass">48:23 над Києвом</b>
+            </div>
         </footer>
     </section>
 
+    <!-- ════════════════════════════════════════ UAV PAGE ════════════════════════════════════════ -->
     <section id="page-uav" class="page">
-        <div class="uav-grid">
-            <aside class="col-left stack">
-                <section class="panel">
-                    <div class="panel-head"><span class="led"></span>
-                        <h2>ТЕЛЕМЕТРІЯ ДРОНА</h2><em>LIVE</em></div>
-                    <div class="telemetry-list">
-                        <div class="telemetry-row"><i>↥</i>
-                            <div><b>ВИСОТА AGL</b><small>ALT</small></div>
-                            <strong id="uavAlt">--</strong>
-                            <canvas class="micro" id="uavAltSpark"></canvas>
-                        </div>
-                        <div class="telemetry-row"><i>⚡</i>
-                            <div><b>ШВИДКІСТЬ</b><small>VEL</small></div>
-                            <strong id="uavSpeed">--</strong>
-                            <canvas class="micro" id="uavSpeedSpark"></canvas>
-                        </div>
-
-                        <div class="telemetry-row"><i>▥</i>
-                            <div><b>RSSI ЛІНКУ</b><small>LINK</small></div>
-                            <strong id="uavRssi">--</strong>
-                            <canvas class="micro" id="uavRssiSpark"></canvas>
-                        </div>
-                        <div class="telemetry-row"><i>∞</i>
-                            <div><b>СТАТУС ЛІНКУ</b><small>DATALINK</small></div>
-                            <strong id="uavLink">НАДІЙНИЙ</strong></div>
+        <div style="display: grid; grid-template-columns: 1fr 2fr; gap: 16px;">
+            <!-- LEFT COLUMN - ТЕЛЕМЕТРІЯ ДРОНА -->
+            <div class="col-left">
+                <div class="card">
+                    <div class="card-header">
+                        <span class="card-title"><span class="live-dot"></span> ТЕЛЕМЕТРІЯ ДРОНА</span>
                     </div>
-                </section>
-                <section class="mini-systems">
-                    <div><small>РЕЖИМ СИСТЕМИ</small><b id="uavScenarioName">Normal mission</b></div>
-                    <div><small>3D RTK</small><b>12 / 12 sat</b></div>
-                    <div><small>ПОКРИТТЯ</small><b>Global</b></div>
-                </section>
-
-            </aside>
-
-            <section class="col-center stack">
-                <section class="panel controls-panel">
-                    <div class="panel-head"><span class="led"></span>
-                        <h2>УПРАВЛІННЯ ПОЛЬОТОМ</h2></div>
-                    <div class="control-row">
-                        <label>СЦЕНАРІЙ ПОЛЬОТУ</label>
-                        <select id="droneScenarioSelect" class="scenario-select"></select>
-                        <button id="pauseBtn" class="action-btn">PAUSE</button>
-                        <button id="resetBtn" class="action-btn">RESET</button>
+                    <div class="card-body">
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; row-gap: 8px;">
+                            <div style="padding: 10px 12px; background: rgba(14, 165, 233, 0.05); border: 1px solid var(--border); border-radius: 4px;">
+                                <small style="display: block; font-size: 11px; color: var(--text-secondary); margin-bottom: 2px;">СТРУМ
+                                    (A)</small>
+                                <b style="display: block; font-family: 'Share Tech Mono', monospace; color: var(--accent-cyan);"
+                                   id="uavIcurrent">--</b>
+                            </div>
+                            <div style="padding: 10px 12px; background: rgba(14, 165, 233, 0.05); border: 1px solid var(--border); border-radius: 4px;">
+                                <small style="display: block; font-size: 11px; color: var(--text-secondary); margin-bottom: 2px;">ТЕМПЕРАТУРА
+                                    (°C)</small>
+                                <b style="display: block; font-family: 'Share Tech Mono', monospace; color: var(--accent-cyan);"
+                                   id="uavTcurrent">--</b>
+                            </div>
+                            <div style="padding: 10px 12px; background: rgba(14, 165, 233, 0.05); border: 1px solid var(--border); border-radius: 4px;">
+                                <small style="display: block; font-size: 11px; color: var(--text-secondary); margin-bottom: 2px;">ВИСОТА
+                                    AGL (м)</small>
+                                <b style="display: block; font-family: 'Share Tech Mono', monospace; color: var(--accent-cyan);"
+                                   id="uavAlt">--</b>
+                            </div>
+                            <div style="padding: 10px 12px; background: rgba(14, 165, 233, 0.05); border: 1px solid var(--border); border-radius: 4px;">
+                                <small style="display: block; font-size: 11px; color: var(--text-secondary); margin-bottom: 2px;">RPM
+                                    (об/хв)</small>
+                                <b style="display: block; font-family: 'Share Tech Mono', monospace; color: var(--accent-cyan);"
+                                   id="uavRpm">--</b>
+                            </div>
+                            <div style="padding: 10px 12px; background: rgba(14, 165, 233, 0.05); border: 1px solid var(--border); border-radius: 4px;">
+                                <small style="display: block; font-size: 11px; color: var(--text-secondary); margin-bottom: 2px;">НАПРУГА
+                                    (V)</small>
+                                <b style="display: block; font-family: 'Share Tech Mono', monospace; color: var(--accent-cyan);"
+                                   id="uavVoltage">--</b>
+                            </div>
+                            <div style="padding: 10px 12px; background: rgba(14, 165, 233, 0.05); border: 1px solid var(--border); border-radius: 4px;">
+                                <small style="display: block; font-size: 11px; color: var(--text-secondary); margin-bottom: 2px;">БАТАРЕЯ
+                                    (%)</small>
+                                <b style="display: block; font-family: 'Share Tech Mono', monospace; color: var(--accent-cyan);"
+                                   id="uavBattery">--</b>
+                            </div>
+                            <div style="padding: 10px 12px; background: rgba(14, 165, 233, 0.05); border: 1px solid var(--border); border-radius: 4px;">
+                                <small style="display: block; font-size: 11px; color: var(--text-secondary); margin-bottom: 2px;">МАГНЕТ
+                                    (%)</small>
+                                <b style="display: block; font-family: 'Share Tech Mono', monospace; color: var(--accent-cyan);"
+                                   id="uavMagnet">--</b>
+                            </div>
+                            <div style="padding: 10px 12px; background: rgba(14, 165, 233, 0.05); border: 1px solid var(--border); border-radius: 4px;">
+                                <small style="display: block; font-size: 11px; color: var(--text-secondary); margin-bottom: 2px;">ЕФЕКТИВНІСТЬ
+                                    (%)</small>
+                                <b style="display: block; font-family: 'Share Tech Mono', monospace; color: var(--accent-cyan);"
+                                   id="uavEfficiency">--</b>
+                            </div>
+                        </div>
                     </div>
-                    <div class="riskbar">
-                        <div id="riskFill"></div>
-                        <span id="riskText">Risk K = -- | --</span></div>
-                    <div class="mono-line" id="uavSummaryLine">Очікування даних...</div>
-                </section>
+                </div>
 
-                <section class="telemetry-cards">
-                    <div class="data-card"><small>СТРУМ (I)</small><strong class="cyan" id="drCurrentValue">--</strong>
-                        <canvas class="spark" id="drCurrentChart"></canvas>
-                        <span>0 · 45A</span></div>
-                    <div class="data-card"><small>ТЕМПЕРАТУРА (T)</small><strong class="orange"
-                                                                                 id="drTempValue">--</strong>
-                        <canvas class="spark" id="drTempChart"></canvas>
-                        <span>0 · 90°C</span></div>
-                    <div class="data-card"><small>КОЕФ. РИЗИКУ (K)</small><strong class="purple"
-                                                                                  id="drRiskValue">--</strong>
-                        <canvas class="spark" id="drRiskChart"></canvas>
-                        <span>0 · 1.2</span></div>
-                    <div class="data-card"><small>ТЕПЛОВА ПОТУЖНІСТЬ</small><strong class="cyan"
-                                                                                    id="drHeatValue">--</strong>
-                        <canvas class="spark" id="drHeatChart"></canvas>
-                        <span>0 · 120W</span></div>
-                    <div class="data-card"><small>НАПРУГА (V)</small><strong class="green"
-                                                                             id="drVoltageValue">--</strong>
-                        <canvas class="spark" id="drVoltageChart"></canvas>
-                        <span>20V · 30V</span></div>
-                    <div class="data-card"><small>ОБЕРТИ (RPM)</small><strong class="cyan" id="drRpmValue">--</strong>
-                        <canvas class="spark" id="drRpmChart"></canvas>
-                        <span>0 · 20000</span></div>
-                    <div class="data-card"><small>МАГНІТНЕ ЗДОРОВ'Я</small><strong class="green"
-                                                                                   id="drMagValue">--</strong>
-                        <canvas class="spark" id="drMagChart"></canvas>
-                        <span>0% · 100%</span></div>
-                    <div class="data-card"><small>ЕФЕКТИВНІСТЬ (η)</small><strong class="orange"
-                                                                                  id="drEffValue">--</strong>
-                        <canvas class="spark" id="drEffChart"></canvas>
-                        <span>0% · 100%</span></div>
-                    <div class="data-card"><small>БАТАРЕЯ (SOC)</small><strong class="green"
-                                                                               id="drBattValue">--</strong>
-                        <div class="progress"><i id="drBattProgress"></i></div>
-                        <span>0% · 100%</span></div>
-
-                    <div class="data-card"><small>ШВИДК. НАГРІВУ</small><strong class="red"
-                                                                                id="drHeatRateValue">--</strong>
-                        <canvas class="spark" id="drHeatRateChart"></canvas>
-                        <span>0 · 2.0</span></div>
-                    <div class="data-card"><small>ШВИДК. ОХОЛОДЖЕННЯ</small><strong class="green" id="drCoolRateValue">--</strong>
-                        <canvas class="spark" id="drCoolRateChart"></canvas>
-                        <span>0 · 2.0</span></div>
-                </section>
-
-
-            </section>
-
-            <aside class="col-right stack">
-                <section class="panel status-panel">
-                    <div class="panel-head"><h2>СТАТУС МІСІЇ</h2><em id="drStatusBadge">SAFE</em></div>
-                    <div class="safe-orb" id="droneOrb"><strong>✓</strong><b id="drStatusText">SAFE</b><small>СИСТЕМА В
-                        НОРМІ</small></div>
-                    <div class="param-list">
-                        <p><span>Фаза польоту</span><b id="drPhase">--</b></p>
-                        <p><span>Тепловий запас</span><b id="drMargin">--</b></p>
-                        <p><span>Ризик розмагнічення</span><b id="drDemag">--</b></p>
-                        <p><span>Батарея</span><b id="drBattSide">--</b></p>
-                        <p><span>GPS фіксація</span><b>3D FIX (12)</b></p>
-                        <p><span>Лінк телеметрії</span><b id="drLinkSide">НАДІЙНИЙ</b></p>
-                        <p><span>Час місії (E.T.)</span><b id="drMissionTime">--</b></p>
+                <div class="card">
+                    <div class="card-body"
+                         style="padding: 20px; display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; text-align: center;">
+                        <div>
+                            <small style="display: block; font-size: 10px; color: var(--text-secondary); margin-bottom: 6px;">РЕЖИМ</small>
+                            <b style="display: block; color: var(--accent-cyan); font-size: 14px;" id="uavScenarioName">Normal
+                                mission</b>
+                        </div>
+                        <div>
+                            <small style="display: block; font-size: 10px; color: var(--text-secondary); margin-bottom: 6px;">3D
+                                RTK</small>
+                            <b style="display: block; color: var(--accent-cyan); font-size: 14px;">12 / 12 sat</b>
+                        </div>
+                        <div>
+                            <small style="display: block; font-size: 10px; color: var(--text-secondary); margin-bottom: 6px;">ПОКРИТТЯ</small>
+                            <b style="display: block; color: var(--accent-cyan); font-size: 14px;">Global</b>
+                        </div>
                     </div>
-                </section>
-                <section class="panel scenario-panel">
-                    <div class="panel-head"><h2>СЦЕНАРІЇ ПОЛЬОТУ</h2></div>
-                    <div class="scenario-list" id="droneScenarioButtons"></div>
-                </section>
-            </aside>
+                </div>
+
+                <div class="card">
+                    <div class="card-body" style="padding: 20px; text-align: center;">
+                        <div style="font-size: 24px; margin-bottom: 12px;">◜</div>
+                        <small style="display: block; font-size: 10px; color: var(--text-secondary); margin-bottom: 6px;">НАСТУПНИЙ
+                            СЕАНС ЗВ'ЯЗКУ</small>
+                        <strong style="display: block; color: var(--accent-cyan); font-size: 16px;" id="nextPassUav">00:12:36</strong>
+                        <span style="display: block; font-size: 11px; color: var(--text-secondary); margin-top: 8px;">KYIV GROUND STATION · S-BAND</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- RIGHT COLUMN - ДАШБОРД ДРОНА + СТАТУС -->
+            <div class="col-center">
+                <div class="card">
+                    <div class="card-header">
+                        <span class="card-title"><span class="live-dot"></span> ДАШБОРД ДРОНА</span>
+                    </div>
+                    <div class="card-body" style="padding: 0;">
+                        <div class="map-wrap">
+                            <canvas id="uavCanvas"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Два блоки під картою в ряд -->
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+                    <div class="card">
+                        <div class="card-header">
+                            <span class="card-title"><span class="live-dot"></span> ЖУРНАЛ ПОДІЙ</span>
+                        </div>
+                        <div class="card-body" style="padding: 0;">
+                            <div class="event-list" id="uavEventLog"></div>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-header">
+                            <span class="card-title">СТАТУС ДРОНА</span>
+                            <span style="font-size: 11px; padding: 2px 8px; border-radius: 3px; background: rgba(0, 255, 136, 0.1); color: var(--neon-green);"
+                                  id="uavStatusBadge">SAFE</span>
+                        </div>
+                        <div class="card-body">
+                            <div class="ring" id="uavRing">
+                                <div>
+                                    <strong id="uavRiskK">-- %</strong>
+                                    <small>RISK SCORE</small>
+                                </div>
+                            </div>
+                            <div style="padding-top: 12px; border-top: 1px solid rgba(30, 95, 168, 0.3);">
+                                <div class="metric">
+                                    <span class="metric-label">ТЕПЛОВИЙ ЗАПАС</span>
+                                    <span class="metric-value" id="uavThermalMargin">--</span>
+                                </div>
+                                <div class="metric">
+                                    <span class="metric-label">ЖИВ. ДЕМАГНЕТ</span>
+                                    <span class="metric-value" id="uavDemagRisk">--</span>
+                                </div>
+                                <div class="metric">
+                                    <span class="metric-label">ОХОЛОДЖЕННЯ</span>
+                                    <span class="metric-value" id="uavCoolingRate">--</span>
+                                </div>
+                                <div class="metric">
+                                    <span class="metric-label">НАГРІВАННЯ</span>
+                                    <span class="metric-value" id="uavHeatingRate">--</span>
+                                </div>
+                                <div class="metric">
+                                    <span class="metric-label">ФАЗ ПОЛЕТУ</span>
+                                    <span class="metric-value" id="uavPhase">--</span>
+                                </div>
+                                <div class="metric">
+                                    <span class="metric-label">МІСІЯ</span>
+                                    <span class="metric-value" id="uavMission">-- сек</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
+
+        <footer class="metric-strip">
+            <div>
+                <small>СЕРЕДНІЙ СТРУМ</small>
+                <b id="uavAvgCurrent">16.6 A</b>
+            </div>
+            <div>
+                <small>СЕРЕДНЯ ТЕМПЕРАТУРА</small>
+                <b id="uavAvgTemp">61.5°C</b>
+            </div>
+            <div>
+                <small>ТЕПЛОВИЙ ЗАПАС</small>
+                <b id="uavTMargin">0.318</b>
+            </div>
+            <div>
+                <small>ЕНЕРГІЯ БАТАРЕЇ</small>
+                <b id="uavBattEnergy">16.6 Wh</b>
+            </div>
+            <div>
+                <small>ЧАС ПОЛЕТУ</small>
+                <b id="uavFlightTime">00:54:16</b>
+            </div>
+        </footer>
     </section>
 
+    <!-- ════════════════════════════════════════ AI ANALYTICS PAGE ════════════════════════════════════════ -->
     <section id="page-ai" class="page">
-        <div class="ai-grid">
-            <section class="panel algorithms-panel">
-                <div class="panel-head"><span class="led"></span>
-                    <h2>МАШИННЕ НАВЧАННЯ ТА АЛГОРИТМИ</h2><em>LIVE</em></div>
-                <div class="algorithm-list">
-                    <div><i class="orange">♨</i><span><b>Thermal Anomaly Detector</b><small>Виявлення аномального нагріву компонентів</small></span><em>АКТИВНИЙ</em>
-                    </div>
-                    <div><i class="cyan">∿</i><span><b>Signal Stability Analyzer</b><small>Моніторинг якості каналу зв'язку та стабільності сигналу</small></span><em>АКТИВНИЙ</em>
-                    </div>
-                    <div><i class="green">▣</i><span><b>Battery Decay Predictor</b><small>Прогнозування деградації енергосистеми та ресурсу</small></span><em>АКТИВНИЙ</em>
-                    </div>
-                    <div><i class="purple">↝</i><span><b>Trajectory Optimizer</b><small>Оптимізація орбіти / маршруту БПЛА та витрати енергії</small></span><em
-                            class="idle">ОЧІКУВАННЯ</em></div>
-                    <div><i class="yellow">≋</i><span><b>Vibration Pattern AI</b><small>Нейромережева діагностика аномальних вібрацій</small></span><em>АКТИВНИЙ</em>
-                    </div>
-                </div>
-            </section>
-
-            <section class="panel load-panel">
-                <div class="panel-head"><span class="led"></span>
-                    <h2>НАВАНТАЖЕННЯ СИСТЕМИ ШІ</h2><em>LIVE</em></div>
-                <div class="bar-list">
-                    <p><span>AI Обробка (CPU)</span><b id="aiCpuText">--%</b><i><u id="aiCpuBar"></u></i></p>
-                    <p><span>Пропускна здатність</span><b id="aiThroughText">--%</b><i><u id="aiThroughBar"></u></i></p>
-                    <p><span>Пам'ять (RAM)</span><b id="aiRamText">--%</b><i><u id="aiRamBar"></u></i></p>
-                    <p><span>Дискова черга</span><b id="aiDiskText">--%</b><i><u id="aiDiskBar"></u></i></p>
-                    <p><span>GPU Прискорювач</span><b id="aiGpuText">--%</b><i><u id="aiGpuBar"></u></i></p>
-                    <p><span>Точність прогнозів</span><b id="aiConfidenceText">--%</b><i><u
-                            id="aiConfidenceBar"></u></i></p>
-                </div>
-            </section>
-
-            <section class="panel analytics-panel">
-                <div class="panel-head"><span class="led"></span>
-                    <h2>АНАЛІТИКА МІСІЇ</h2><em>LIVE</em></div>
-                <div class="kpi-grid">
-                    <div><small>ЧАС МОНІТОРИНГУ</small><b id="aiMonTime">--</b><span>на орбіті</span></div>
-                    <div><small>ПОДІЇ ТРИВОГ</small><b id="aiAlertCount">--</b><span>за сесію</span></div>
-                    <div><small>МАКС. ІНДЕКС МІСІЇ</small><b id="aiMaxMission">--%</b><span>номінальний</span></div>
-                    <div><small>ДІАПАЗОН ВИСОТИ</small><b id="aiAltRange">--</b><span>поточний</span></div>
-                    <div><small>СЕРЕДНІЙ ЗАРЯД</small><b id="aiAvgBatt">--%</b><span>батарея</span></div>
-                </div>
-                <div class="chart-box">
-                    <div class="chart-title">ІСТОРІЯ РИЗИКУ (RISK K) ТА ІНДЕКС МІСІЇ <em>LIVE</em></div>
-                    <canvas id="aiMissionChart"></canvas>
-                </div>
-                <div class="kpi-strip">
-                    <div><small>ВХОДЖЕНЬ У ЗОНУ ТІНІ</small><b id="aiEclipseCount">--</b></div>
-                    <div><small>РЕАКЦІЙ НА ПОДІЇ</small><b id="aiReactionCount">--</b></div>
-                    <div><small>МАКС. RISK K</small><b id="aiMaxRisk">--</b></div>
-                    <div><small>ЕФЕКТИВНІСТЬ ШІ</small><b id="aiEff">--%</b></div>
-                    <div><small>СТАБІЛЬНІСТЬ КАНАЛУ</small><b id="aiCommStable">--%</b></div>
-                    <div><small>ВІДХИЛЕННЯ ТРАЄКТОРІЇ</small><b id="aiTrajDev">-- m</b></div>
-                </div>
-            </section>
-
-            <section class="panel insights-panel">
-                <div class="panel-head"><span class="led"></span>
-                    <h2>ІНСАЙТИ АНАЛІТИЧНОГО ДВИГУНА</h2><em>LIVE</em></div>
-                <div class="insight-list" id="insightList"></div>
-            </section>
-        </div>
-        <footer class="metric-strip ai-footer">
-            <div><small>РЕЖИМ</small><b>AI Analytics</b></div>
-            <div><small>3D ЗВ'ЯЗОК</small><b>UHF / S-band</b></div>
-            <div><small>НАВАНТАЖЕННЯ ШІ</small><b id="aiLoadFooter">--%</b>
-                <canvas class="mini-wave" id="aiLoadSpark"></canvas>
+        <div class="card" style="margin-bottom: 20px;">
+            <div class="card-header">
+                <span class="card-title">AI ANALYTICS · PHYSICS ENGINE v1.0</span>
             </div>
-            <div><small>GPU ТЕМПЕРАТУРА</small><b id="gpuTemp">--°C</b></div>
-            <div><small>МОДЕЛІ АКТИВНІ</small><b>5 / 5</b></div>
-            <div><small>ІНФЕРЕНС ЗАТРИМКА</small><b id="latencyText">-- ms</b></div>
-        </footer>
+            <div class="card-body" style="text-align: center; padding: 40px;">
+                <p style="color: var(--text-secondary); font-size: 14px;">
+                    Розділ знаходиться у розробці.<br>
+                    Моніторинг в реальному часі буде доступний у наступних версіях.
+                </p>
+            </div>
+        </div>
     </section>
 </main>
 
-<script src="/script.js"></script>
+<script src="/index.js"></script>
 </body>
 </html>
