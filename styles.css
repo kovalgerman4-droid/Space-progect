@@ -87,17 +87,24 @@ main {
     gap: 14px;
 }
 
+/* Оновлені стилі для іконки в бренді */
 .brand-icon {
-    width: 20px;
-    height: 20px;
-    display: grid;
-    place-items: center;
+    width: 44px;
+    height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     border: 1px solid var(--cyan);
     border-radius: 50%;
     color: var(--cyan);
-    font-size: 5px;
-    box-shadow: 0 0 30px rgba(34, 211, 238, .45), inset 0 0 24px rgba(192, 132, 252, .10);
+    box-shadow: 0 0 20px rgba(34, 211, 238, .45), inset 0 0 15px rgba(192, 132, 252, .15);
     background: radial-gradient(circle at 30% 30%, rgba(192, 132, 252, .35), transparent 60%), rgba(7, 18, 36, .88);
+}
+
+.brand-icon svg {
+    width: 22px;
+    height: 22px;
+    filter: drop-shadow(0 0 5px var(--cyan));
 }
 
 h1 {
@@ -173,13 +180,23 @@ h1 {
     text-transform: uppercase;
     position: relative;
     transition: .2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .tab span {
-    display: inline-block;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     margin-right: 10px;
-    font-size: 18px;
-    line-height: 1;
+}
+
+/* Налаштування SVG у табах */
+.tab span svg {
+    width: 18px;
+    height: 18px;
+    transition: all 0.25s ease;
 }
 
 .tab b {
@@ -196,6 +213,12 @@ h1 {
 .tab.active {
     color: var(--cyan);
     background: rgba(34, 211, 238, .055);
+}
+
+.tab:hover span svg,
+.tab.active span svg {
+    filter: drop-shadow(0 0 6px var(--cyan));
+    transform: scale(1.1);
 }
 
 .tab.active::after {
@@ -325,16 +348,24 @@ main {
     grid-template-columns: 36px 1fr auto;
 }
 
+/* Оновлені стилі для іконок телеметрії */
 .telemetry-row i {
-    width: 30px;
-    height: 30px;
-    display: grid;
-    place-items: center;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     color: var(--cyan);
-    background: rgba(34, 211, 238, .09);
-    border: 1px solid rgba(34, 211, 238, .08);
+    background: rgba(34, 211, 238, .08);
+    border: 1px solid rgba(34, 211, 238, .2);
     border-radius: 6px;
-    font-style: normal;
+    box-shadow: inset 0 0 8px rgba(34, 211, 238, .1);
+}
+
+.telemetry-row i svg {
+    width: 18px;
+    height: 18px;
+    filter: drop-shadow(0 0 3px var(--cyan));
 }
 
 .telemetry-row b,
@@ -419,46 +450,6 @@ main {
 
 .mini-systems b {
     color: var(--green);
-    font-family: 'Share Tech Mono';
-    font-size: 12px;
-}
-
-.pass-card {
-    display: flex;
-    gap: 14px;
-    align-items: center;
-    padding: 16px;
-}
-
-.pass-card .dish {
-    width: 40px; /* Робимо менший круг */
-    height: 40px;
-    display: grid;
-    place-items: center;
-    font-size: 24px; /* Зменшуємо саму іконку вдвічі */
-    color: #8ab2df;
-    /* ... */
-}
-
-
-.pass-card small {
-    display: block;
-    color: var(--muted);
-    font-family: 'Share Tech Mono';
-    letter-spacing: 1.2px;
-    font-size: 10px;
-}
-
-.pass-card strong {
-    display: block;
-    color: var(--cyan);
-    font-family: 'Share Tech Mono';
-    font-size: 28px;
-    margin: 5px 0;
-}
-
-.pass-card span {
-    color: var(--blue);
     font-family: 'Share Tech Mono';
     font-size: 12px;
 }
@@ -560,44 +551,6 @@ main {
     letter-spacing: 2px;
 }
 
-.map-strip {
-    display: grid;
-    grid-template-columns: repeat(6, 1fr);
-    border-top: 1px solid rgba(54, 151, 221, .22);
-    background: rgba(2, 7, 15, .75);
-}
-
-.map-strip div {
-    padding: 11px 13px;
-    border-right: 1px solid rgba(54, 151, 221, .18);
-}
-
-.map-strip div:last-child {
-    border-right: 0;
-}
-
-.map-strip small {
-    display: block;
-    color: var(--muted);
-    font-family: 'Share Tech Mono';
-    font-size: 10px;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-}
-
-.map-strip b {
-    display: block;
-    color: #fff;
-    font-family: 'Share Tech Mono';
-    font-size: 15px;
-    margin-top: 4px;
-}
-
-.log-panel .panel-head .ghost {
-    width: auto;
-    margin-left: auto;
-}
-
 .ghost,
 .action-btn,
 .scenario-select,
@@ -615,67 +568,6 @@ button {
     padding: 8px 12px;
     cursor: pointer;
     letter-spacing: 1.4px;
-}
-
-.event-list {
-    padding: 12px;
-    display: grid;
-    gap: 8px;
-}
-
-.event-row {
-    display: grid;
-    grid-template-columns: 70px 14px 1fr auto;
-    align-items: center;
-    gap: 8px;
-    min-height: 36px;
-    padding: 8px 10px;
-    border: 1px solid rgba(54, 151, 221, .15);
-    border-radius: 6px;
-    background: rgba(8, 24, 48, .45);
-    font-family: 'Share Tech Mono';
-    font-size: 11px;
-    color: #c6d7ef;
-}
-
-.event-dot {
-    width: 8px;
-    height: 8px;
-    border-radius: 50%;
-    background: var(--green);
-    box-shadow: 0 0 8px var(--green);
-}
-
-.event-row.warning .event-dot {
-    background: var(--yellow);
-    box-shadow: 0 0 8px var(--yellow);
-}
-
-.event-row.alarm .event-dot {
-    background: var(--red);
-    box-shadow: 0 0 10px var(--red);
-}
-
-.event-row em {
-    font-style: normal;
-    color: var(--muted);
-}
-
-.event-row b {
-    color: var(--blue);
-    border: 1px solid rgba(54, 151, 221, .32);
-    border-radius: 4px;
-    padding: 3px 7px;
-}
-
-.event-row.warning b {
-    color: var(--yellow);
-    border-color: rgba(247, 201, 72, .45);
-}
-
-.event-row.alarm b {
-    color: var(--red);
-    border-color: rgba(255, 49, 88, .45);
 }
 
 .ring {
@@ -977,15 +869,25 @@ button {
     font-family: 'Orbitron';
 }
 
-.safe-orb strong {
-    font-size: 42px;
+/* Оновлено для стилізації SVG-галочки в сфері */
+.safe-orb .orb-icon-svg {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 4px;
+}
+
+.safe-orb .orb-icon-svg svg {
+    width: 42px;
+    height: 42px;
     color: var(--green);
+    filter: drop-shadow(0 0 8px var(--green));
 }
 
 .safe-orb b {
     color: var(--green);
     letter-spacing: 3px;
-    margin: 6px 0;
+    margin: 4px 0;
 }
 
 .safe-orb small {
@@ -1000,8 +902,10 @@ button {
     box-shadow: 0 0 54px rgba(247, 201, 72, .25);
 }
 
-.safe-orb.caution strong, .safe-orb.caution b {
+.safe-orb.caution .orb-icon-svg svg,
+.safe-orb.caution b {
     color: var(--yellow);
+    filter: drop-shadow(0 0 8px var(--yellow));
 }
 
 .safe-orb.danger {
@@ -1010,8 +914,10 @@ button {
     box-shadow: 0 0 70px rgba(255, 49, 88, .34);
 }
 
-.safe-orb.danger strong, .safe-orb.danger b {
+.safe-orb.danger .orb-icon-svg svg,
+.safe-orb.danger b {
     color: var(--red);
+    filter: drop-shadow(0 0 8px var(--red));
 }
 
 .algorithm-list,
@@ -1034,16 +940,39 @@ button {
     border-radius: 8px;
 }
 
+/* Оновлено для SVG іконок у списку алгоритмів */
 .algorithm-list i,
 .insight-list i {
-    width: 32px;
-    height: 32px;
-    display: grid;
-    place-items: center;
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     border-radius: 6px;
     background: rgba(34, 211, 238, .06);
-    font-style: normal;
-    font-size: 20px;
+    border: 1px solid rgba(34, 211, 238, .15);
+}
+
+.algorithm-list i svg,
+.insight-list i svg {
+    width: 20px;
+    height: 20px;
+}
+
+.algorithm-list i.orange svg {
+    filter: drop-shadow(0 0 4px var(--orange));
+}
+.algorithm-list i.cyan svg {
+    filter: drop-shadow(0 0 4px var(--cyan));
+}
+.algorithm-list i.green svg {
+    filter: drop-shadow(0 0 4px var(--green));
+}
+.algorithm-list i.purple svg {
+    filter: drop-shadow(0 0 4px var(--purple));
+}
+.algorithm-list i.yellow svg {
+    filter: drop-shadow(0 0 4px var(--yellow));
 }
 
 .algorithm-list b,
@@ -1210,24 +1139,24 @@ button {
     .tab {
         font-size: 12px;
     }
-}
-
-.tabs {
-    grid-template-columns: 1fr;
-}
-
-main {
-    width: calc(100% - 18px);
-}
-
-.map-strip, .kpi-grid, .kpi-strip, .telemetry-cards {
-    grid-template-columns: 1fr;
-}
-
-.control-row {
-    grid-template-columns: 1fr;
-}
-
-.scenario-grid {
-    grid-template-columns: 1fr;
+    
+    .tabs {
+        grid-template-columns: 1fr;
+    }
+    
+    main {
+        width: calc(100% - 18px);
+    }
+    
+    .kpi-grid, .kpi-strip, .telemetry-cards {
+        grid-template-columns: 1fr;
+    }
+    
+    .control-row {
+        grid-template-columns: 1fr;
+    }
+    
+    .scenario-grid {
+        grid-template-columns: 1fr;
+    }
 }
