@@ -1,23 +1,19 @@
 @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Rajdhani:wght@400;500;600;700&family=Orbitron:wght@500;700;900&display=swap');
 
 :root {
-    --bg: #040812;
-    --panel: rgba(6, 15, 29, .90);
-    --panel2: rgba(7, 20, 39, .78);
-    --card: rgba(10, 27, 51, .78);
-    --card2: rgba(3, 8, 18, .92);
-    --line: rgba(54, 151, 221, .22);
-    --line2: rgba(68, 209, 255, .42);
-    --text: #e2eeff;
-    --muted: #6685ad;
-    --dim: #385170;
-    --cyan: #22d3ee;
-    --blue: #38bdf8;
-    --green: #00ff88;
-    --yellow: #f7c948;
-    --orange: #fb923c;
-    --red: #ff3158;
-    --purple: #c084fc;
+    --bg-deep: #040810;
+    --bg-panel: #080f1c;
+    --bg-card: #0b1629;
+    --border: #1a3a6a;
+    --border-glow: #1e5fa8;
+    --accent-blue: #0ea5e9;
+    --accent-cyan: #22d3ee;
+    --neon-green: #00ff88;
+    --neon-orange: #ff6b00;
+    --neon-red: #ff1a3c;
+    --neon-yellow: #f59e0b;
+    --text-primary: #e2eeff;
+    --text-secondary: #5f7b9f;
 }
 
 * {
@@ -1232,5 +1228,3 @@ main {
 .scenario-grid {
     grid-template-columns: 1fr;
 }
-
-
