@@ -752,56 +752,13 @@ class DroneSimulator:
             self.magnet_health -= damage_rate * dt
         self.magnet_health = clamp(self.magnet_health, 0.0, 100.0)
 
+    def step(self) -> DroneTelemetry:
+        cfg = self.cfg
+        dt = cfg.dt
+        self.t += dt
 
-def step(self) -> DroneTelemetry:
-    cfg = self.cfg
-    dt = cfg.dt
-    self.t += dt
+        target_current, phase = self.mission.next_target_current(self.t, self.temperature)
 
-    target_current, phase = self.mission.next_target_current(self.t, self.temperature)
-
-    # ============================================================
-    #  BLACKOUT СТАН: БАТАРЕЯ РОЗРЯДЖЕНА
-    # ============================================================
-    if self.battery_soc <= 0.0:
-        self.battery_soc = 0.0
-        phase = "BLACKOUT"
-
-        # Електрика вимикається
-        self.current = 0.0
-        Icurrent = 0.0
-        heat_power = 0.0
-        heating_rate = 0.0
-        voltage = 0.0
-        throttle = 0.0
-        efficiency = 0.0
-
-        # Прискорене охолодження до температури середовища (в 3 рази швидше)
-        cooling_rate = (self.temperature - cfg.ambient_temp) / (cfg.cooling_tau * 0.33)
-        dT = -cooling_rate * dt
-        self.temperature = clamp(self.temperature + dT, cfg.ambient_temp, cfg.Tmax + 15.0)
-        Tcurrent = self.temperature
-
-        self.update_magnet_health(Tcurrent, Icurrent, dt)
-
-        # Плавне спадання обертів, швидкості та ризику з урахуванням інерції
-        if self.last_sample:
-            rpm = max(0.0, self.last_sample.rpm - 2500.0 * dt)
-            horizontal_speed_kmh = max(0.0, self.last_sample.horizontal_speed_kmh - 15.0 * dt)
-            risk = max(0.0, self.last_sample.risk - 0.5 * dt)
-        else:
-            rpm = 0.0
-            horizontal_speed_kmh = 0.0
-            risk = 0.0
-
-        status = "OFFLINE"
-        demag_risk = 0.0
-        thermal_margin = cfg.Tmax - Tcurrent
-
-    # ============================================================
-    #  НОРМАЛЬНИЙ СТАН: РОБОЧИЙ РЕЖИМ
-    # ============================================================
-    else:
         natural_delta = (target_current - self.current) * 0.14 + random.gauss(0.0, 0.12)
         max_delta = cfg.max_rate_change_A_per_s * dt
         self.current = clamp(self.current + clamp(natural_delta, -max_delta, max_delta), 0.0, cfg.Imax * 1.05)
@@ -848,31 +805,30 @@ def step(self) -> DroneTelemetry:
         efficiency -= 5.0 * (1.0 - self.magnet_health / 100.0)
         efficiency = clamp(efficiency, 45.0, 90.0)
 
-    # Формування телеметрії (загальне для обох станів)
-    sample = DroneTelemetry(
-        t=self.t,
-        scenario=self.scenario_name,
-        Tcurrent=Tcurrent,
-        Icurrent=Icurrent,
-        risk=risk,
-        status=status,
-        mission_phase=phase,
-        heat_power_W=heat_power,
-        heat_energy_J=self.heat_energy,
-        voltage_V=voltage,
-        battery_soc_percent=self.battery_soc,
-        rpm=rpm,
-        horizontal_speed_kmh=horizontal_speed_kmh,
-        throttle_percent=throttle * 100.0,
-        magnet_health_percent=self.magnet_health,
-        demag_risk=demag_risk,
-        thermal_margin_C=thermal_margin,
-        cooling_rate_C_per_s=cooling_rate,
-        heating_rate_C_per_s=heating_rate,
-        efficiency_percent=efficiency,
-    )
-    self.last_sample = sample
-    return sample
+        sample = DroneTelemetry(
+            t=self.t,
+            scenario=self.scenario_name,
+            Tcurrent=Tcurrent,
+            Icurrent=Icurrent,
+            risk=risk,
+            status=status,
+            mission_phase=phase,
+            heat_power_W=heat_power,
+            heat_energy_J=self.heat_energy,
+            voltage_V=voltage,
+            battery_soc_percent=self.battery_soc,
+            rpm=rpm,
+            horizontal_speed_kmh=horizontal_speed_kmh,
+            throttle_percent=throttle * 100.0,
+            magnet_health_percent=self.magnet_health,
+            demag_risk=demag_risk,
+            thermal_margin_C=thermal_margin,
+            cooling_rate_C_per_s=cooling_rate,
+            heating_rate_C_per_s=heating_rate,
+            efficiency_percent=efficiency,
+        )
+        self.last_sample = sample
+        return sample
 
 
 def simulation_meta() -> dict:
