@@ -101,40 +101,33 @@
                         <div class="map-readout" id="mapReadout">LAT --<br>LON --</div>
                         <div class="paused-flag" id="pausedFlag">PAUSED</div>
                     </div>
-                    <div class="map-strip">
-                        <div><small>Широта</small><b id="satStripLat">--</b></div>
-                        <div><small>Довгота</small><b id="satStripLon">--</b></div>
-                        <div><small>Висота</small><b id="satStripAlt">--</b></div>
-                        <div><small>Швидкість</small><b id="satStripVel">--</b></div>
-                        <div><small>Період</small><b id="satPeriod">--</b></div>
-                        <div><small>Фаза</small><b id="satPhase">--</b></div>
-                    </div>
-                </section>
-                
-
-            <aside class="col-right stack">
-                <section class="panel status-panel">
-                    <div class="panel-head"><h2>СТАТУС МІСІЇ</h2><em id="satStatusBadge">NOMINAL</em></div>
-                    <div class="ring" id="satRing">
-                        <div><strong id="missionScore">--%</strong><small>MISSION INDEX</small></div>
-                    </div>
-                    <div class="param-list">
-                        <p><span>Температура кабіни</span><b id="cabinTemp">--</b></p>
-                        <p><span>Вологість повітря</span><b id="cabinHum">--</b></p>
-                        <p><span>Тиск у відсіку</span><b id="cabinPress">--</b></p>
-                        <p><span>CO₂ рівень</span><b id="co2Level">--</b></p>
-                        <p><span>Похибка орієнтації</span><b id="attErr">--</b></p>
-                        <p><span>Delta-V</span><b id="deltaV">--</b></p>
-                        <p><span>Стан систем</span><b id="statusText">--</b></p>
-                    </div>
+                    
                 </section>
 
-                <section class="panel scenario-panel">
-                    <div class="panel-head"><h2>СЦЕНАРІЙ МІСІЇ</h2></div>
-                    <select id="satScenarioSelect" class="scenario-select"></select>
-                    <div class="scenario-grid" id="satScenarioButtons"></div>
-                </section>
-            </aside>
+
+                <aside class="col-right stack">
+                    <section class="panel status-panel">
+                        <div class="panel-head"><h2>СТАТУС МІСІЇ</h2><em id="satStatusBadge">NOMINAL</em></div>
+                        <div class="ring" id="satRing">
+                            <div><strong id="missionScore">--%</strong><small>MISSION INDEX</small></div>
+                        </div>
+                        <div class="param-list">
+                            <p><span>Температура кабіни</span><b id="cabinTemp">--</b></p>
+                            <p><span>Вологість повітря</span><b id="cabinHum">--</b></p>
+                            <p><span>Тиск у відсіку</span><b id="cabinPress">--</b></p>
+                            <p><span>CO₂ рівень</span><b id="co2Level">--</b></p>
+                            <p><span>Похибка орієнтації</span><b id="attErr">--</b></p>
+                            <p><span>Delta-V</span><b id="deltaV">--</b></p>
+                            <p><span>Стан систем</span><b id="statusText">--</b></p>
+                        </div>
+                    </section>
+
+                    <section class="panel scenario-panel">
+                        <div class="panel-head"><h2>СЦЕНАРІЙ МІСІЇ</h2></div>
+                        <select id="satScenarioSelect" class="scenario-select"></select>
+                        <div class="scenario-grid" id="satScenarioButtons"></div>
+                    </section>
+                </aside>
         </div>
 
         <footer class="metric-strip">
