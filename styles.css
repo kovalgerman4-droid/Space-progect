@@ -522,6 +522,11 @@ main {
     border-top: 2px dashed var(--yellow);
 }
 
+.line.purple {
+    background: var(--purple);
+    box-shadow: 0 0 8px var(--purple);
+}
+
 .triangle {
     display: inline-block;
     width: 0;
@@ -530,6 +535,25 @@ main {
     border-right: 6px solid transparent;
     border-bottom: 11px solid var(--green);
     margin-right: 8px;
+}
+
+.dot {
+    display: inline-block;
+    width: 10px;
+    height: 10px;
+    margin-right: 8px;
+    border-radius: 50%;
+    vertical-align: middle;
+}
+
+.dot.cyan {
+    background: var(--cyan);
+    box-shadow: 0 0 8px var(--cyan);
+}
+
+.dot.yellow {
+    background: var(--yellow);
+    box-shadow: 0 0 8px var(--yellow);
 }
 
 .map-readout {
