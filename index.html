@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+!DOCTYPE html>
 <html lang="uk">
 <head>
     <meta charset="utf-8"/>
@@ -167,7 +167,7 @@
         <span class="led">
         </span>
                         <h2>
-                            ТРАЄКТОРІЯ ОРБІТИ
+                            ОРБІТАЛЬНИЙ МОНІТОР (ISS MISSION CONTROL)
                         </h2>
                         <em>
                             LIVE
@@ -183,20 +183,25 @@
                             <p>
           <span class="line cyan">
           </span>
-                                поточна позиція
-                            </p>
-                            <p>
-          <span class="line amber">
-          </span>
-                                прогноз траєкторії
+                                ISS поточна позиція
                             </p>
                             <p>
           <span class="triangle">
           </span>
-                                наземна станція
+                                Підсонячна точка
+                            </p>
+                            <p>
+          <span class="line amber">
+          </span>
+                                Слід орбіти / зона видимості
+                            </p>
+                            <p>
+          <span class="line purple">
+          </span>
+                                Термінатор
                             </p>
                             <p class="muted">
-                                [Space] пауза · [R] reset
+                                [Space] пауза · [R] скидання
                             </p>
                         </div>
                         <div class="map-readout" id="mapReadout">
@@ -236,6 +241,24 @@
                             <strong id="satVis">
                                 --
                             </strong>
+                        </div>
+                        <div class="telemetry-row">
+                            <i>
+                                ≈
+                            </i>
+                            <div>
+                                <b>
+                                    ЩІЛЬНІСТЬ АТМОСФЕРИ
+                                </b>
+                                <small>
+                                    ATM
+                                </small>
+                            </div>
+                            <strong id="atmDensity">
+                                --
+                            </strong>
+                            <canvas class="micro" id="densSpark">
+                            </canvas>
                         </div>
                     </div>
                 </section>
@@ -464,16 +487,6 @@
                 <b id="eclipseStatus">
                     --
                 </b>
-            </div>
-            <div>
-                <small>
-                    ЩІЛЬНІСТЬ АТМОСФЕРИ
-                </small>
-                <b id="atmDensity">
-                    -- kg/m³
-                </b>
-                <canvas class="mini-wave" id="densSpark">
-                </canvas>
             </div>
         </footer>
     </section>
