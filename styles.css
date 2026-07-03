@@ -460,8 +460,8 @@ main {
 
 .map-wrap {
     position: relative;
-    height: min(52vh, 560px);
-    min-height: 420px;
+    height: min(38vh, 460px);
+    min-height: 340px;
     background: radial-gradient(circle at 50% 52%, rgba(34, 211, 238, .08), transparent 64%), #02060f;
 }
 
