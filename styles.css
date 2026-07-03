@@ -88,14 +88,14 @@ main {
 }
 
 .brand-icon {
-    width: 36px;
-    height: 36px;
+    width: 20px;
+    height: 20px;
     display: grid;
     place-items: center;
     border: 1px solid var(--cyan);
     border-radius: 50%;
     color: var(--cyan);
-    font-size: 14px;
+    font-size: 5px;
     box-shadow: 0 0 30px rgba(34, 211, 238, .45), inset 0 0 24px rgba(192, 132, 252, .10);
     background: radial-gradient(circle at 30% 30%, rgba(192, 132, 252, .35), transparent 60%), rgba(7, 18, 36, .88);
 }
