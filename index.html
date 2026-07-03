@@ -63,137 +63,83 @@
     </button>
 </nav>
 <main>
-    [03.07.2026 23:54] Герман: <section id="sat-page" class="page active">
-    <div class="satellite-grid">
-        
-        <div class="panel control-panel">
-            <div class="panel-header">
-                <h3>🛰 МІСІЯ СУПУТНИКА</h3>
-                <span class="status-indicator blinking" id="sat-status-light">ACTIVE</span>
-            </div>
-            
-            <div class="control-group">
-                <label for="satScenarioSelect">Оберіть сценарій місії:</label>
-                <select id="satScenarioSelect" class="cyber-select">
-                    <option value="normal">Звичайна місія (Normal)</option>
-                    <option value="solar_flare">Сонячний спалах (Solar Flare)</option>
-                    <option value="geomagnetic_storm">Геомагнітна буря (Storm)</option>
-                    <option value="saa_passage">Проходження SAA (Anomalous)</option>
-                    <option value="orbit_decay">Деградація орбіти (Decay)</option>
-                </select>
-            </div>
-
-            <div class="action-buttons">
-                <button id="btn-toggle-pause" class="cyber-btn btn-warning">
-                    <span id="pause-text">ПАУЗА</span>
-                </button>
-                <button id="btn-reset" class="cyber-btn btn-danger">СКИДАННЯ</button>
-            </div>
-
-            <div class="system-summary">
-                <div class="summary-item">
-                    <span>Режим орбіти:</span>
-                    <strong id="sat-orbit-mode" class="text-mono">LEO (ННО)</strong>
-                </div>
-                <div class="summary-item">
-                    <span>Час у польоті:</span>
-                    <strong id="sat-mission-time" class="text-mono">00:00:00</strong>
-                </div>
-            </div>
-        </div>
-
-        <div class="panel map-panel">
-            <div class="panel-header">
-                <h3>🌍 ГЕОПРОСТОРОВИЙ МОНІТОРИНГ (2D CANVAS MAP)</h3>
-                <div class="coordinates-badge">
-                    LON: <span id="sat-lon">--.-</span>° | LAT: <span id="sat-lat">--.-</span>°
-                </div>
-            </div>
-            <div class="canvas-container">
-                <canvas id="earthCanvas" width="800" height="400"></canvas>
-            </div>
-        </div>
-
-        <div class="panel telemetry-panel">
-            <div class="panel-header">
-                <h3>📊 ОРБІТАЛЬНА ТЕЛЕМЕТРІЯ</h3>
-            </div>
-            <div class="metrics-grid">
-                <div class="metric-card">
-                    <small>ВИСОТА ОРБІТИ</small>
-                    <div class="metric-value" id="sat-altitude">--- км</div>
-                    <div class="progress-bar-container">
-                        <div class="progress-bar" id="bar-altitude" style="width: 0%"></div>
+    <section class="page active" id="page-sat">
+        <div class="sat-grid">
+            <aside class="col-left stack">
+                <section class="mini-systems">
+                    <div>
+                        <small>
+                            РЕЖИМ
+                        </small>
+                        <b id="satScenarioName">
+                            Normal
+                        </b>
                     </div>
-                </div>
-                <div class="metric-card">
-                    <small>ОРБІТАЛЬНА ШВИДКІСТЬ</small>
-                    <div class="metric-value" id="sat-speed">--- км/г</div>
-                </div>
-                <div class="metric-card">
-                    <small>ЗАРЯД БАТАРЕЇ (АКБ)</small>
-                    <div class="metric-value" id="sat-battery">--%</div>
-                    <div class="progress-bar-container">
-                        <div class="progress-bar" id="bar-battery" style="width: 0%"></div>
+                    <div>
+                        <small>
+                            ЗВ'ЯЗОК
+                        </small>
+                        <b>
+                            UHF / S-band
+                        </b>
                     </div>
-                </div>
-                <div class="metric-card">
-                    <small>ТЕМПЕРАТУРА ПЛАТИ</small>
-                    <div class="metric-value" id="sat-temp">-- °C</div>
-                </div>
-                <div class="metric-card highlight">
-                    <small>HEALTH SCORE (ЗАГАЛЬНИЙ СТАН)</small>
-                    <div class="metric-value" id="sat-health">--%</div>
-                </div>
-            </div>
-        </div>
-
-    </div>
- <div class="satellite-analytics-row" style="margin-top: 20px;">
-        <div class="panel analytics-panel">
-            <div class="panel-header">
-                <h3>📈 РОЗШИРЕНА СТАТИСТИКА ТА АНАЛІЗ МІСІЇ (З МAIN 45)</h3>
-            </div>
-            
-            <div class="analytics-subgrid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-bottom: 15px;">
-                <div class="mini-stat-card">
-                    <span class="stat-label">Мінімальний Score:</span>
-                    <strong class="stat-value text-mono text-cyan" id="sat-stat-min-score">—%</strong>
-                </div>
-                
-                <div class="mini-stat-card">
-                    <span class="stat-label">Діапазон висот:</span>
-                    <strong class="stat-value text-mono text-green" id="sat-stat-alt-range">—</strong>
-                </div>
-                
-                <div class="mini-stat-card">
-                    <span class="stat-label">Сер. заряд АКБ:</span>
-                    <strong class="stat-value text-mono text-yellow" id="sat-stat-batt-avg">—%</strong>
-                </div>
-                
-                <div class="mini-stat-card">
-                    <span class="stat-label">Входів в аномалію SAA:</span>
-                    <strong class="stat-value text-mono text-red" id="sat-stat-saa">0</strong>
-                </div>
-            </div>
-
-            <div class="chart-container" style="position: relative; height: 180px; width: 100%;">
-                <canvas id="satHistoryChart" height="150"></canvas>
-            </div>
-        </div>
-    </div>
-
-    <div class="satellite-logs-row" style="margin-top: 20px;">
-        <div class="panel log-panel">
-            <div class="panel-header">
-                <h3>📜 БОРТОВИЙ ЖУРНАЛ СУПУТНИКА (EVENT LOG)</h3>
-            </div>
-            <div class="log-viewport" id="sat-log-container">
-                <div class="log-row system">[SYSTEM] Ініціалізація систем моніторингу... OK</div>
-            </div>
-        </div>
-    </div>
-</section>
+                    <div>
+                        <small>
+                            ПОКРИТТЯ
+                        </small>
+                        <b>
+                            Global
+                        </b>
+                    </div>
+                </section>
+            </aside>
+            <section class="col-center stack">
+                <section class="panel map-panel">
+                    <div class="panel-head">
+        <span class="led">
+        </span>
+                        <h2>
+                            ТРАЄКТОРІЯ ОРБІТИ
+                        </h2>
+                        <em>
+                            LIVE
+                        </em>
+                        <strong id="satMapTime">
+                            -- UTC
+                        </strong>
+                    </div>
+                    <div class="map-wrap">
+                        <canvas id="orbitCanvas">
+                        </canvas>
+                        <div class="map-legend">
+                            <p>
+          <span class="line cyan">
+          </span>
+                                поточна позиція
+                            </p>
+                            <p>
+          <span class="line amber">
+          </span>
+                                прогноз траєкторії
+                            </p>
+                            <p>
+          <span class="triangle">
+          </span>
+                                наземна станція
+                            </p>
+                            <p class="muted">
+                                [Space] пауза · [R] reset
+                            </p>
+                        </div>
+                        <div class="map-readout" id="mapReadout">
+                            LAT --
+                            <br/>
+                            LON --
+                        </div>
+                        <div class="paused-flag" id="pausedFlag">
+                            PAUSED
+                        </div>
+                    </div>
                 </section>
                 <section class="panel">
                     <div class="panel-head">
