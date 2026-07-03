@@ -251,7 +251,50 @@ main {
     gap: 16px;
 }
 
-.sat-grid,
+.col-left {
+
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 16px;
+
+}
+
+.col-right {
+
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 16px;
+
+}
+
+.col-center {
+
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 16px;
+
+}
+
+.sat-grid {
+
+    display: grid;
+
+    grid-template-columns:260px 1fr 260px;
+
+    grid-template-rows:auto;
+
+    gap: 18px;
+
+    align-items: start;
+
+}
+
 .uav-grid {
     display: grid;
     grid-template-columns: 335px minmax(650px, 1fr) 380px;
@@ -459,10 +502,17 @@ main {
 }
 
 .map-wrap {
+
     position: relative;
-    height: min(52vh, 560px);
-    min-height: 420px;
-    background: radial-gradient(circle at 50% 52%, rgba(34, 211, 238, .08), transparent 64%), #02060f;
+
+    height: 680px;
+
+    border-radius: 10px;
+
+    overflow: hidden;
+
+    background: #000;
+
 }
 
 #orbitCanvas {
@@ -962,15 +1012,19 @@ button {
 .algorithm-list i.orange svg {
     filter: drop-shadow(0 0 4px var(--orange));
 }
+
 .algorithm-list i.cyan svg {
     filter: drop-shadow(0 0 4px var(--cyan));
 }
+
 .algorithm-list i.green svg {
     filter: drop-shadow(0 0 4px var(--green));
 }
+
 .algorithm-list i.purple svg {
     filter: drop-shadow(0 0 4px var(--purple));
 }
+
 .algorithm-list i.yellow svg {
     filter: drop-shadow(0 0 4px var(--yellow));
 }
@@ -1139,23 +1193,23 @@ button {
     .tab {
         font-size: 12px;
     }
-    
+
     .tabs {
         grid-template-columns: 1fr;
     }
-    
+
     main {
         width: calc(100% - 18px);
     }
-    
+
     .kpi-grid, .kpi-strip, .telemetry-cards {
         grid-template-columns: 1fr;
     }
-    
+
     .control-row {
         grid-template-columns: 1fr;
     }
-    
+
     .scenario-grid {
         grid-template-columns: 1fr;
     }
