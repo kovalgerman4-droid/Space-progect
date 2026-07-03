@@ -79,6 +79,15 @@ function statusUa(status) {
     return s || '--';
 }
 
+function solarActivityLabel(kp) {
+    const v = Number(kp);
+    if (!Number.isFinite(v)) return '--';
+    if (v < 4) return 'СПОКІЙНО';
+    if (v < 5) return 'ПІДВИЩЕНА';
+    if (v < 7) return 'ШТОРМ';
+    return 'СИЛЬНИЙ ШТОРМ';
+}
+
 function prepareCanvas(canvas) {
     if (!canvas) return null;
     const rect = canvas.getBoundingClientRect();
@@ -323,6 +332,8 @@ function updateSatellite(sat, history) {
     setText('kpValue', `Kp ${fmt(sat.geomagnetic_kp, 1)}`);
     setText('orbitalPeriodFoot', fmt(sat.orbital_period_min, 1, ' хв'));
     setText('atmDensity', `${fmt(1.8 + (431 - sat.altitude_km) * 0.06, 1)} ×10⁻¹² kg/m³`);
+    setText('solarActivityValue', solarActivityLabel(sat.geomagnetic_kp));
+    setText('eclipseStatus', sat.visibility === 'daylight' ? 'НЕМАЄ' : 'У ТІНІ');
     if ($('mapReadout')) $('mapReadout').innerHTML = `LAT ${fmt(sat.latitude_deg, 3, '°')}<br>LON ${fmt(sat.longitude_deg, 3, '°')}`;
 
     const ring = $('satRing');
