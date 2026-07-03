@@ -5,7 +5,7 @@
     <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
     <title>Sky &amp; Space Sentinel</title>
     <link href="/styles.css" rel="stylesheet"/>
-     <style>
+    <style>
         @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Rajdhani:wght@400;500;600;700&family=Orbitron:wght@500;700;900&display=swap');
 
 :root {
@@ -1169,7 +1169,7 @@ button {
     }
 }
 
-     </style>
+    </style>
 </head>
 <body>
 <div aria-hidden="true" class="stars"></div>
@@ -1197,153 +1197,43 @@ button {
     </div>
 </header>
 
- <div class="panel" id="panel-uav">
-
-        <div class="uav-toolbar">
-            <div class="uav-toolbar-group">
-                <label>Сценарій польоту</label>
-                <select class="uav-select" id="uav-scenario-select">
-                    <option value="Normal mission">Normal mission</option>
-                    <option value="Hot day">Hot day</option>
-                    <option value="Wind gusts">Wind gusts</option>
-                    <option value="Payload stress">Payload stress</option>
-                    <option value="Emergency test">Emergency test</option>
-                </select>
-            </div>
-            <button class="uav-btn" id="uav-pause-btn" onclick="toggleUavPause()">⏸ PAUSE</button>
-            <button class="uav-btn" onclick="resetUavSim()">⟲ RESET</button>
-            <div style="margin-left:auto;font-family:'Share Tech Mono',monospace;font-size:11px;color:var(--text-secondary);">
-                t = <span id="uav-sim-time">0.00</span> s
-            </div>
-        </div>
-
-        <div class="risk-bar-wrap">
-            <div class="risk-bar-track">
-                <div class="risk-bar-fill" id="uav-risk-fill" style="width:0%;background:var(--neon-green);"></div>
-                <div class="risk-bar-label" id="uav-risk-label">Risk K = 0.000</div>
-            </div>
-        </div>
-
-        <div class="status-console" id="uav-status-console">Ініціалізація фізичної моделі БПЛА (Icurrent, Tcurrent,
-            P=I²R, ризик-коефіцієнт)...
-        </div>
-
-        <div class="dashboard-grid">
-            <div class="telemetry-col">
-                <div class="card">
-                    <div class="card-header">
-                        <div class="card-title"><span class="live-dot live-dot-uav"></span> ТЕЛЕМЕТРІЯ БПЛА · РЕАЛЬНИЙ
-                            ЧАС
-                        </div>
-                        <div style="font-family:'Share Tech Mono',monospace;font-size:11px;color:var(--neon-orange);"
-                             id="uav-scenario-badge">UAV-02 / Normal mission
-                        </div>
-                    </div>
-                    <div class="card-body">
-                        <div class="charts-row charts-row-8">
-                            <div class="chart-wrap">
-                                <div class="chart-label"><span>ICURRENT</span><span id="uav-i-val">— A</span></div>
-                                <div class="chart-value load" id="uav-i-big">—</div>
-                                <canvas class="sparkline" id="uav-i-chart"></canvas>
-                            </div>
-                            <div class="chart-wrap">
-                                <div class="chart-label"><span>TCURRENT</span><span id="uav-t-val">—°C</span></div>
-                                <div class="chart-value temp" id="uav-t-big">—</div>
-                                <canvas class="sparkline" id="uav-t-chart"></canvas>
-                            </div>
-                            <div class="chart-wrap">
-                                <div class="chart-label"><span>RISK K</span><span id="uav-risk-val">—</span></div>
-                                <div class="chart-value risk" id="uav-risk-big">—</div>
-                                <canvas class="sparkline" id="uav-risk-chart"></canvas>
-                            </div>
-                            <div class="chart-wrap">
-                                <div class="chart-label"><span>P = I²R</span><span id="uav-power-val">— W</span></div>
-                                <div class="chart-value load" id="uav-power-big">—</div>
-                                <canvas class="sparkline" id="uav-power-chart"></canvas>
-                            </div>
-                            <div class="chart-wrap">
-                                <div class="chart-label"><span>VOLTAGE</span><span id="uav-voltage-val">— V</span></div>
-                                <div class="chart-value batt" id="uav-voltage-big">—</div>
-                                <canvas class="sparkline" id="uav-voltage-chart"></canvas>
-                            </div>
-                            <div class="chart-wrap">
-                                <div class="chart-label"><span>RPM</span><span id="uav-rpm-val">—</span></div>
-                                <div class="chart-value sig" id="uav-rpm-big">—</div>
-                                <canvas class="sparkline" id="uav-rpm-chart"></canvas>
-                            </div>
-                            <div class="chart-wrap">
-                                <div class="chart-label"><span>MAGNET HEALTH</span><span id="uav-magnet-val">—%</span>
-                                </div>
-                                <div class="chart-value batt" id="uav-magnet-big">—</div>
-                                <canvas class="sparkline" id="uav-magnet-chart"></canvas>
-                            </div>
-                            <div class="chart-wrap">
-                                <div class="chart-label"><span>EFFICIENCY</span><span id="uav-eff-val">—%</span></div>
-                                <div class="chart-value temp" id="uav-eff-big">—</div>
-                                <canvas class="sparkline" id="uav-eff-chart"></canvas>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="status-col">
-                <div class="card status-card">
-                    <div class="card-header">
-                        <div class="card-title">СТАТУС БПЛА</div>
-                    </div>
-                    <div class="status-main">
-                        <div class="status-orb ok" id="uav-status-orb">
-                            <div class="orb-emoji">✅</div>
-                            <div class="orb-text ok" id="uav-orb-label">SAFE</div>
-                        </div>
-                    </div>
-                    <div class="status-metrics">
-                        <div class="metric-row"><span class="metric-key">Фаза польоту</span><span class="metric-val"
-                                                                                                  id="uav-phase-val">BOOT</span>
-                        </div>
-                        <div class="metric-row"><span class="metric-key">Термозапас</span><span class="metric-val"
-                                                                                                id="uav-margin-val">— °C</span>
-                        </div>
-                        <div class="metric-row"><span class="metric-key">Ризик демагнетизації</span><span
-                                class="metric-val" id="uav-demag-val">—</span></div>
-                        <div class="metric-row"><span class="metric-key">Акумулятор</span><span
-                                class="metric-val batt-val" id="uav-batt-status-val">—%</span></div>
-                        <div class="metric-row"><span class="metric-key">GPS Fix</span><span class="metric-val">3D ● LOCKED</span>
-                        </div>
-                        <div class="metric-row"><span class="metric-key">Час польоту</span><span class="metric-val"
-                                                                                                 id="flight-time">00:00:00</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="alerts-col">
-                <div class="card">
-                    <div class="card-header">
-                        <div class="card-title"><span class="live-dot live-dot-uav"></span> AI OUTPUT · АНАЛІЗ БПЛА
-                        </div>
-                        <div style="font-family:'Share Tech Mono',monospace;font-size:11px;color:var(--neon-orange);">
-                            PHYSICS ENGINE v1.0
-                        </div>
-                    </div>
-                    <div class="card-body">
-                        <div class="alerts-list" id="uav-alerts-list">
-                            <div class="alert-item info">
-                                <div class="alert-icon">ℹ️</div>
-                                <div>
-                                    <div class="alert-meta">SYS · INIT · UAV-02</div>
-                                    <div class="alert-text">БПЛА в режимі польоту. Фізична модель нагріву й струму
-                                        двигуна активована.
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
+<nav aria-label="Dashboard sections" class="tabs">
+    <button class="tab active" data-page="sat">
+        <span>
+            <!-- Супутник -->
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"
+                 stroke-linejoin="round">
+                <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"></path>
+            </svg>
+        </span>
+        MINISAT LAB
+        <b>LIVE</b>
+    </button>
+    <button class="tab" data-page="uav">
+        <span>
+            <!-- Дрон / БПЛА -->
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"
+                 stroke-linejoin="round">
+                <polygon points="12 2 19 21 12 17 5 21 12 2"></polygon>
+            </svg>
+        </span>
+        UAV SYSTEMS
+        <b>LIVE</b>
+    </button>
+    <button class="tab" data-page="ai">
+        <span>
+            <!-- Нейромережа / AI -->
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"
+                 stroke-linejoin="round">
+                <rect x="2" y="2" width="20" height="8" rx="2" ry="2"></rect>
+                <rect x="2" y="14" width="20" height="8" rx="2" ry="2"></rect>
+                <line x1="6" y1="6" x2="6" y2="6"></line>
+                <line x1="6" y1="18" x2="6" y2="18"></line>
+            </svg>
+        </span>
+        AI ANALYTICS
+    </button>
+</nav>
 
 <main>
     <section class="page active" id="page-sat">
