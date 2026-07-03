@@ -39,7 +39,7 @@
 <nav aria-label="Dashboard sections" class="tabs">
     <button class="tab active" data-page="sat">
     <span>
-     🛰
+
     </span>
         MINISAT LAB
         <b>
@@ -48,7 +48,7 @@
     </button>
     <button class="tab" data-page="uav">
     <span>
-     🚁
+
     </span>
         UAV SYSTEMS
         <b>
@@ -57,7 +57,7 @@
     </button>
     <button class="tab" data-page="ai">
     <span>
-     🧠
+
     </span>
         AI ANALYTICS
     </button>
@@ -411,9 +411,46 @@
             </aside>
         </div>
         <footer class="metric-strip">
-           
-           
-           
+            <div>
+                <small>
+                    СОНЯЧНА АКТИВНІСТЬ
+                </small>
+                <b id="kpValue">
+                    Kp --
+                </b>
+                <canvas class="mini-wave" id="kpSpark">
+                </canvas>
+            </div>
+            <div>
+                <small>
+                    МАГНІТНЕ ПОЛЕ
+                </small>
+                <b id="bzValue">
+                    Bz -1.2 nT
+                </b>
+                <canvas class="mini-wave" id="bzSpark">
+                </canvas>
+            </div>
+            <div>
+                <small>
+                    ЩІЛЬНІСТЬ АТМОСФЕРИ
+                </small>
+                <b id="atmDensity">
+                    -- kg/m³
+                </b>
+                <canvas class="mini-wave" id="densSpark">
+                </canvas>
+            </div>
+            <div>
+                <small>
+                    ОРБІТАЛЬНИЙ ПЕРІОД
+                </small>
+                <b id="orbitalPeriodFoot">
+                    -- хв
+                </b>
+                <canvas class="mini-wave" id="periodSpark">
+                </canvas>
+            </div>
         </footer>
     </section>
     <section class="page" id="page-uav">
