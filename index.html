@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="uk">
 <head>
@@ -409,458 +408,414 @@
                     <div class="scenario-grid" id="satScenarioButtons">
                     </div>
                 </section>
-            </aside>
-        </div>
-        <footer class="metric-strip">
-            <div>
-                <small>
-                    СОНЯЧНА АКТИВНІСТЬ
-                </small>
-                <b id="kpValue">
-                    Kp --
-                </b>
-                <canvas class="mini-wave" id="kpSpark">
-                </canvas>
-            </div>
-            <div>
-                <small>
-                    МАГНІТНЕ ПОЛЕ
-                </small>
-                <b id="bzValue">
-                    Bz -1.2 nT
-                </b>
-                <canvas class="mini-wave" id="bzSpark">
-                </canvas>
-            </div>
-            <div>
-                <small>
-                    ЩІЛЬНІСТЬ АТМОСФЕРИ
-                </small>
-                <b id="atmDensity">
-                    -- kg/m³
-                </b>
-                <canvas class="mini-wave" id="densSpark">
-                </canvas>
-            </div>
-            <div>
-                <small>
-                    ОРБІТАЛЬНИЙ ПЕРІОД
-                </small>
-                <b id="orbitalPeriodFoot">
-                    -- хв
-                </b>
-                <canvas class="mini-wave" id="periodSpark">
-                </canvas>
-            </div>
-        </footer>
-    </section>
-    <section class="page" id="page-uav">
-        <div class="uav-grid">
-            <aside class="col-left stack">
-                <section class="panel">
-                    <div class="panel-head">
+
+                <section class="page" id="page-uav">
+                    <div class="uav-grid">
+                        <aside class="col-left stack">
+                            <section class="panel">
+                                <div class="panel-head">
         <span class="led">
         </span>
-                        <h2>
-                            ТЕЛЕМЕТРІЯ ДРОНА
-                        </h2>
-                        <em>
-                            LIVE
-                        </em>
-                    </div>
-                    <div class="telemetry-list">
-                        <div class="telemetry-row">
-                            <i>
-                                ↥
-                            </i>
-                            <div>
-                                <b>
-                                    ВИСОТА AGL
-                                </b>
-                                <small>
-                                    ALT
-                                </small>
-                            </div>
-                            <strong id="uavAlt">
-                                --
-                            </strong>
-                            <canvas class="micro" id="uavAltSpark">
-                            </canvas>
-                        </div>
-                        <div class="telemetry-row">
-                            <i>
-                                ⚡
-                            </i>
-                            <div>
-                                <b>
-                                    ШВИДКІСТЬ
-                                </b>
-                                <small>
-                                    VEL
-                                </small>
-                            </div>
-                            <strong id="uavSpeed">
-                                --
-                            </strong>
-                            <canvas class="micro" id="uavSpeedSpark">
-                            </canvas>
-                        </div>
-                        <div class="telemetry-row">
-                            <i>
-                                ▥
-                            </i>
-                            <div>
-                                <b>
-                                    RSSI ЛІНКУ
-                                </b>
-                                <small>
-                                    LINK
-                                </small>
-                            </div>
-                            <strong id="uavRssi">
-                                --
-                            </strong>
-                            <canvas class="micro" id="uavRssiSpark">
-                            </canvas>
-                        </div>
-                        <div class="telemetry-row">
-                            <i>
-                                ∞
-                            </i>
-                            <div>
-                                <b>
-                                    СТАТУС ЛІНКУ
-                                </b>
-                                <small>
-                                    DATALINK
-                                </small>
-                            </div>
-                            <strong id="uavLink">
-                                НАДІЙНИЙ
-                            </strong>
-                        </div>
-                    </div>
-                </section>
-                <section class="mini-systems">
-                    <div>
-                        <small>
-                            РЕЖИМ СИСТЕМИ
-                        </small>
-                        <b id="uavScenarioName">
-                            Normal mission
-                        </b>
-                    </div>
-                    <div>
-                        <small>
-                            3D RTK
-                        </small>
-                        <b>
-                            12 / 12 sat
-                        </b>
-                    </div>
-                    <div>
-                        <small>
-                            ПОКРИТТЯ
-                        </small>
-                        <b>
-                            Global
-                        </b>
-                    </div>
-                </section>
-            </aside>
-            <section class="col-center stack">
-                <section class="panel controls-panel">
-                    <div class="panel-head">
+                                    <h2>
+                                        ТЕЛЕМЕТРІЯ ДРОНА
+                                    </h2>
+                                    <em>
+                                        LIVE
+                                    </em>
+                                </div>
+                                <div class="telemetry-list">
+                                    <div class="telemetry-row">
+                                        <i>
+                                            ↥
+                                        </i>
+                                        <div>
+                                            <b>
+                                                ВИСОТА AGL
+                                            </b>
+                                            <small>
+                                                ALT
+                                            </small>
+                                        </div>
+                                        <strong id="uavAlt">
+                                            --
+                                        </strong>
+                                        <canvas class="micro" id="uavAltSpark">
+                                        </canvas>
+                                    </div>
+                                    <div class="telemetry-row">
+                                        <i>
+                                            ⚡
+                                        </i>
+                                        <div>
+                                            <b>
+                                                ШВИДКІСТЬ
+                                            </b>
+                                            <small>
+                                                VEL
+                                            </small>
+                                        </div>
+                                        <strong id="uavSpeed">
+                                            --
+                                        </strong>
+                                        <canvas class="micro" id="uavSpeedSpark">
+                                        </canvas>
+                                    </div>
+                                    <div class="telemetry-row">
+                                        <i>
+                                            ▥
+                                        </i>
+                                        <div>
+                                            <b>
+                                                RSSI ЛІНКУ
+                                            </b>
+                                            <small>
+                                                LINK
+                                            </small>
+                                        </div>
+                                        <strong id="uavRssi">
+                                            --
+                                        </strong>
+                                        <canvas class="micro" id="uavRssiSpark">
+                                        </canvas>
+                                    </div>
+                                    <div class="telemetry-row">
+                                        <i>
+                                            ∞
+                                        </i>
+                                        <div>
+                                            <b>
+                                                СТАТУС ЛІНКУ
+                                            </b>
+                                            <small>
+                                                DATALINK
+                                            </small>
+                                        </div>
+                                        <strong id="uavLink">
+                                            НАДІЙНИЙ
+                                        </strong>
+                                    </div>
+                                </div>
+                            </section>
+                            <section class="mini-systems">
+                                <div>
+                                    <small>
+                                        РЕЖИМ СИСТЕМИ
+                                    </small>
+                                    <b id="uavScenarioName">
+                                        Normal mission
+                                    </b>
+                                </div>
+                                <div>
+                                    <small>
+                                        3D RTK
+                                    </small>
+                                    <b>
+                                        12 / 12 sat
+                                    </b>
+                                </div>
+                                <div>
+                                    <small>
+                                        ПОКРИТТЯ
+                                    </small>
+                                    <b>
+                                        Global
+                                    </b>
+                                </div>
+                            </section>
+                        </aside>
+                        <section class="col-center stack">
+                            <section class="panel controls-panel">
+                                <div class="panel-head">
         <span class="led">
         </span>
-                        <h2>
-                            УПРАВЛІННЯ ПОЛЬОТОМ
-                        </h2>
-                    </div>
-                    <div class="control-row">
-                        <label>
-                            СЦЕНАРІЙ ПОЛЬОТУ
-                        </label>
-                        <select class="scenario-select" id="droneScenarioSelect">
-                        </select>
-                        <button class="action-btn" id="pauseBtn">
-                            PAUSE
-                        </button>
-                        <button class="action-btn" id="resetBtn">
-                            RESET
-                        </button>
-                    </div>
-                    <div class="riskbar">
-                        <div id="riskFill">
-                        </div>
-                        <span id="riskText">
+                                    <h2>
+                                        УПРАВЛІННЯ ПОЛЬОТОМ
+                                    </h2>
+                                </div>
+                                <div class="control-row">
+                                    <label>
+                                        СЦЕНАРІЙ ПОЛЬОТУ
+                                    </label>
+                                    <select class="scenario-select" id="droneScenarioSelect">
+                                    </select>
+                                    <button class="action-btn" id="pauseBtn">
+                                        PAUSE
+                                    </button>
+                                    <button class="action-btn" id="resetBtn">
+                                        RESET
+                                    </button>
+                                </div>
+                                <div class="riskbar">
+                                    <div id="riskFill">
+                                    </div>
+                                    <span id="riskText">
          Risk K = -- | --
         </span>
-                    </div>
-                    <div class="mono-line" id="uavSummaryLine">
-                        Очікування даних...
-                    </div>
-                </section>
-                <section class="telemetry-cards">
-                    <div class="data-card">
-                        <small>
-                            СТРУМ (I)
-                        </small>
-                        <strong class="cyan" id="drCurrentValue">
-                            --
-                        </strong>
-                        <canvas class="spark" id="drCurrentChart">
-                        </canvas>
-                        <span>
+                                </div>
+                                <div class="mono-line" id="uavSummaryLine">
+                                    Очікування даних...
+                                </div>
+                            </section>
+                            <section class="telemetry-cards">
+                                <div class="data-card">
+                                    <small>
+                                        СТРУМ (I)
+                                    </small>
+                                    <strong class="cyan" id="drCurrentValue">
+                                        --
+                                    </strong>
+                                    <canvas class="spark" id="drCurrentChart">
+                                    </canvas>
+                                    <span>
          0 · 45A
         </span>
-                    </div>
-                    <div class="data-card">
-                        <small>
-                            ТЕМПЕРАТУРА (T)
-                        </small>
-                        <strong class="orange" id="drTempValue">
-                            --
-                        </strong>
-                        <canvas class="spark" id="drTempChart">
-                        </canvas>
-                        <span>
+                                </div>
+                                <div class="data-card">
+                                    <small>
+                                        ТЕМПЕРАТУРА (T)
+                                    </small>
+                                    <strong class="orange" id="drTempValue">
+                                        --
+                                    </strong>
+                                    <canvas class="spark" id="drTempChart">
+                                    </canvas>
+                                    <span>
          0 · 90°C
         </span>
-                    </div>
-                    <div class="data-card">
-                        <small>
-                            КОЕФ. РИЗИКУ (K)
-                        </small>
-                        <strong class="purple" id="drRiskValue">
-                            --
-                        </strong>
-                        <canvas class="spark" id="drRiskChart">
-                        </canvas>
-                        <span>
+                                </div>
+                                <div class="data-card">
+                                    <small>
+                                        КОЕФ. РИЗИКУ (K)
+                                    </small>
+                                    <strong class="purple" id="drRiskValue">
+                                        --
+                                    </strong>
+                                    <canvas class="spark" id="drRiskChart">
+                                    </canvas>
+                                    <span>
          0 · 1.2
         </span>
-                    </div>
-                    <div class="data-card">
-                        <small>
-                            ТЕПЛОВА ПОТУЖНІСТЬ
-                        </small>
-                        <strong class="cyan" id="drHeatValue">
-                            --
-                        </strong>
-                        <canvas class="spark" id="drHeatChart">
-                        </canvas>
-                        <span>
+                                </div>
+                                <div class="data-card">
+                                    <small>
+                                        ТЕПЛОВА ПОТУЖНІСТЬ
+                                    </small>
+                                    <strong class="cyan" id="drHeatValue">
+                                        --
+                                    </strong>
+                                    <canvas class="spark" id="drHeatChart">
+                                    </canvas>
+                                    <span>
          0 · 120W
         </span>
-                    </div>
-                    <div class="data-card">
-                        <small>
-                            НАПРУГА (V)
-                        </small>
-                        <strong class="green" id="drVoltageValue">
-                            --
-                        </strong>
-                        <canvas class="spark" id="drVoltageChart">
-                        </canvas>
-                        <span>
+                                </div>
+                                <div class="data-card">
+                                    <small>
+                                        НАПРУГА (V)
+                                    </small>
+                                    <strong class="green" id="drVoltageValue">
+                                        --
+                                    </strong>
+                                    <canvas class="spark" id="drVoltageChart">
+                                    </canvas>
+                                    <span>
          20V · 30V
         </span>
-                    </div>
-                    <div class="data-card">
-                        <small>
-                            ОБЕРТИ (RPM)
-                        </small>
-                        <strong class="cyan" id="drRpmValue">
-                            --
-                        </strong>
-                        <canvas class="spark" id="drRpmChart">
-                        </canvas>
-                        <span>
+                                </div>
+                                <div class="data-card">
+                                    <small>
+                                        ОБЕРТИ (RPM)
+                                    </small>
+                                    <strong class="cyan" id="drRpmValue">
+                                        --
+                                    </strong>
+                                    <canvas class="spark" id="drRpmChart">
+                                    </canvas>
+                                    <span>
          0 · 20000
         </span>
-                    </div>
-                    <div class="data-card">
-                        <small>
-                            МАГНІТНЕ ЗДОРОВ'Я
-                        </small>
-                        <strong class="green" id="drMagValue">
-                            --
-                        </strong>
-                        <canvas class="spark" id="drMagChart">
-                        </canvas>
-                        <span>
+                                </div>
+                                <div class="data-card">
+                                    <small>
+                                        МАГНІТНЕ ЗДОРОВ'Я
+                                    </small>
+                                    <strong class="green" id="drMagValue">
+                                        --
+                                    </strong>
+                                    <canvas class="spark" id="drMagChart">
+                                    </canvas>
+                                    <span>
          0% · 100%
         </span>
-                    </div>
-                    <div class="data-card">
-                        <small>
-                            ЕФЕКТИВНІСТЬ (η)
-                        </small>
-                        <strong class="orange" id="drEffValue">
-                            --
-                        </strong>
-                        <canvas class="spark" id="drEffChart">
-                        </canvas>
-                        <span>
+                                </div>
+                                <div class="data-card">
+                                    <small>
+                                        ЕФЕКТИВНІСТЬ (η)
+                                    </small>
+                                    <strong class="orange" id="drEffValue">
+                                        --
+                                    </strong>
+                                    <canvas class="spark" id="drEffChart">
+                                    </canvas>
+                                    <span>
          0% · 100%
         </span>
-                    </div>
-                    <div class="data-card">
-                        <small>
-                            БАТАРЕЯ (SOC)
-                        </small>
-                        <strong class="green" id="drBattValue">
-                            --
-                        </strong>
-                        <div class="progress">
-                            <i id="drBattProgress">
-                            </i>
-                        </div>
-                        <span>
+                                </div>
+                                <div class="data-card">
+                                    <small>
+                                        БАТАРЕЯ (SOC)
+                                    </small>
+                                    <strong class="green" id="drBattValue">
+                                        --
+                                    </strong>
+                                    <div class="progress">
+                                        <i id="drBattProgress">
+                                        </i>
+                                    </div>
+                                    <span>
          0% · 100%
         </span>
-                    </div>
-                    <div class="data-card">
-                        <small>
-                            ШВИДК. НАГРІВУ
-                        </small>
-                        <strong class="red" id="drHeatRateValue">
-                            --
-                        </strong>
-                        <canvas class="spark" id="drHeatRateChart">
-                        </canvas>
-                        <span>
+                                </div>
+                                <div class="data-card">
+                                    <small>
+                                        ШВИДК. НАГРІВУ
+                                    </small>
+                                    <strong class="red" id="drHeatRateValue">
+                                        --
+                                    </strong>
+                                    <canvas class="spark" id="drHeatRateChart">
+                                    </canvas>
+                                    <span>
          0 · 2.0
         </span>
-                    </div>
-                    <div class="data-card">
-                        <small>
-                            ШВИДК. ОХОЛОДЖЕННЯ
-                        </small>
-                        <strong class="green" id="drCoolRateValue">
-                            --
-                        </strong>
-                        <canvas class="spark" id="drCoolRateChart">
-                        </canvas>
-                        <span>
+                                </div>
+                                <div class="data-card">
+                                    <small>
+                                        ШВИДК. ОХОЛОДЖЕННЯ
+                                    </small>
+                                    <strong class="green" id="drCoolRateValue">
+                                        --
+                                    </strong>
+                                    <canvas class="spark" id="drCoolRateChart">
+                                    </canvas>
+                                    <span>
          0 · 2.0
         </span>
-                    </div>
-                </section>
-            </section>
-            <aside class="col-right stack">
-                <section class="panel status-panel">
-                    <div class="panel-head">
-                        <h2>
-                            СТАТУС МІСІЇ
-                        </h2>
-                        <em id="drStatusBadge">
-                            SAFE
-                        </em>
-                    </div>
-                    <div class="safe-orb" id="droneOrb">
-                        <strong>
-                            ✓
-                        </strong>
-                        <b id="drStatusText">
-                            SAFE
-                        </b>
-                        <small>
-                            СИСТЕМА В
-                            НОРМІ
-                        </small>
-                    </div>
-                    <div class="param-list">
-                        <p>
+                                </div>
+                            </section>
+                        </section>
+                        <aside class="col-right stack">
+                            <section class="panel status-panel">
+                                <div class="panel-head">
+                                    <h2>
+                                        СТАТУС МІСІЇ
+                                    </h2>
+                                    <em id="drStatusBadge">
+                                        SAFE
+                                    </em>
+                                </div>
+                                <div class="safe-orb" id="droneOrb">
+                                    <strong>
+                                        ✓
+                                    </strong>
+                                    <b id="drStatusText">
+                                        SAFE
+                                    </b>
+                                    <small>
+                                        СИСТЕМА В
+                                        НОРМІ
+                                    </small>
+                                </div>
+                                <div class="param-list">
+                                    <p>
          <span>
           Фаза польоту
          </span>
-                            <b id="drPhase">
-                                --
-                            </b>
-                        </p>
-                        <p>
+                                        <b id="drPhase">
+                                            --
+                                        </b>
+                                    </p>
+                                    <p>
          <span>
           Тепловий запас
          </span>
-                            <b id="drMargin">
-                                --
-                            </b>
-                        </p>
-                        <p>
+                                        <b id="drMargin">
+                                            --
+                                        </b>
+                                    </p>
+                                    <p>
          <span>
           Ризик розмагнічення
          </span>
-                            <b id="drDemag">
-                                --
-                            </b>
-                        </p>
-                        <p>
+                                        <b id="drDemag">
+                                            --
+                                        </b>
+                                    </p>
+                                    <p>
          <span>
           Батарея
          </span>
-                            <b id="drBattSide">
-                                --
-                            </b>
-                        </p>
-                        <p>
+                                        <b id="drBattSide">
+                                            --
+                                        </b>
+                                    </p>
+                                    <p>
          <span>
           GPS фіксація
          </span>
-                            <b>
-                                3D FIX (12)
-                            </b>
-                        </p>
-                        <p>
+                                        <b>
+                                            3D FIX (12)
+                                        </b>
+                                    </p>
+                                    <p>
          <span>
           Лінк телеметрії
          </span>
-                            <b id="drLinkSide">
-                                НАДІЙНИЙ
-                            </b>
-                        </p>
-                        <p>
+                                        <b id="drLinkSide">
+                                            НАДІЙНИЙ
+                                        </b>
+                                    </p>
+                                    <p>
          <span>
           Час місії (E.T.)
          </span>
-                            <b id="drMissionTime">
-                                --
-                            </b>
-                        </p>
+                                        <b id="drMissionTime">
+                                            --
+                                        </b>
+                                    </p>
+                                </div>
+                            </section>
+                            <section class="panel scenario-panel">
+                                <div class="panel-head">
+                                    <h2>
+                                        СЦЕНАРІЇ ПОЛЬОТУ
+                                    </h2>
+                                </div>
+                                <div class="scenario-list" id="droneScenarioButtons">
+                                </div>
+                            </section>
+                        </aside>
                     </div>
                 </section>
-                <section class="panel scenario-panel">
-                    <div class="panel-head">
-                        <h2>
-                            СЦЕНАРІЇ ПОЛЬОТУ
-                        </h2>
-                    </div>
-                    <div class="scenario-list" id="droneScenarioButtons">
-                    </div>
-                </section>
-            </aside>
-        </div>
-    </section>
-    <section class="page" id="page-ai">
-        <div class="ai-grid">
-            <section class="panel algorithms-panel">
-                <div class="panel-head">
+                <section class="page" id="page-ai">
+                    <div class="ai-grid">
+                        <section class="panel algorithms-panel">
+                            <div class="panel-head">
        <span class="led">
        </span>
-                    <h2>
-                        МАШИННЕ НАВЧАННЯ ТА АЛГОРИТМИ
-                    </h2>
-                    <em>
-                        LIVE
-                    </em>
-                </div>
-                <div class="algorithm-list">
-                    <div>
-                        <i class="orange">
-                            ♨
-                        </i>
-                        <span>
+                                <h2>
+                                    МАШИННЕ НАВЧАННЯ ТА АЛГОРИТМИ
+                                </h2>
+                                <em>
+                                    LIVE
+                                </em>
+                            </div>
+                            <div class="algorithm-list">
+                                <div>
+                                    <i class="orange">
+                                        ♨
+                                    </i>
+                                    <span>
          <b>
           Thermal Anomaly Detector
          </b>
@@ -868,15 +823,15 @@
           Виявлення аномального нагріву компонентів
          </small>
         </span>
-                        <em>
-                            АКТИВНИЙ
-                        </em>
-                    </div>
-                    <div>
-                        <i class="cyan">
-                            ∿
-                        </i>
-                        <span>
+                                    <em>
+                                        АКТИВНИЙ
+                                    </em>
+                                </div>
+                                <div>
+                                    <i class="cyan">
+                                        ∿
+                                    </i>
+                                    <span>
          <b>
           Signal Stability Analyzer
          </b>
@@ -884,15 +839,15 @@
           Моніторинг якості каналу зв'язку та стабільності сигналу
          </small>
         </span>
-                        <em>
-                            АКТИВНИЙ
-                        </em>
-                    </div>
-                    <div>
-                        <i class="green">
-                            ▣
-                        </i>
-                        <span>
+                                    <em>
+                                        АКТИВНИЙ
+                                    </em>
+                                </div>
+                                <div>
+                                    <i class="green">
+                                        ▣
+                                    </i>
+                                    <span>
          <b>
           Battery Decay Predictor
          </b>
@@ -900,15 +855,15 @@
           Прогнозування деградації енергосистеми та ресурсу
          </small>
         </span>
-                        <em>
-                            АКТИВНИЙ
-                        </em>
-                    </div>
-                    <div>
-                        <i class="purple">
-                            ↝
-                        </i>
-                        <span>
+                                    <em>
+                                        АКТИВНИЙ
+                                    </em>
+                                </div>
+                                <div>
+                                    <i class="purple">
+                                        ↝
+                                    </i>
+                                    <span>
          <b>
           Trajectory Optimizer
          </b>
@@ -916,15 +871,15 @@
           Оптимізація орбіти / маршруту БПЛА та витрати енергії
          </small>
         </span>
-                        <em class="idle">
-                            ОЧІКУВАННЯ
-                        </em>
-                    </div>
-                    <div>
-                        <i class="yellow">
-                            ≋
-                        </i>
-                        <span>
+                                    <em class="idle">
+                                        ОЧІКУВАННЯ
+                                    </em>
+                                </div>
+                                <div>
+                                    <i class="yellow">
+                                        ≋
+                                    </i>
+                                    <span>
          <b>
           Vibration Pattern AI
          </b>
@@ -932,298 +887,297 @@
           Нейромережева діагностика аномальних вібрацій
          </small>
         </span>
-                        <em>
-                            АКТИВНИЙ
-                        </em>
-                    </div>
-                </div>
-            </section>
-            <section class="panel load-panel">
-                <div class="panel-head">
+                                    <em>
+                                        АКТИВНИЙ
+                                    </em>
+                                </div>
+                            </div>
+                        </section>
+                        <section class="panel load-panel">
+                            <div class="panel-head">
        <span class="led">
        </span>
-                    <h2>
-                        НАВАНТАЖЕННЯ СИСТЕМИ ШІ
-                    </h2>
-                    <em>
-                        LIVE
-                    </em>
-                </div>
-                <div class="bar-list">
-                    <p>
+                                <h2>
+                                    НАВАНТАЖЕННЯ СИСТЕМИ ШІ
+                                </h2>
+                                <em>
+                                    LIVE
+                                </em>
+                            </div>
+                            <div class="bar-list">
+                                <p>
         <span>
          AI Обробка (CPU)
         </span>
-                        <b id="aiCpuText">
-                            --%
-                        </b>
-                        <i>
-                            <u id="aiCpuBar">
-                            </u>
-                        </i>
-                    </p>
-                    <p>
+                                    <b id="aiCpuText">
+                                        --%
+                                    </b>
+                                    <i>
+                                        <u id="aiCpuBar">
+                                        </u>
+                                    </i>
+                                </p>
+                                <p>
         <span>
          Пропускна здатність
         </span>
-                        <b id="aiThroughText">
-                            --%
-                        </b>
-                        <i>
-                            <u id="aiThroughBar">
-                            </u>
-                        </i>
-                    </p>
-                    <p>
+                                    <b id="aiThroughText">
+                                        --%
+                                    </b>
+                                    <i>
+                                        <u id="aiThroughBar">
+                                        </u>
+                                    </i>
+                                </p>
+                                <p>
         <span>
          Пам'ять (RAM)
         </span>
-                        <b id="aiRamText">
-                            --%
-                        </b>
-                        <i>
-                            <u id="aiRamBar">
-                            </u>
-                        </i>
-                    </p>
-                    <p>
+                                    <b id="aiRamText">
+                                        --%
+                                    </b>
+                                    <i>
+                                        <u id="aiRamBar">
+                                        </u>
+                                    </i>
+                                </p>
+                                <p>
         <span>
          Дискова черга
         </span>
-                        <b id="aiDiskText">
-                            --%
-                        </b>
-                        <i>
-                            <u id="aiDiskBar">
-                            </u>
-                        </i>
-                    </p>
-                    <p>
+                                    <b id="aiDiskText">
+                                        --%
+                                    </b>
+                                    <i>
+                                        <u id="aiDiskBar">
+                                        </u>
+                                    </i>
+                                </p>
+                                <p>
         <span>
          GPU Прискорювач
         </span>
-                        <b id="aiGpuText">
-                            --%
-                        </b>
-                        <i>
-                            <u id="aiGpuBar">
-                            </u>
-                        </i>
-                    </p>
-                    <p>
+                                    <b id="aiGpuText">
+                                        --%
+                                    </b>
+                                    <i>
+                                        <u id="aiGpuBar">
+                                        </u>
+                                    </i>
+                                </p>
+                                <p>
         <span>
          Точність прогнозів
         </span>
-                        <b id="aiConfidenceText">
-                            --%
-                        </b>
-                        <i>
-                            <u id="aiConfidenceBar">
-                            </u>
-                        </i>
-                    </p>
-                </div>
-            </section>
-            <section class="panel analytics-panel">
-                <div class="panel-head">
+                                    <b id="aiConfidenceText">
+                                        --%
+                                    </b>
+                                    <i>
+                                        <u id="aiConfidenceBar">
+                                        </u>
+                                    </i>
+                                </p>
+                            </div>
+                        </section>
+                        <section class="panel analytics-panel">
+                            <div class="panel-head">
        <span class="led">
        </span>
-                    <h2>
-                        АНАЛІТИКА МІСІЇ
-                    </h2>
-                    <em>
-                        LIVE
-                    </em>
-                </div>
-                <div class="kpi-grid">
-                    <div>
-                        <small>
-                            ЧАС МОНІТОРИНГУ
-                        </small>
-                        <b id="aiMonTime">
-                            --
-                        </b>
-                        <span>
+                                <h2>
+                                    АНАЛІТИКА МІСІЇ
+                                </h2>
+                                <em>
+                                    LIVE
+                                </em>
+                            </div>
+                            <div class="kpi-grid">
+                                <div>
+                                    <small>
+                                        ЧАС МОНІТОРИНГУ
+                                    </small>
+                                    <b id="aiMonTime">
+                                        --
+                                    </b>
+                                    <span>
          на орбіті
         </span>
-                    </div>
-                    <div>
-                        <small>
-                            ПОДІЇ ТРИВОГ
-                        </small>
-                        <b id="aiAlertCount">
-                            --
-                        </b>
-                        <span>
+                                </div>
+                                <div>
+                                    <small>
+                                        ПОДІЇ ТРИВОГ
+                                    </small>
+                                    <b id="aiAlertCount">
+                                        --
+                                    </b>
+                                    <span>
          за сесію
         </span>
-                    </div>
-                    <div>
-                        <small>
-                            МАКС. ІНДЕКС МІСІЇ
-                        </small>
-                        <b id="aiMaxMission">
-                            --%
-                        </b>
-                        <span>
+                                </div>
+                                <div>
+                                    <small>
+                                        МАКС. ІНДЕКС МІСІЇ
+                                    </small>
+                                    <b id="aiMaxMission">
+                                        --%
+                                    </b>
+                                    <span>
          номінальний
         </span>
-                    </div>
-                    <div>
-                        <small>
-                            ДІАПАЗОН ВИСОТИ
-                        </small>
-                        <b id="aiAltRange">
-                            --
-                        </b>
-                        <span>
+                                </div>
+                                <div>
+                                    <small>
+                                        ДІАПАЗОН ВИСОТИ
+                                    </small>
+                                    <b id="aiAltRange">
+                                        --
+                                    </b>
+                                    <span>
          поточний
         </span>
-                    </div>
-                    <div>
-                        <small>
-                            СЕРЕДНІЙ ЗАРЯД
-                        </small>
-                        <b id="aiAvgBatt">
-                            --%
-                        </b>
-                        <span>
+                                </div>
+                                <div>
+                                    <small>
+                                        СЕРЕДНІЙ ЗАРЯД
+                                    </small>
+                                    <b id="aiAvgBatt">
+                                        --%
+                                    </b>
+                                    <span>
          батарея
         </span>
-                    </div>
-                </div>
-                <div class="chart-box">
-                    <div class="chart-title">
-                        ІСТОРІЯ РИЗИКУ (RISK K) ТА ІНДЕКС МІСІЇ
-                        <em>
-                            LIVE
-                        </em>
-                    </div>
-                    <canvas id="aiMissionChart">
-                    </canvas>
-                </div>
-                <div class="kpi-strip">
-                    <div>
-                        <small>
-                            ВХОДЖЕНЬ У ЗОНУ ТІНІ
-                        </small>
-                        <b id="aiEclipseCount">
-                            --
-                        </b>
-                    </div>
-                    <div>
-                        <small>
-                            РЕАКЦІЙ НА ПОДІЇ
-                        </small>
-                        <b id="aiReactionCount">
-                            --
-                        </b>
-                    </div>
-                    <div>
-                        <small>
-                            МАКС. RISK K
-                        </small>
-                        <b id="aiMaxRisk">
-                            --
-                        </b>
-                    </div>
-                    <div>
-                        <small>
-                            ЕФЕКТИВНІСТЬ ШІ
-                        </small>
-                        <b id="aiEff">
-                            --%
-                        </b>
-                    </div>
-                    <div>
-                        <small>
-                            СТАБІЛЬНІСТЬ КАНАЛУ
-                        </small>
-                        <b id="aiCommStable">
-                            --%
-                        </b>
-                    </div>
-                    <div>
-                        <small>
-                            ВІДХИЛЕННЯ ТРАЄКТОРІЇ
-                        </small>
-                        <b id="aiTrajDev">
-                            -- m
-                        </b>
-                    </div>
-                </div>
-            </section>
-            <section class="panel insights-panel">
-                <div class="panel-head">
+                                </div>
+                            </div>
+                            <div class="chart-box">
+                                <div class="chart-title">
+                                    ІСТОРІЯ РИЗИКУ (RISK K) ТА ІНДЕКС МІСІЇ
+                                    <em>
+                                        LIVE
+                                    </em>
+                                </div>
+                                <canvas id="aiMissionChart">
+                                </canvas>
+                            </div>
+                            <div class="kpi-strip">
+                                <div>
+                                    <small>
+                                        ВХОДЖЕНЬ У ЗОНУ ТІНІ
+                                    </small>
+                                    <b id="aiEclipseCount">
+                                        --
+                                    </b>
+                                </div>
+                                <div>
+                                    <small>
+                                        РЕАКЦІЙ НА ПОДІЇ
+                                    </small>
+                                    <b id="aiReactionCount">
+                                        --
+                                    </b>
+                                </div>
+                                <div>
+                                    <small>
+                                        МАКС. RISK K
+                                    </small>
+                                    <b id="aiMaxRisk">
+                                        --
+                                    </b>
+                                </div>
+                                <div>
+                                    <small>
+                                        ЕФЕКТИВНІСТЬ ШІ
+                                    </small>
+                                    <b id="aiEff">
+                                        --%
+                                    </b>
+                                </div>
+                                <div>
+                                    <small>
+                                        СТАБІЛЬНІСТЬ КАНАЛУ
+                                    </small>
+                                    <b id="aiCommStable">
+                                        --%
+                                    </b>
+                                </div>
+                                <div>
+                                    <small>
+                                        ВІДХИЛЕННЯ ТРАЄКТОРІЇ
+                                    </small>
+                                    <b id="aiTrajDev">
+                                        -- m
+                                    </b>
+                                </div>
+                            </div>
+                        </section>
+                        <section class="panel insights-panel">
+                            <div class="panel-head">
        <span class="led">
        </span>
-                    <h2>
-                        ІНСАЙТИ АНАЛІТИЧНОГО ДВИГУНА
-                    </h2>
-                    <em>
-                        LIVE
-                    </em>
-                </div>
-                <div class="insight-list" id="insightList">
-                </div>
-            </section>
-        </div>
-        <footer class="metric-strip ai-footer">
-            <div>
-                <small>
-                    РЕЖИМ
-                </small>
-                <b>
-                    AI Analytics
-                </b>
-            </div>
-            <div>
-                <small>
-                    3D ЗВ'ЯЗОК
-                </small>
-                <b>
-                    UHF / S-band
-                </b>
-            </div>
-            <div>
-                <small>
-                    НАВАНТАЖЕННЯ ШІ
-                </small>
-                <b id="aiLoadFooter">
-                    --%
-                </b>
-                <canvas class="mini-wave" id="aiLoadSpark">
-                </canvas>
-            </div>
-            <div>
-                <small>
-                    GPU ТЕМПЕРАТУРА
-                </small>
-                <b id="gpuTemp">
-                    --°C
-                </b>
-            </div>
-            <div>
-                <small>
-                    МОДЕЛІ АКТИВНІ
-                </small>
-                <b>
-                    5 / 5
-                </b>
-            </div>
-            <div>
-                <small>
-                    ІНФЕРЕНС ЗАТРИМКА
-                </small>
-                <b id="latencyText">
-                    -- ms
-                </b>
-            </div>
-        </footer>
-    </section>
+                                <h2>
+                                    ІНСАЙТИ АНАЛІТИЧНОГО ДВИГУНА
+                                </h2>
+                                <em>
+                                    LIVE
+                                </em>
+                            </div>
+                            <div class="insight-list" id="insightList">
+                            </div>
+                        </section>
+                    </div>
+                    <footer class="metric-strip ai-footer">
+                        <div>
+                            <small>
+                                РЕЖИМ
+                            </small>
+                            <b>
+                                AI Analytics
+                            </b>
+                        </div>
+                        <div>
+                            <small>
+                                3D ЗВ'ЯЗОК
+                            </small>
+                            <b>
+                                UHF / S-band
+                            </b>
+                        </div>
+                        <div>
+                            <small>
+                                НАВАНТАЖЕННЯ ШІ
+                            </small>
+                            <b id="aiLoadFooter">
+                                --%
+                            </b>
+                            <canvas class="mini-wave" id="aiLoadSpark">
+                            </canvas>
+                        </div>
+                        <div>
+                            <small>
+                                GPU ТЕМПЕРАТУРА
+                            </small>
+                            <b id="gpuTemp">
+                                --°C
+                            </b>
+                        </div>
+                        <div>
+                            <small>
+                                МОДЕЛІ АКТИВНІ
+                            </small>
+                            <b>
+                                5 / 5
+                            </b>
+                        </div>
+                        <div>
+                            <small>
+                                ІНФЕРЕНС ЗАТРИМКА
+                            </small>
+                            <b id="latencyText">
+                                -- ms
+                            </b>
+                        </div>
+                    </footer>
+                </section>
 </main>
 <script src="/script.js">
 </script>
 </body>
 </html>
-
