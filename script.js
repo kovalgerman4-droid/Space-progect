@@ -389,7 +389,6 @@ function updateSatellite(sat, history) {
     drawSparkline('densSpark', history.map(x => 1.8 + (431 - x.altitude_km) * .06), {color: 'purple'});
     drawSparkline('periodSpark', history.map(x => 92 + (x.altitude_km - 419) * .025), {color: 'cyan'});
 }
-
 function updateDrone(drone, history) {
     setText('uavScenarioName', drone.scenario);
     const geo = dronePseudoGeo(drone);
@@ -403,7 +402,51 @@ function updateDrone(drone, history) {
 
     setText('drCurrentValue', fmt(drone.Icurrent, 1, 'A'));
     setText('drTempValue', fmt(drone.Tcurrent, 1, '°C'));
-    setText('drRiskValue', fmt(drone.risk, 3));
+
+    // ==========================================
+    // ДИНАМІЧНА ЛОГІКА ІНДИКАТОРА РИЗИКУ
+    // ==========================================
+    const riskValue = drone.risk || 0;
+    const riskTextElement = $('drRiskValue');
+    const droneOrb = $('droneOrb');
+    const statusText = $('drStatusText');
+
+    // 1. Оновлюємо колір самого значення ризику
+    if (riskTextElement) {
+        riskTextElement.classList.remove('risk-good', 'risk-warning', 'risk-danger', 'purple');
+        if (riskValue < 0.3) riskTextElement.classList.add('risk-good');
+        else if (riskValue < 0.7) riskTextElement.classList.add('risk-warning');
+        else riskTextElement.classList.add('risk-danger');
+        
+        riskTextElement.innerText = fmt(riskValue, 3);
+    }
+
+    // 2. Оновлюємо Орб (круглий індикатор) та Текстовий статус
+    if (droneOrb && statusText) {
+        droneOrb.className = 'safe-orb'; // Скидаємо класи орба до базового (зеленого)
+        let orbIcon = '✓';
+        
+        if (riskValue < 0.3) {
+            statusText.innerText = 'SAFE';
+            statusText.className = 'green';
+        } else if (riskValue < 0.7) {
+            droneOrb.classList.add('caution');
+            statusText.innerText = 'CAUTION';
+            statusText.className = 'yellow';
+            orbIcon = '⚠';
+        } else {
+            droneOrb.classList.add('danger');
+            statusText.innerText = 'DANGER';
+            statusText.className = 'red';
+            orbIcon = '⚠';
+        }
+        
+        // Змінюємо іконку всередині орба
+        const strongInOrb = droneOrb.querySelector('strong');
+        if (strongInOrb) strongInOrb.innerText = orbIcon;
+    }
+    // ==========================================
+
     setText('drHeatValue', fmt(drone.heat_power_W, 1, 'W'));
     setText('drVoltageValue', fmt(drone.voltage_V, 2, 'V'));
     setText('drRpmValue', fmtInt(drone.rpm));
@@ -413,7 +456,7 @@ function updateDrone(drone, history) {
     setText('drThrottleValue', fmt(drone.throttle_percent, 0, '%'));
     setText('drHeatRateValue', fmt(drone.heating_rate_C_per_s, 3, '°C/s'));
     setText('drCoolRateValue', fmt(drone.cooling_rate_C_per_s, 3, '°C/s'));
-    setText('drStatusText', drone.status);
+    
     setText('drStatusBadge', drone.status);
     setText('drPhase', drone.mission_phase);
     setText('drMargin', fmt(drone.thermal_margin_C, 1, ' °C'));
@@ -422,15 +465,14 @@ function updateDrone(drone, history) {
     setText('drLinkSide', drone.risk > .75 ? 'НЕСТАБІЛЬНИЙ' : 'НАДІЙНИЙ');
     setText('drMissionTime', formatDuration(drone.t));
 
-    // Battery block in the status panel (big number + bar indicator).
+    // Battery block in the status panel
     setText('drBattBig', fmt(drone.battery_soc_percent, 0, '%'));
     setBars('drBattBars', drone.battery_soc_percent);
 
     const riskPct = clamp(drone.risk * 100, 0, 100);
     setProgress('riskFill', riskPct);
     setText('riskText', `Risk K = ${fmt(drone.risk, 3)} | ${drone.status}`);
-    const orb = $('droneOrb');
-    if (orb) orb.className = `safe-orb ${statusClass(drone.status)}`;
+    
     setProgress('drBattProgress', drone.battery_soc_percent);
     setProgress('drThrProgress', drone.throttle_percent);
 
@@ -459,6 +501,76 @@ function updateDrone(drone, history) {
     drawSparkline('drHeatRateChart', history.map(x => x.heating_rate_C_per_s), {min: 0, max: 2, color: 'red'});
     drawSparkline('drCoolRateChart', history.map(x => x.cooling_rate_C_per_s), {min: 0, max: 2, color: 'cyan'});
 }
+
+// function updateDrone(drone, history) {
+//     setText('uavScenarioName', drone.scenario);
+//     const geo = dronePseudoGeo(drone);
+
+//     setText('uavAlt', fmt(geo.alt, 1, ' м'));
+//     setText('uavSpeed', fmt(geo.speed, 1, ' км/год'));
+//     setText('uavRssi', `${fmt(-52 - drone.risk * 38 - Math.sin(drone.t * .1) * 4, 0)} dBm`);
+//     setText('uavLink', drone.risk > .75 ? 'НЕСТАБІЛЬНИЙ' : 'НАДІЙНИЙ');
+//     setText('uavSummaryLine', `t=${fmt(drone.t, 1, 's')} | I=${fmt(drone.Icurrent, 2)}A/45A | T=${fmt(drone.Tcurrent, 1)}°C/90°C | P_heat=${fmt(drone.heat_power_W, 1)}W | V=${fmt(drone.voltage_V, 2)}V | RPM=${fmtInt(drone.rpm)} | η=${fmt(drone.efficiency_percent, 1)}% | SOC=${fmt(drone.battery_soc_percent, 1)}%`);
+//     setText('drTimeTop', `t = ${fmt(drone.t, 1)} s`);
+
+//     setText('drCurrentValue', fmt(drone.Icurrent, 1, 'A'));
+//     setText('drTempValue', fmt(drone.Tcurrent, 1, '°C'));
+//     setText('drRiskValue', fmt(drone.risk, 3));
+//     setText('drHeatValue', fmt(drone.heat_power_W, 1, 'W'));
+//     setText('drVoltageValue', fmt(drone.voltage_V, 2, 'V'));
+//     setText('drRpmValue', fmtInt(drone.rpm));
+//     setText('drMagValue', fmt(drone.magnet_health_percent, 1, '%'));
+//     setText('drEffValue', fmt(drone.efficiency_percent, 1, '%'));
+//     setText('drBattValue', fmt(drone.battery_soc_percent, 0, '%'));
+//     setText('drThrottleValue', fmt(drone.throttle_percent, 0, '%'));
+//     setText('drHeatRateValue', fmt(drone.heating_rate_C_per_s, 3, '°C/s'));
+//     setText('drCoolRateValue', fmt(drone.cooling_rate_C_per_s, 3, '°C/s'));
+//     setText('drStatusText', drone.status);
+//     setText('drStatusBadge', drone.status);
+//     setText('drPhase', drone.mission_phase);
+//     setText('drMargin', fmt(drone.thermal_margin_C, 1, ' °C'));
+//     setText('drDemag', drone.demag_risk < .3 ? 'LOW' : drone.demag_risk < .7 ? 'MEDIUM' : 'HIGH');
+//     setText('drBattSide', fmt(drone.battery_soc_percent, 1, '%'));
+//     setText('drLinkSide', drone.risk > .75 ? 'НЕСТАБІЛЬНИЙ' : 'НАДІЙНИЙ');
+//     setText('drMissionTime', formatDuration(drone.t));
+
+//     // Battery block in the status panel (big number + bar indicator).
+//     setText('drBattBig', fmt(drone.battery_soc_percent, 0, '%'));
+//     setBars('drBattBars', drone.battery_soc_percent);
+
+//     const riskPct = clamp(drone.risk * 100, 0, 100);
+//     setProgress('riskFill', riskPct);
+//     setText('riskText', `Risk K = ${fmt(drone.risk, 3)} | ${drone.status}`);
+//     const orb = $('droneOrb');
+//     if (orb) orb.className = `safe-orb ${statusClass(drone.status)}`;
+//     setProgress('drBattProgress', drone.battery_soc_percent);
+//     setProgress('drThrProgress', drone.throttle_percent);
+
+//     const pseudoHistory = history.map((x) => ({...dronePseudoGeo({...drone, t: x.t, risk: x.risk}), ...x}));
+//     drawSparkline('uavLatSpark', pseudoHistory.map(x => x.lat), {thin: true, color: 'cyan'});
+//     drawSparkline('uavLonSpark', pseudoHistory.map(x => x.lon), {thin: true, color: 'cyan'});
+//     drawSparkline('uavAltSpark', pseudoHistory.map(x => x.alt), {min: 0, max: 160, thin: true, color: 'blue'});
+//     drawSparkline('uavSpeedSpark', pseudoHistory.map(x => x.speed), {min: 0, max: 90, thin: true, color: 'cyan'});
+//     drawSparkline('uavHeadSpark', pseudoHistory.map(x => x.heading), {min: 0, max: 360, thin: true, color: 'cyan'});
+//     drawSparkline('uavRangeSpark', pseudoHistory.map(x => x.range), {min: 0, max: 15, thin: true, color: 'cyan'});
+//     drawSparkline('uavRssiSpark', history.map(x => -52 - x.risk * 38), {
+//         min: -100,
+//         max: -40,
+//         thin: true,
+//         color: 'blue'
+//     });
+
+//     drawSparkline('drCurrentChart', history.map(x => x.Icurrent), {min: 0, max: 45, color: 'cyan'});
+//     drawSparkline('drTempChart', history.map(x => x.Tcurrent), {min: 20, max: 100, color: 'orange'});
+//     drawSparkline('drRiskChart', history.map(x => x.risk), {min: 0, max: 1, color: 'purple'});
+//     drawSparkline('drHeatChart', history.map(x => x.heat_power_W), {min: 0, max: 130, color: 'cyan'});
+//     drawSparkline('drVoltageChart', history.map(x => x.voltage_V), {min: 18, max: 26, color: 'green'});
+//     drawSparkline('drRpmChart', history.map(x => x.rpm), {min: 0, max: 20000, color: 'blue'});
+//     drawSparkline('drMagChart', history.map(x => x.magnet_health_percent), {min: 0, max: 100, color: 'green'});
+//     drawSparkline('drEffChart', history.map(x => x.efficiency_percent), {min: 40, max: 90, color: 'orange'});
+//     drawSparkline('drHeatRateChart', history.map(x => x.heating_rate_C_per_s), {min: 0, max: 2, color: 'red'});
+//     drawSparkline('drCoolRateChart', history.map(x => x.cooling_rate_C_per_s), {min: 0, max: 2, color: 'cyan'});
+// }
 
 function dronePseudoGeo(drone) {
     const t = Number(drone.t) || 0;
