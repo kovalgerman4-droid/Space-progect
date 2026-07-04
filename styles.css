@@ -789,19 +789,62 @@ main {
 .uav-page .uav-main-grid { flex: 1 1 auto; min-height: 0; }
 .uav-page .uav-telemetry-panel, .uav-page .uav-status-panel { min-height: 0; }
 .uav-page .uav-card-grid { overflow-y: auto; }
-
-.uav-page .ai-output-panel {
-    flex: 0 0 128px;
-    margin-top: 0;
+/* Відпускаємо висоту, дозволяючи сторінці бути природного розміру */
+.uav-page.active, .ai-page.active {
     display: flex;
     flex-direction: column;
+    min-height: calc(100vh - 148px);
+    height: auto; 
 }
 
-.uav-page .ai-output-panel .event-log { flex: 1; min-height: 0; max-height: none; }
-.uav-page .status-footer { flex: 0 0 auto; }
+.uav-main-grid {
+    display: grid;
+    grid-template-columns: 1fr 340px; /* Права колонка фіксована, ліва займає решту */
+    gap: 14px;
+    align-items: stretch;
+    margin-bottom: 14px;
+}
+
+.uav-left-col {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+/* Прибираємо overflow-y: auto та задаємо гарні відступи */
+.uav-card-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+    padding: 16px;
+}
+
+.uav-card-grid .data-card {
+    min-height: 140px; /* Збільшена висота карток для графіків */
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.uav-card-grid .spark {
+    width: 100%;
+    height: 46px; /* Більше місця для спарклайнів */
+    flex: 0 0 46px;
+}
+
+.uav-page .ai-output-panel {
+    flex: 1; /* Змушує AI панель заповнити залишок простору під картками */
+    margin: 0;
+}
 
 @media (max-width: 1100px) {
-    .uav-main-grid { grid-template-columns: 1fr; }
+    .uav-main-grid {
+    display: grid;
+    grid-template-columns: 1fr 340px; /* Права колонка фіксована, ліва займає решту */
+    gap: 14px;
+    align-items: stretch;
+    margin-bottom: 14px;
+}
     .uav-page.active { height: auto; min-height: 0; }
 }
 
@@ -926,7 +969,12 @@ main {
 
 .safe-orb.danger b { color: var(--red); }
 
-.algorithm-list, .insight-list, .bar-list { padding: 10px; display: grid; gap: 7px; }
+/* Прибираємо скроли всередині списків, даємо більше повітря */
+.algorithm-list, .insight-list, .bar-list { 
+    padding: 16px; 
+    gap: 12px; 
+    overflow: visible; 
+}
 
 .algorithm-list div, .insight-list div {
     display: grid;
@@ -1040,7 +1088,12 @@ main {
     min-height: 480px;
 }
 
-.ai-page .ai-grid { flex: 1 1 auto; min-height: 0; grid-template-rows: minmax(120px, 1fr) 340px; }
+.ai-page .ai-grid {
+    flex: 1 1 auto;
+    gap: 14px;
+    /* Прибираємо жорсткі обмеження рядків */
+    grid-template-rows: auto auto; 
+}
 .ai-page .ai-footer { flex: 0 0 auto; margin-top: 12px; }
 
 .ai-page .algorithms-panel, .ai-page .load-panel, .ai-page .analytics-panel, .ai-page .insights-panel {
@@ -1051,7 +1104,9 @@ main {
 
 .ai-page .algorithm-list, .ai-page .bar-list, .ai-page .insight-list { flex: 1 1 auto; min-height: 0; overflow-y: auto; }
 .ai-page .analytics-panel .kpi-grid { flex: 0 0 auto; }
-.ai-page .analytics-panel .chart-box { flex: 1 1 auto; min-height: 0; display: flex; flex-direction: column; }
+.ai-page .analytics-panel .chart-box {
+    min-height: 240px; /* Забезпечує, що графік не сплющиться */
+}
 .ai-page .analytics-panel .kpi-strip { flex: 0 0 auto; }
 .ai-page #aiMissionChart { flex: 1 1 auto; min-height: 0; width: 100%; height: auto; }
 
