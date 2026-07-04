@@ -726,13 +726,19 @@ main {
     margin: 16px auto 8px;
     box-shadow: 0 0 30px rgba(0, 255, 136, .2);
 }
+/* Кольори для тексту Ризику Двигуна (RISK K) динамічні */
+.risk-good { color: var(--green) !important; }
+.risk-warning { color: var(--yellow) !important; }
+.risk-danger { color: var(--red) !important; }
 
 .uav-status-panel .safe-orb strong { font-size: 0; line-height: 0; }
 .uav-status-panel .safe-orb strong::before { content: '✓'; font-size: 24px; line-height: 1; }
 .uav-status-panel .safe-orb.caution strong::before,
 .uav-status-panel .safe-orb.danger strong::before { content: '⚠'; }
 .uav-status-panel .safe-orb b { font-size: 11px; letter-spacing: 2px; margin: 3px 0 0; }
-
+.safe-orb strong {
+    font-size: 36px; /* Значок знаку оклику теж збільшуємо */
+}
 /* ---- NEW: battery block in the UAV status panel ---- */
 .uav-battery-block {
     margin: 0 14px 12px;
@@ -950,7 +956,11 @@ main {
     font-family: 'Orbitron';
 }
 
-.safe-orb b { color: var(--green); letter-spacing: 3px; margin: 4px 0; }
+.safe-orb b {
+    font-size: 28px; /* Було значно менше, тепер жирно і помітно */
+    letter-spacing: 2px;
+    margin-top: 4px;
+}
 .safe-orb small { color: var(--muted); font-family: 'Share Tech Mono'; font-size: 10px; }
 
 .safe-orb.caution {
@@ -1089,10 +1099,11 @@ main {
 }
 
 .ai-page .ai-grid {
-    flex: 1 1 auto;
+    display: grid;
+    grid-template-columns: 1fr 380px; /* Дві колонки: графіки + алгоритми */
     gap: 14px;
-    /* Прибираємо жорсткі обмеження рядків */
-    grid-template-rows: auto auto; 
+    align-items: stretch;
+    height: auto;
 }
 .ai-page .ai-footer { flex: 0 0 auto; margin-top: 12px; }
 
@@ -1121,7 +1132,24 @@ main {
     .sat-grid { grid-template-columns: 1fr; }
     .map-wrap { max-width: 100%; }
 }
+.ai-left-column {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+/* Робимо блок навчання компактнішим */
+.training-panel-small {
+    background: var(--panel);
+    border: 1px solid var(--line);
+    padding: 10px;
+}
 
+.training-panel-small .bar-list {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr); /* Моделі стануть у два ряди, компактно */
+    gap: 8px;
+    padding: 8px 4px;
+}
 @media (max-width: 700px) {
     .tab span { font-size: 16px; margin-right: 8px; }
     .tab { font-size: 12px; }
