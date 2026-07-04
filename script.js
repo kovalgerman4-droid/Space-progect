@@ -88,18 +88,51 @@ function solarActivityLabel(kp) {
     return 'СИЛЬНИЙ ШТОРМ';
 }
 
+/* -------------------------------------------------------------------------
+ * FIX: canvas / sparkline rendering.
+ *
+ * Previously each canvas only re-synced its internal pixel size with the
+ * CSS box on the 450ms telemetry tick (or on a global "resize" event).
+ * Whenever a container's *layout* size changed for a reason other than a
+ * window resize (switching tabs, a card wrapping to a new row, fonts
+ * finishing loading, flex/grid reflow, etc.) the canvas kept its old
+ * internal resolution for up to 450ms and briefly rendered stretched /
+ * misaligned lines that visually looked like they were "on top of" the
+ * card next to them.
+ *
+ * A ResizeObserver watches every chart canvas directly and forces an
+ * immediate redraw the instant its actual box size changes, independent
+ * of the polling loop or the window resize event.
+ * ------------------------------------------------------------------- */
+let chartResizeObserver = null;
+
+function observeChartCanvases() {
+    if (!('ResizeObserver' in window)) return;
+    if (chartResizeObserver) chartResizeObserver.disconnect();
+    chartResizeObserver = new ResizeObserver(() => {
+        redrawAll();
+    });
+    document.querySelectorAll('canvas').forEach((canvas) => {
+        chartResizeObserver.observe(canvas);
+    });
+}
+
 function prepareCanvas(canvas) {
     if (!canvas) return null;
     const rect = canvas.getBoundingClientRect();
+    // A canvas on a hidden (inactive) tab reports 0x0 — skip drawing rather
+    // than forcing a fake 10x10 resolution that has to be corrected later.
+    if (rect.width < 1 || rect.height < 1) return null;
     const dpr = window.devicePixelRatio || 1;
     const width = Math.max(10, Math.floor(rect.width));
     const height = Math.max(10, Math.floor(rect.height));
-    if (canvas.width !== width * dpr || canvas.height !== height * dpr) {
-        canvas.width = width * dpr;
-        canvas.height = height * dpr;
+    if (canvas.width !== Math.round(width * dpr) || canvas.height !== Math.round(height * dpr)) {
+        canvas.width = Math.round(width * dpr);
+        canvas.height = Math.round(height * dpr);
     }
     const ctx = canvas.getContext('2d');
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    ctx.clearRect(0, 0, width, height);
     return {ctx, width, height};
 }
 
@@ -108,7 +141,6 @@ function drawSparkline(id, values, options = {}) {
     const prepared = prepareCanvas(canvas);
     if (!prepared) return;
     const {ctx, width, height} = prepared;
-    ctx.clearRect(0, 0, width, height);
 
     const clean = values.filter((v) => Number.isFinite(Number(v))).map(Number);
     if (clean.length < 2) return;
@@ -270,7 +302,9 @@ function attachUi() {
             state.activePage = page;
             document.querySelectorAll('.tab').forEach((t) => t.classList.toggle('active', t === tab));
             document.querySelectorAll('.page').forEach((p) => p.classList.toggle('active', p.id === `page-${page}`));
-            redrawAll();
+            // Charts on the freshly-shown tab were 0x0 while hidden; give the
+            // browser one frame to apply layout, then redraw with real sizes.
+            requestAnimationFrame(() => requestAnimationFrame(redrawAll));
         });
     });
 
@@ -387,6 +421,10 @@ function updateDrone(drone, history) {
     setText('drBattSide', fmt(drone.battery_soc_percent, 1, '%'));
     setText('drLinkSide', drone.risk > .75 ? 'НЕСТАБІЛЬНИЙ' : 'НАДІЙНИЙ');
     setText('drMissionTime', formatDuration(drone.t));
+
+    // Battery block in the status panel (big number + bar indicator).
+    setText('drBattBig', fmt(drone.battery_soc_percent, 0, '%'));
+    setBars('drBattBars', drone.battery_soc_percent);
 
     const riskPct = clamp(drone.risk * 100, 0, 100);
     setProgress('riskFill', riskPct);
@@ -546,7 +584,6 @@ function drawMissionChart(satHistory, droneHistory) {
     const prepared = prepareCanvas(canvas);
     if (!prepared) return;
     const {ctx, width, height} = prepared;
-    ctx.clearRect(0, 0, width, height);
     const pad = {l: 42, r: 14, t: 12, b: 26};
     const w = width - pad.l - pad.r;
     const h = height - pad.t - pad.b;
@@ -568,11 +605,8 @@ function drawMissionChart(satHistory, droneHistory) {
     const riskVals = droneHistory.slice(-80).map(x => (x.risk || 0) * 100);
     drawLine(ctx, satVals, pad, w, h, ['rgba(34,211,238,.95)', 'rgba(34,211,238,.12)']);
     drawLine(ctx, riskVals, pad, w, h, ['rgba(192,132,252,.95)', 'rgba(192,132,252,.13)']);
-
-    ctx.fillStyle = '#22d3ee';
-    ctx.fillText('MISSION INDEX', pad.l + w - 130, pad.t + 16);
-    ctx.fillStyle = '#c084fc';
-    ctx.fillText('RISK K', pad.l + w - 230, pad.t + 16);
+    // Labels now live in the HTML .chart-legend above the canvas (see index.html),
+    // so they no longer get drawn on top of the plotted lines here.
 }
 
 function drawLine(ctx, values, pad, w, h, colors) {
@@ -599,6 +633,8 @@ function drawLine(ctx, values, pad, w, h, colors) {
 function redrawAll() {
     if (state.sat) drawOrbitMap(state.sat, state.satHistory);
     if (state.sat && state.drone) updateAi(state.sat, state.drone, state.satHistory, state.droneHistory, state.eventLog || []);
+    if (state.drone) updateDrone(state.drone, state.droneHistory);
+    if (state.sat) updateSatellite(state.sat, state.satHistory);
 }
 
 async function updateTelemetry() {
@@ -652,7 +688,6 @@ function drawOrbitMap(sat, history) {
     const prepared = prepareCanvas(canvas);
     if (!prepared || !sat) return;
     const {ctx, width, height} = prepared;
-    ctx.clearRect(0, 0, width, height);
 
     const bg = ctx.createLinearGradient(0, 0, 0, height);
     bg.addColorStop(0, '#06142a');
@@ -699,7 +734,7 @@ function drawOrbitMap(sat, history) {
         ctx.globalAlpha = 0.92;
         ctx.drawImage(earthImg, 0, 0, width, height);
         ctx.globalAlpha = 1;
-    } else {
+    } else if (typeof continents !== 'undefined') {
         continents.forEach((poly, idx) => {
             ctx.beginPath();
             poly.forEach(([lon, lat], i) => {
@@ -869,6 +904,7 @@ async function boot() {
     state.meta = meta;
     populateScenarios(meta);
     await updateTelemetry();
+    observeChartCanvases();
     setInterval(updateTelemetry, 450);
 }
 
