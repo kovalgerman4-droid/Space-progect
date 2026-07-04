@@ -371,9 +371,9 @@ class SatelliteSimulator:
 
         raan_rad = math.radians(current_raan_deg)
         sat_x = radius_km * (
-                    math.cos(raan_rad) * math.cos(theta) - math.sin(raan_rad) * math.sin(theta) * math.cos(inc))
+                math.cos(raan_rad) * math.cos(theta) - math.sin(raan_rad) * math.sin(theta) * math.cos(inc))
         sat_y = radius_km * (
-                    math.sin(raan_rad) * math.cos(theta) + math.cos(raan_rad) * math.sin(theta) * math.cos(inc))
+                math.sin(raan_rad) * math.cos(theta) + math.cos(raan_rad) * math.sin(theta) * math.cos(inc))
         sat_z = radius_km * math.sin(theta) * math.sin(inc)
 
         dec_rad = math.radians(solar_lat_deg)
@@ -918,7 +918,8 @@ class DroneSimulator:
         # Electrical power P = V * I (уся споживана потужність), з якої частка
         # mechanical_efficiency йде в корисну механічну роботу гвинта, а решта - в тепло.
         electrical_power = voltage * Icurrent
-        heat_power = electrical_power * (1.0 - cfg.mechanical_efficiency)
+        heat_power = electrical_power * 1  # * (1.0 - cfg.mechanical_efficiency)
+
         self.heat_energy += heat_power * dt
 
         heating_rate = heat_power / cfg.thermal_capacity
@@ -981,9 +982,8 @@ class DroneSimulator:
         self.last_sample = sample
         return sample
 
-
-def simulation_meta() -> dict:
-    return {
-        "satellite_scenarios": [asdict(s) for s in SATELLITE_SCENARIOS],
-        "drone_scenarios": DRONE_SCENARIOS,
-    }
+    def simulation_meta() -> dict:
+        return {
+            "satellite_scenarios": [asdict(s) for s in SATELLITE_SCENARIOS],
+            "drone_scenarios": DRONE_SCENARIOS,
+        }
