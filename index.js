@@ -364,12 +364,12 @@ function updateDrone(drone, history) {
     setText('uavSpeed', fmt(geo.speed, 1, ' км/год'));
     setText('uavRssi', `${fmt(-52 - drone.risk * 38 - Math.sin(drone.t * .1) * 4, 0)} dBm`);
     setText('uavLink', drone.risk > .75 ? 'НЕСТАБІЛЬНИЙ' : 'НАДІЙНИЙ');
-    setText('uavSummaryLine', `t=${fmt(drone.t, 1, 's')} | I=${fmt(drone.Icurrent, 2)}A/45A | T=${fmt(drone.Tcurrent, 1)}°C/90°C | P_heat=${fmt(drone.heat_power_W, 1)}W | V=${fmt(drone.voltage_V, 2)}V | RPM=${fmtInt(drone.rpm)} | η=${fmt(drone.efficiency_percent, 1)}% | SOC=${fmt(drone.battery_soc_percent, 1)}%`);
+    setText('uavSummaryLine', `t=${fmt(drone.t, 1, 's')} | I=${fmt(drone.Icurrent, 2)}A/45A | T=${fmt(drone.Tcurrent, 1)}°C/90°C | P_total=${fmt(drone.electrical_power_W, 1)}W | V=${fmt(drone.voltage_V, 2)}V | RPM=${fmtInt(drone.rpm)} | η=${fmt(drone.efficiency_percent, 1)}% | SOC=${fmt(drone.battery_soc_percent, 1)}%`);
 
     setText('drCurrentValue', fmt(drone.Icurrent, 1, 'A'));
     setText('drTempValue', fmt(drone.Tcurrent, 1, '°C'));
     setText('drRiskValue', fmt(drone.risk, 3));
-    setText('drHeatValue', fmt(drone.heat_power_W, 1, 'W'));
+    setText('drHeatValue', fmt(drone.electrical_power_W, 1, 'W'));
     setText('drVoltageValue', fmt(drone.voltage_V, 2, 'V'));
     setText('drRpmValue', fmtInt(drone.rpm));
     setText('drMagValue', fmt(drone.magnet_health_percent, 1, '%'));
@@ -412,7 +412,7 @@ function updateDrone(drone, history) {
     drawSparkline('drCurrentChart', history.map(x => x.Icurrent), {min: 0, max: 45, color: 'cyan'});
     drawSparkline('drTempChart', history.map(x => x.Tcurrent), {min: 20, max: 100, color: 'orange'});
     drawSparkline('drRiskChart', history.map(x => x.risk), {min: 0, max: 1, color: 'purple'});
-    drawSparkline('drHeatChart', history.map(x => x.heat_power_W), {min: 0, max: 130, color: 'cyan'});
+    drawSparkline('drHeatChart', history.map(x => x.electrical_power_W), {min: 0, max: 1100, color: 'cyan'});
     drawSparkline('drVoltageChart', history.map(x => x.voltage_V), {min: 18, max: 26, color: 'green'});
     drawSparkline('drRpmChart', history.map(x => x.rpm), {min: 0, max: 20000, color: 'blue'});
     drawSparkline('drMagChart', history.map(x => x.magnet_health_percent), {min: 0, max: 100, color: 'green'});
