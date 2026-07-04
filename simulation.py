@@ -671,6 +671,7 @@ class DroneTelemetry:
 
     heat_power_W: float
     heat_energy_J: float
+    electrical_power_W: float
 
     voltage_V: float
     battery_soc_percent: float
@@ -888,6 +889,7 @@ class DroneSimulator:
                 mission_phase="SYSTEM SHUTDOWN",
                 heat_power_W=heat_power,
                 heat_energy_J=self.heat_energy,
+                electrical_power_W=0.0,
                 voltage_V=voltage,
                 battery_soc_percent=0.0,
                 rpm=rpm,
@@ -967,6 +969,7 @@ class DroneSimulator:
             mission_phase=phase,
             heat_power_W=heat_power,
             heat_energy_J=self.heat_energy,
+            electrical_power_W=electrical_power,
             voltage_V=voltage,
             battery_soc_percent=self.battery_soc,
             rpm=rpm,
