@@ -412,7 +412,7 @@ function updateDrone(drone, history) {
     drawSparkline('drCurrentChart', history.map(x => x.Icurrent), {min: 0, max: 45, color: 'cyan'});
     drawSparkline('drTempChart', history.map(x => x.Tcurrent), {min: 20, max: 100, color: 'orange'});
     drawSparkline('drRiskChart', history.map(x => x.risk), {min: 0, max: 1, color: 'purple'});
-    drawSparkline('drHeatChart', history.map(x => x.electrical_power_W), {min: 0, max: 1100, color: 'cyan'});
+    drawSparkline('drHeatChart', history.map(x => x.electrical_power_W), {min: 0, max: 1500, color: 'cyan'});
     drawSparkline('drVoltageChart', history.map(x => x.voltage_V), {min: 18, max: 26, color: 'green'});
     drawSparkline('drRpmChart', history.map(x => x.rpm), {min: 0, max: 20000, color: 'blue'});
     drawSparkline('drMagChart', history.map(x => x.magnet_health_percent), {min: 0, max: 100, color: 'green'});
