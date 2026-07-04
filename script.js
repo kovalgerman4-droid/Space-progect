@@ -11,18 +11,14 @@ const state = {
     failureCount: 0,
 };
 
-const KYIV = {lat: 50.45, lon: 30.52};
+const KYIV = { lat: 50.45, lon: 30.52 };
 
 // Earth photo (equirectangular / "flat world map" projection, 2:1 aspect ratio works best)
 const earthImg = new Image();
 let earthImgLoaded = false;
-earthImg.onload = () => {
-    earthImgLoaded = true;
-};
-earthImg.onerror = () => {
-    earthImgLoaded = false;
-};
-earthImg.src = 'Earth.jpg';
+earthImg.onload = () => { earthImgLoaded = true; };
+earthImg.onerror = () => { earthImgLoaded = false; };
+earthImg.src = 'earth.jpg';
 
 const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
 const lerp = (a, b, t) => a + (b - a) * t;
@@ -36,7 +32,7 @@ function setText(id, value) {
 }
 
 async function apiGet(url) {
-    const res = await fetch(url, {cache: 'no-store'});
+    const res = await fetch(url, { cache: 'no-store' });
     if (!res.ok) throw new Error(`${url}: ${res.status}`);
     return res.json();
 }
@@ -44,7 +40,7 @@ async function apiGet(url) {
 async function apiPost(url, body = {}) {
     const res = await fetch(url, {
         method: 'POST',
-        headers: {'Content-Type': 'application/json'},
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(body),
     });
     if (!res.ok) throw new Error(`${url}: ${res.status}`);
@@ -79,15 +75,6 @@ function statusUa(status) {
     return s || '--';
 }
 
-function solarActivityLabel(kp) {
-    const v = Number(kp);
-    if (!Number.isFinite(v)) return '--';
-    if (v < 4) return 'СПОКІЙНО';
-    if (v < 5) return 'ПІДВИЩЕНА';
-    if (v < 7) return 'ШТОРМ';
-    return 'СИЛЬНИЙ ШТОРМ';
-}
-
 function prepareCanvas(canvas) {
     if (!canvas) return null;
     const rect = canvas.getBoundingClientRect();
@@ -100,14 +87,14 @@ function prepareCanvas(canvas) {
     }
     const ctx = canvas.getContext('2d');
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-    return {ctx, width, height};
+    return { ctx, width, height };
 }
 
 function drawSparkline(id, values, options = {}) {
     const canvas = $(id);
     const prepared = prepareCanvas(canvas);
     if (!prepared) return;
-    const {ctx, width, height} = prepared;
+    const { ctx, width, height } = prepared;
     ctx.clearRect(0, 0, width, height);
 
     const clean = values.filter((v) => Number.isFinite(Number(v))).map(Number);
@@ -115,24 +102,17 @@ function drawSparkline(id, values, options = {}) {
 
     let min = options.min ?? Math.min(...clean);
     let max = options.max ?? Math.max(...clean);
-    if (Math.abs(max - min) < 0.0001) {
-        max += 1;
-        min -= 1;
-    }
+    if (Math.abs(max - min) < 0.0001) { max += 1; min -= 1; }
     if (options.min === undefined && options.max === undefined) {
         const pad = (max - min) * 0.12;
-        min -= pad;
-        max += pad;
+        min -= pad; max += pad;
     }
 
     ctx.strokeStyle = 'rgba(80, 220, 255, .12)';
     ctx.lineWidth = 1;
     for (let i = 1; i < 4; i++) {
         const y = (height / 4) * i;
-        ctx.beginPath();
-        ctx.moveTo(0, y);
-        ctx.lineTo(width, y);
-        ctx.stroke();
+        ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(width, y); ctx.stroke();
     }
 
     const color = options.color || 'cyan';
@@ -146,8 +126,7 @@ function drawSparkline(id, values, options = {}) {
     };
     const p = palettes[color] || palettes.cyan;
     const grad = ctx.createLinearGradient(0, 0, width, 0);
-    grad.addColorStop(0, p[0]);
-    grad.addColorStop(1, p[1]);
+    grad.addColorStop(0, p[0]); grad.addColorStop(1, p[1]);
 
     const points = clean.map((v, i) => ({
         x: (i / (clean.length - 1)) * width,
@@ -161,14 +140,11 @@ function drawSparkline(id, values, options = {}) {
     ctx.stroke();
 
     if (!options.noFill) {
-        ctx.lineTo(width, height);
-        ctx.lineTo(0, height);
-        ctx.closePath();
+        ctx.lineTo(width, height); ctx.lineTo(0, height); ctx.closePath();
         const fill = ctx.createLinearGradient(0, 0, 0, height);
         fill.addColorStop(0, p[0].replace('.92', '.16').replace('.94', '.16').replace('.95', '.16'));
         fill.addColorStop(1, 'rgba(0,0,0,0)');
-        ctx.fillStyle = fill;
-        ctx.fill();
+        ctx.fillStyle = fill; ctx.fill();
     }
 }
 
@@ -177,7 +153,7 @@ function setBars(id, pct) {
     if (!el) return;
     const n = 7;
     const active = Math.round(clamp(pct, 0, 100) / 100 * n);
-    el.innerHTML = Array.from({length: n}, (_, i) => `<span class="${i < active ? 'on' : ''}"></span>`).join('');
+    el.innerHTML = Array.from({ length: n }, (_, i) => `<span class="${i < active ? 'on' : ''}"></span>`).join('');
 }
 
 function setProgress(id, pct) {
@@ -193,8 +169,7 @@ function populateScenarios(meta) {
 
     meta.satellite_scenarios.forEach((s) => {
         const opt = document.createElement('option');
-        opt.value = s.key;
-        opt.textContent = `${s.key.toUpperCase()} — ${s.title}`;
+        opt.value = s.key; opt.textContent = `${s.key.toUpperCase()} — ${s.title}`;
         satSelect.appendChild(opt);
 
         const btn = document.createElement('button');
@@ -202,7 +177,7 @@ function populateScenarios(meta) {
         btn.dataset.key = s.key;
         btn.textContent = scenarioLabel(s.key);
         btn.addEventListener('click', async () => {
-            await apiPost('/api/satellite/scenario', {key: s.key});
+            await apiPost('/api/satellite/scenario', { key: s.key });
             satSelect.value = s.key;
             await updateTelemetry();
         });
@@ -210,7 +185,7 @@ function populateScenarios(meta) {
     });
 
     satSelect.addEventListener('change', async () => {
-        await apiPost('/api/satellite/scenario', {key: satSelect.value});
+        await apiPost('/api/satellite/scenario', { key: satSelect.value });
         await updateTelemetry();
     });
 
@@ -220,8 +195,7 @@ function populateScenarios(meta) {
     drButtons.innerHTML = '';
     meta.drone_scenarios.forEach((name) => {
         const opt = document.createElement('option');
-        opt.value = name;
-        opt.textContent = name;
+        opt.value = name; opt.textContent = name;
         drSelect.appendChild(opt);
 
         const btn = document.createElement('button');
@@ -229,7 +203,7 @@ function populateScenarios(meta) {
         btn.dataset.name = name;
         btn.textContent = name;
         btn.addEventListener('click', async () => {
-            await apiPost('/api/drone/scenario', {name});
+            await apiPost('/api/drone/scenario', { name });
             drSelect.value = name;
             await updateTelemetry();
         });
@@ -237,21 +211,15 @@ function populateScenarios(meta) {
     });
 
     drSelect.addEventListener('change', async () => {
-        await apiPost('/api/drone/scenario', {name: drSelect.value});
+        await apiPost('/api/drone/scenario', { name: drSelect.value });
         await updateTelemetry();
     });
 }
 
 function scenarioLabel(key) {
     const labels = {
-        normal: 'Normal mission',
-        geomagnetic: 'Geomagnetic storm',
-        solar_flare: 'Solar flare',
-        drag: 'Drag increase',
-        blackout: 'Blackout',
-        debris: 'Debris avoidance',
-        eclipse: 'Eclipse',
-        thermal: 'Thermal anomaly',
+        normal: 'Normal mission', geomagnetic: 'Geomagnetic storm', solar_flare: 'Solar flare',
+        drag: 'Drag increase', blackout: 'Blackout', debris: 'Debris avoidance', eclipse: 'Eclipse', thermal: 'Thermal anomaly',
     };
     return labels[key] || key;
 }
@@ -288,15 +256,8 @@ function attachUi() {
     });
 
     window.addEventListener('keydown', async (event) => {
-        if (event.code === 'Space') {
-            event.preventDefault();
-            await apiPost('/api/control/toggle');
-            await updateTelemetry();
-        }
-        if (event.key.toLowerCase() === 'r') {
-            await apiPost('/api/control/reset');
-            await updateTelemetry();
-        }
+        if (event.code === 'Space') { event.preventDefault(); await apiPost('/api/control/toggle'); await updateTelemetry(); }
+        if (event.key.toLowerCase() === 'r') { await apiPost('/api/control/reset'); await updateTelemetry(); }
     });
 
     window.addEventListener('resize', redrawAll);
@@ -329,11 +290,9 @@ function updateSatellite(sat, history) {
     setText('attErr', fmt(sat.attitude_error_deg, 3, '°'));
     setText('deltaV', fmt(sat.delta_v_ms, 3, ' м/с'));
     setText('statusText', statusUa(sat.system_status));
-    setText('kpValue', `Kp ${fmt(sat.geomagnetic_kp, 1)}`);
-    setText('orbitalPeriodFoot', fmt(sat.orbital_period_min, 1, ' хв'));
-    setText('atmDensity', `${fmt(1.8 + (431 - sat.altitude_km) * 0.06, 1)} ×10⁻¹² kg/m³`);
-    setText('solarActivityValue', solarActivityLabel(sat.geomagnetic_kp));
-    setText('eclipseStatus', sat.visibility === 'daylight' ? 'НЕМАЄ' : 'У ТІНІ');
+    // setText('kpValue', `Kp ${fmt(sat.geomagnetic_kp, 1)}`);
+    // setText('orbitalPeriodFoot', fmt(sat.orbital_period_min, 1, ' хв'));
+    // setText('atmDensity', `${fmt(1.8 + (431 - sat.altitude_km) * 0.06, 1)} ×10⁻¹² kg/m³`);
     if ($('mapReadout')) $('mapReadout').innerHTML = `LAT ${fmt(sat.latitude_deg, 3, '°')}<br>LON ${fmt(sat.longitude_deg, 3, '°')}`;
 
     const ring = $('satRing');
@@ -341,27 +300,27 @@ function updateSatellite(sat, history) {
     setBars('satBattBars', sat.battery_soc_pct);
     setBars('satCommBars', sat.comm_quality_pct);
 
-    drawSparkline('satLatSpark', history.map(x => x.latitude_deg), {min: -55, max: 55, thin: true});
-    drawSparkline('satLonSpark', history.map(x => x.longitude_deg), {min: -180, max: 180, thin: true});
-    drawSparkline('satAltSpark', history.map(x => x.altitude_km), {min: 405, max: 432, thin: true, color: 'blue'});
-    drawSparkline('satVelSpark', history.map(x => x.velocity_kmh), {thin: true, color: 'cyan'});
-    drawSparkline('satRadSpark', history.map(x => x.radiation_index), {min: 0, max: 80, thin: true, color: 'orange'});
-    drawSparkline('kpSpark', history.map(x => x.geomagnetic_kp), {min: 0, max: 9, color: 'green'});
-    drawSparkline('bzSpark', history.map((x, i) => -1.2 + Math.sin(i * .12) * 1.7 + (x.geomagnetic_kp - 2) * .35), {
-        min: -8,
-        max: 8,
-        color: 'blue'
-    });
-    drawSparkline('densSpark', history.map(x => 1.8 + (431 - x.altitude_km) * .06), {color: 'purple'});
-    drawSparkline('periodSpark', history.map(x => 92 + (x.altitude_km - 419) * .025), {color: 'cyan'});
+    drawSparkline('satLatSpark', history.map(x => x.latitude_deg), { min: -55, max: 55, thin: true });
+    drawSparkline('satLonSpark', history.map(x => x.longitude_deg), { min: -180, max: 180, thin: true });
+    drawSparkline('satAltSpark', history.map(x => x.altitude_km), { min: 405, max: 432, thin: true, color: 'blue' });
+    drawSparkline('satVelSpark', history.map(x => x.velocity_kmh), { thin: true, color: 'cyan' });
+    drawSparkline('satRadSpark', history.map(x => x.radiation_index), { min: 0, max: 80, thin: true, color: 'orange' });
+    drawSparkline('kpSpark', history.map(x => x.geomagnetic_kp), { min: 0, max: 9, color: 'green' });
+    drawSparkline('bzSpark', history.map((x, i) => -1.2 + Math.sin(i * .12) * 1.7 + (x.geomagnetic_kp - 2) * .35), { min: -8, max: 8, color: 'blue' });
+    drawSparkline('densSpark', history.map(x => 1.8 + (431 - x.altitude_km) * .06), { color: 'purple' });
+    drawSparkline('periodSpark', history.map(x => 92 + (x.altitude_km - 419) * .025), { color: 'cyan' });
 }
 
 function updateDrone(drone, history) {
     setText('uavScenarioName', drone.scenario);
     const geo = dronePseudoGeo(drone);
-
+    setText('uavLat', `${fmt(geo.lat, 2, '°')} N`);
+    setText('uavLon', `${fmt(geo.lon, 2, '°')} E`);
     setText('uavAlt', fmt(geo.alt, 1, ' м'));
     setText('uavSpeed', fmt(geo.speed, 1, ' км/год'));
+    setText('uavHeading', fmt(geo.heading, 1, '°'));
+    setText('uavRange', fmt(geo.range, 1, ' км'));
+    setText('uavRangeSide', fmt(geo.range, 1, ' км'));
     setText('uavRssi', `${fmt(-52 - drone.risk * 38 - Math.sin(drone.t * .1) * 4, 0)} dBm`);
     setText('uavLink', drone.risk > .75 ? 'НЕСТАБІЛЬНИЙ' : 'НАДІЙНИЙ');
     setText('uavSummaryLine', `t=${fmt(drone.t, 1, 's')} | I=${fmt(drone.Icurrent, 2)}A/45A | T=${fmt(drone.Tcurrent, 1)}°C/90°C | P_heat=${fmt(drone.heat_power_W, 1)}W | V=${fmt(drone.voltage_V, 2)}V | RPM=${fmtInt(drone.rpm)} | η=${fmt(drone.efficiency_percent, 1)}% | SOC=${fmt(drone.battery_soc_percent, 1)}%`);
@@ -395,30 +354,25 @@ function updateDrone(drone, history) {
     setProgress('drBattProgress', drone.battery_soc_percent);
     setProgress('drThrProgress', drone.throttle_percent);
 
-    const pseudoHistory = history.map((x) => ({...dronePseudoGeo({...drone, t: x.t, risk: x.risk}), ...x}));
-    drawSparkline('uavLatSpark', pseudoHistory.map(x => x.lat), {thin: true, color: 'cyan'});
-    drawSparkline('uavLonSpark', pseudoHistory.map(x => x.lon), {thin: true, color: 'cyan'});
-    drawSparkline('uavAltSpark', pseudoHistory.map(x => x.alt), {min: 0, max: 160, thin: true, color: 'blue'});
-    drawSparkline('uavSpeedSpark', pseudoHistory.map(x => x.speed), {min: 0, max: 90, thin: true, color: 'cyan'});
-    drawSparkline('uavHeadSpark', pseudoHistory.map(x => x.heading), {min: 0, max: 360, thin: true, color: 'cyan'});
-    drawSparkline('uavRangeSpark', pseudoHistory.map(x => x.range), {min: 0, max: 15, thin: true, color: 'cyan'});
-    drawSparkline('uavRssiSpark', history.map(x => -52 - x.risk * 38), {
-        min: -100,
-        max: -40,
-        thin: true,
-        color: 'blue'
-    });
+    const pseudoHistory = history.map((x) => ({ ...dronePseudoGeo({ ...drone, t: x.t, risk: x.risk }), ...x }));
+    drawSparkline('uavLatSpark', pseudoHistory.map(x => x.lat), { thin: true, color: 'cyan' });
+    drawSparkline('uavLonSpark', pseudoHistory.map(x => x.lon), { thin: true, color: 'cyan' });
+    drawSparkline('uavAltSpark', pseudoHistory.map(x => x.alt), { min: 0, max: 160, thin: true, color: 'blue' });
+    drawSparkline('uavSpeedSpark', pseudoHistory.map(x => x.speed), { min: 0, max: 90, thin: true, color: 'cyan' });
+    drawSparkline('uavHeadSpark', pseudoHistory.map(x => x.heading), { min: 0, max: 360, thin: true, color: 'cyan' });
+    drawSparkline('uavRangeSpark', pseudoHistory.map(x => x.range), { min: 0, max: 15, thin: true, color: 'cyan' });
+    drawSparkline('uavRssiSpark', history.map(x => -52 - x.risk * 38), { min: -100, max: -40, thin: true, color: 'blue' });
 
-    drawSparkline('drCurrentChart', history.map(x => x.Icurrent), {min: 0, max: 45, color: 'cyan'});
-    drawSparkline('drTempChart', history.map(x => x.Tcurrent), {min: 20, max: 100, color: 'orange'});
-    drawSparkline('drRiskChart', history.map(x => x.risk), {min: 0, max: 1, color: 'purple'});
-    drawSparkline('drHeatChart', history.map(x => x.heat_power_W), {min: 0, max: 130, color: 'cyan'});
-    drawSparkline('drVoltageChart', history.map(x => x.voltage_V), {min: 18, max: 26, color: 'green'});
-    drawSparkline('drRpmChart', history.map(x => x.rpm), {min: 0, max: 20000, color: 'blue'});
-    drawSparkline('drMagChart', history.map(x => x.magnet_health_percent), {min: 0, max: 100, color: 'green'});
-    drawSparkline('drEffChart', history.map(x => x.efficiency_percent), {min: 40, max: 90, color: 'orange'});
-    drawSparkline('drHeatRateChart', history.map(x => x.heating_rate_C_per_s), {min: 0, max: 2, color: 'red'});
-    drawSparkline('drCoolRateChart', history.map(x => x.cooling_rate_C_per_s), {min: 0, max: 2, color: 'cyan'});
+    drawSparkline('drCurrentChart', history.map(x => x.Icurrent), { min: 0, max: 45, color: 'cyan' });
+    drawSparkline('drTempChart', history.map(x => x.Tcurrent), { min: 20, max: 100, color: 'orange' });
+    drawSparkline('drRiskChart', history.map(x => x.risk), { min: 0, max: 1, color: 'purple' });
+    drawSparkline('drHeatChart', history.map(x => x.heat_power_W), { min: 0, max: 130, color: 'cyan' });
+    drawSparkline('drVoltageChart', history.map(x => x.voltage_V), { min: 18, max: 26, color: 'green' });
+    drawSparkline('drRpmChart', history.map(x => x.rpm), { min: 0, max: 20000, color: 'blue' });
+    drawSparkline('drMagChart', history.map(x => x.magnet_health_percent), { min: 0, max: 100, color: 'green' });
+    drawSparkline('drEffChart', history.map(x => x.efficiency_percent), { min: 40, max: 90, color: 'orange' });
+    drawSparkline('drHeatRateChart', history.map(x => x.heating_rate_C_per_s), { min: 0, max: 2, color: 'red' });
+    drawSparkline('drCoolRateChart', history.map(x => x.cooling_rate_C_per_s), { min: 0, max: 2, color: 'cyan' });
 }
 
 function dronePseudoGeo(drone) {
@@ -427,12 +381,12 @@ function dronePseudoGeo(drone) {
     const lat = KYIV.lat + Math.sin(t * .018) * r + Math.sin(t * .071) * .006;
     const lon = KYIV.lon + Math.cos(t * .016) * r * 1.55;
     const alt = 30 + (drone.throttle_percent || 50) * 1.25 + Math.sin(t * .07) * 7;
-    const speed = 15 + (drone.rpm || 10000) * 0.004 + Math.sin(t * .11) * 3;
+    const speed = 12 + (drone.Icurrent || 20) * 1.35 + Math.sin(t * .11) * 5;
     const heading = (90 + t * 2.7 + Math.sin(t * .05) * 35) % 360;
     const dx = (lon - KYIV.lon) * 72;
     const dy = (lat - KYIV.lat) * 111;
     const range = Math.sqrt(dx * dx + dy * dy);
-    return {lat, lon, alt, speed, heading, range};
+    return { lat, lon, alt, speed, heading, range };
 }
 
 function updateLogs(satLog, droneLog) {
@@ -452,13 +406,7 @@ function renderLog(id, entries, source) {
 }
 
 function escapeHtml(text) {
-    return String(text).replace(/[&<>'"]/g, (ch) => ({
-        '&': '&amp;',
-        '<': '&lt;',
-        '>': '&gt;',
-        "'": '&#039;',
-        '"': '&quot;'
-    }[ch]));
+    return String(text).replace(/[&<>'"]/g, (ch) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#039;', '"': '&quot;' }[ch]));
 }
 
 function updateAi(sat, drone, satHistory, droneHistory, logs) {
@@ -478,11 +426,7 @@ function updateAi(sat, drone, satHistory, droneHistory, logs) {
     setText('aiLoadFooter', fmt(cpu, 0, '%'));
     setText('gpuTemp', fmt(45 + gpu * .22, 1, '°C'));
     setText('latencyText', fmtInt(80 + cpu * .8, ' ms'));
-    drawSparkline('aiLoadSpark', satHistory.map((x, i) => 40 + (x.mission_score || 80) * .25 + Math.sin(i * .7) * 12), {
-        min: 0,
-        max: 100,
-        color: 'cyan'
-    });
+    drawSparkline('aiLoadSpark', satHistory.map((x, i) => 40 + (x.mission_score || 80) * .25 + Math.sin(i * .7) * 12), { min: 0, max: 100, color: 'cyan' });
 
     setText('aiMonTime', formatDuration(sat.t_sim_s));
     const alertCount = [...(logs || [])].filter(x => ['warning', 'alarm'].includes(x.level)).length;
@@ -544,22 +488,18 @@ function drawMissionChart(satHistory, droneHistory) {
     const canvas = $('aiMissionChart');
     const prepared = prepareCanvas(canvas);
     if (!prepared) return;
-    const {ctx, width, height} = prepared;
+    const { ctx, width, height } = prepared;
     ctx.clearRect(0, 0, width, height);
-    const pad = {l: 42, r: 14, t: 12, b: 26};
+    const pad = { l: 42, r: 14, t: 12, b: 26 };
     const w = width - pad.l - pad.r;
     const h = height - pad.t - pad.b;
 
-    ctx.strokeStyle = 'rgba(80,220,255,.12)';
-    ctx.lineWidth = 1;
+    ctx.strokeStyle = 'rgba(80,220,255,.12)'; ctx.lineWidth = 1;
     ctx.font = "11px 'Share Tech Mono'";
     ctx.fillStyle = 'rgba(198,216,239,.55)';
     for (let y = 0; y <= 4; y++) {
         const yy = pad.t + h * y / 4;
-        ctx.beginPath();
-        ctx.moveTo(pad.l, yy);
-        ctx.lineTo(pad.l + w, yy);
-        ctx.stroke();
+        ctx.beginPath(); ctx.moveTo(pad.l, yy); ctx.lineTo(pad.l + w, yy); ctx.stroke();
         ctx.fillText(String(100 - y * 25), 6, yy + 4);
     }
 
@@ -568,31 +508,19 @@ function drawMissionChart(satHistory, droneHistory) {
     drawLine(ctx, satVals, pad, w, h, ['rgba(34,211,238,.95)', 'rgba(34,211,238,.12)']);
     drawLine(ctx, riskVals, pad, w, h, ['rgba(192,132,252,.95)', 'rgba(192,132,252,.13)']);
 
-    ctx.fillStyle = '#22d3ee';
-    ctx.fillText('MISSION INDEX', pad.l + w - 130, pad.t + 16);
-    ctx.fillStyle = '#c084fc';
-    ctx.fillText('RISK K', pad.l + w - 230, pad.t + 16);
+    ctx.fillStyle = '#22d3ee'; ctx.fillText('MISSION INDEX', pad.l + w - 130, pad.t + 16);
+    ctx.fillStyle = '#c084fc'; ctx.fillText('RISK K', pad.l + w - 230, pad.t + 16);
 }
 
 function drawLine(ctx, values, pad, w, h, colors) {
     if (values.length < 2) return;
-    const pts = values.map((v, i) => ({
-        x: pad.l + (i / (values.length - 1)) * w,
-        y: pad.t + h - clamp(v, 0, 100) / 100 * h
-    }));
-    ctx.beginPath();
-    pts.forEach((p, i) => i ? ctx.lineTo(p.x, p.y) : ctx.moveTo(p.x, p.y));
-    ctx.strokeStyle = colors[0];
-    ctx.lineWidth = 2;
-    ctx.stroke();
-    ctx.lineTo(pad.l + w, pad.t + h);
-    ctx.lineTo(pad.l, pad.t + h);
-    ctx.closePath();
+    const pts = values.map((v, i) => ({ x: pad.l + (i / (values.length - 1)) * w, y: pad.t + h - clamp(v, 0, 100) / 100 * h }));
+    ctx.beginPath(); pts.forEach((p, i) => i ? ctx.lineTo(p.x, p.y) : ctx.moveTo(p.x, p.y));
+    ctx.strokeStyle = colors[0]; ctx.lineWidth = 2; ctx.stroke();
+    ctx.lineTo(pad.l + w, pad.t + h); ctx.lineTo(pad.l, pad.t + h); ctx.closePath();
     const fill = ctx.createLinearGradient(0, pad.t, 0, pad.t + h);
-    fill.addColorStop(0, colors[1]);
-    fill.addColorStop(1, 'rgba(0,0,0,0)');
-    ctx.fillStyle = fill;
-    ctx.fill();
+    fill.addColorStop(0, colors[1]); fill.addColorStop(1, 'rgba(0,0,0,0)');
+    ctx.fillStyle = fill; ctx.fill();
 }
 
 function redrawAll() {
@@ -623,16 +551,13 @@ async function updateTelemetry() {
     } catch (err) {
         state.failureCount += 1;
         if (state.failureCount > 2) {
-            renderLog('satEventLog', [{
-                level: 'alarm',
-                message: `Backend не відповідає. Запусти: uvicorn backend:app --reload. ${err.message}`
-            }], 'SYS');
+            renderLog('satEventLog', [{ level: 'alarm', message: `Backend не відповідає. Запусти: uvicorn backend:app --reload. ${err.message}` }], 'SYS');
         }
     }
 }
 
 function project(lon, lat, width, height) {
-    return {x: ((lon + 180) / 360) * width, y: ((90 - lat) / 180) * height};
+    return { x: ((lon + 180) / 360) * width, y: ((90 - lat) / 180) * height };
 }
 
 function angularDistance(lat1, lon1, lat2, lon2) {
@@ -641,24 +566,32 @@ function angularDistance(lat1, lon1, lat2, lon2) {
     return Math.acos(clamp(s, -1, 1)) * 180 / Math.PI;
 }
 
+const continents = [
+    [[-168,72],[-135,70],[-124,54],[-99,50],[-82,45],[-66,47],[-54,55],[-61,28],[-82,23],[-98,18],[-113,31],[-125,38],[-145,58]],
+    [[-81,12],[-70,8],[-52,2],[-35,-8],[-39,-22],[-48,-35],[-66,-55],[-74,-43],[-80,-15]],
+    [[-11,36],[8,44],[28,41],[42,31],[49,12],[39,-5],[31,-29],[18,-35],[4,-31],[-7,-6],[-17,18]],
+    [[-10,58],[7,62],[24,60],[32,50],[19,43],[4,45],[-7,50]],
+    [[28,70],[60,62],[94,65],[128,54],[155,50],[146,31],[119,20],[101,5],[76,8],[58,24],[43,31],[32,44]],
+    [[69,24],[88,25],[91,8],[79,6],[68,16]],
+    [[112,-11],[154,-25],[145,-43],[116,-35],[108,-22]],
+    [[-52,73],[-30,70],[-20,60],[-38,58],[-50,63]],
+    [[-180,-64],[-120,-70],[-40,-66],[40,-70],[120,-66],[180,-69],[180,-90],[-180,-90]],
+];
 
 const cityLights = [
-    [-74, 40], [-118, 34], [-95, 29], [-87, 41], [-99, 19], [-46, -23], [-58, -34], [-3, 52], [2, 48], [13, 52], [30, 50], [37, 55], [29, 41], [-4, 40], [12, 42], [31, 30], [44, 33], [55, 25], [72, 19], [77, 28], [90, 23], [100, 13], [106, 10], [116, 39], [121, 31], [139, 35], [126, 37], [151, -34]
+    [-74,40],[-118,34],[-95,29],[-87,41],[-99,19],[-46,-23],[-58,-34],[-3,52],[2,48],[13,52],[30,50],[37,55],[29,41],[-4,40],[12,42],[31,30],[44,33],[55,25],[72,19],[77,28],[90,23],[100,13],[106,10],[116,39],[121,31],[139,35],[126,37],[151,-34]
 ];
 
 function drawOrbitMap(sat, history) {
     const canvas = $('orbitCanvas');
     const prepared = prepareCanvas(canvas);
     if (!prepared || !sat) return;
-    const {ctx, width, height} = prepared;
+    const { ctx, width, height } = prepared;
     ctx.clearRect(0, 0, width, height);
 
     const bg = ctx.createLinearGradient(0, 0, 0, height);
-    bg.addColorStop(0, '#06142a');
-    bg.addColorStop(.5, '#07162b');
-    bg.addColorStop(1, '#020713');
-    ctx.fillStyle = bg;
-    ctx.fillRect(0, 0, width, height);
+    bg.addColorStop(0, '#06142a'); bg.addColorStop(.5, '#07162b'); bg.addColorStop(1, '#020713');
+    ctx.fillStyle = bg; ctx.fillRect(0, 0, width, height);
 
     // star field behind the map
     ctx.fillStyle = 'rgba(255,255,255,.42)';
@@ -670,28 +603,13 @@ function drawOrbitMap(sat, history) {
 
     // ocean glow
     const ocean = ctx.createRadialGradient(width * .48, height * .52, 10, width * .48, height * .52, width * .75);
-    ocean.addColorStop(0, 'rgba(17, 82, 128, .22)');
-    ocean.addColorStop(1, 'rgba(2, 7, 15, .1)');
-    ctx.fillStyle = ocean;
-    ctx.fillRect(0, 0, width, height);
+    ocean.addColorStop(0, 'rgba(17, 82, 128, .22)'); ocean.addColorStop(1, 'rgba(2, 7, 15, .1)');
+    ctx.fillStyle = ocean; ctx.fillRect(0, 0, width, height);
 
     // graticule
-    ctx.strokeStyle = 'rgba(84,180,230,.12)';
-    ctx.lineWidth = 1;
-    for (let lon = -180; lon <= 180; lon += 30) {
-        const a = project(lon, -85, width, height), b = project(lon, 85, width, height);
-        ctx.beginPath();
-        ctx.moveTo(a.x, a.y);
-        ctx.lineTo(b.x, b.y);
-        ctx.stroke();
-    }
-    for (let lat = -60; lat <= 60; lat += 30) {
-        const a = project(-180, lat, width, height), b = project(180, lat, width, height);
-        ctx.beginPath();
-        ctx.moveTo(a.x, a.y);
-        ctx.lineTo(b.x, b.y);
-        ctx.stroke();
-    }
+    ctx.strokeStyle = 'rgba(84,180,230,.12)'; ctx.lineWidth = 1;
+    for (let lon = -180; lon <= 180; lon += 30) { const a = project(lon, -85, width, height), b = project(lon, 85, width, height); ctx.beginPath(); ctx.moveTo(a.x, a.y); ctx.lineTo(b.x, b.y); ctx.stroke(); }
+    for (let lat = -60; lat <= 60; lat += 30) { const a = project(-180, lat, width, height), b = project(180, lat, width, height); ctx.beginPath(); ctx.moveTo(a.x, a.y); ctx.lineTo(b.x, b.y); ctx.stroke(); }
 
     // Earth photo, if it loaded successfully; otherwise fall back to the vector map
     if (earthImgLoaded) {
@@ -701,19 +619,13 @@ function drawOrbitMap(sat, history) {
     } else {
         continents.forEach((poly, idx) => {
             ctx.beginPath();
-            poly.forEach(([lon, lat], i) => {
-                const p = project(lon, lat, width, height);
-                i ? ctx.lineTo(p.x, p.y) : ctx.moveTo(p.x, p.y);
-            });
+            poly.forEach(([lon, lat], i) => { const p = project(lon, lat, width, height); i ? ctx.lineTo(p.x, p.y) : ctx.moveTo(p.x, p.y); });
             ctx.closePath();
             const land = ctx.createLinearGradient(0, 0, width, height);
-            land.addColorStop(0, idx === 8 ? 'rgba(170,190,205,.35)' : 'rgba(28, 91, 78, .68)');
+            land.addColorStop(0, idx === 8 ? 'rgba(170,190,205,.35)' : 'rgba(28, 91, 78, .78)');
             land.addColorStop(1, idx === 8 ? 'rgba(130,160,180,.22)' : 'rgba(86, 82, 47, .68)');
-            ctx.fillStyle = land;
-            ctx.fill();
-            ctx.strokeStyle = 'rgba(120, 210, 190, .22)';
-            ctx.lineWidth = 1;
-            ctx.stroke();
+            ctx.fillStyle = land; ctx.fill();
+            ctx.strokeStyle = 'rgba(120, 210, 190, .22)'; ctx.lineWidth = 1; ctx.stroke();
         });
     }
 
@@ -725,10 +637,7 @@ function drawOrbitMap(sat, history) {
             const lat = 90 - y / height * 180;
             const d = angularDistance(lat, lon, sat.solar_lat_deg, sat.solar_lon_deg);
             const alpha = clamp((d - 86) / 42, 0, 1) * .58;
-            if (alpha > .01) {
-                ctx.fillStyle = `rgba(0, 0, 0, ${alpha})`;
-                ctx.fillRect(x, y, step + 1, step + 1);
-            }
+            if (alpha > .01) { ctx.fillStyle = `rgba(0, 0, 0, ${alpha})`; ctx.fillRect(x, y, step + 1, step + 1); }
         }
     }
 
@@ -739,13 +648,8 @@ function drawOrbitMap(sat, history) {
         const p = project(lon, lat, width, height);
         const a = clamp((d - 90) / 35, 0, 1);
         ctx.fillStyle = `rgba(250, 210, 92, ${0.22 + a * .55})`;
-        ctx.beginPath();
-        ctx.arc(p.x, p.y, 1.1 + (i % 3) * .45, 0, Math.PI * 2);
-        ctx.fill();
-        ctx.shadowColor = 'rgba(250,210,92,.45)';
-        ctx.shadowBlur = 6;
-        ctx.fill();
-        ctx.shadowBlur = 0;
+        ctx.beginPath(); ctx.arc(p.x, p.y, 1.1 + (i % 3) * .45, 0, Math.PI * 2); ctx.fill();
+        ctx.shadowColor = 'rgba(250,210,92,.45)'; ctx.shadowBlur = 6; ctx.fill(); ctx.shadowBlur = 0;
     });
 
     // terminator helper
@@ -753,16 +657,8 @@ function drawOrbitMap(sat, history) {
 
     // Kyiv ground station marker
     const kyiv = project(KYIV.lon, KYIV.lat, width, height);
-    ctx.fillStyle = '#00ff88';
-    ctx.beginPath();
-    ctx.moveTo(kyiv.x, kyiv.y - 9);
-    ctx.lineTo(kyiv.x - 8, kyiv.y + 7);
-    ctx.lineTo(kyiv.x + 8, kyiv.y + 7);
-    ctx.closePath();
-    ctx.fill();
-    ctx.font = "11px 'Share Tech Mono'";
-    ctx.fillStyle = '#9debc6';
-    ctx.fillText('KYIV GS', kyiv.x + 12, kyiv.y + 3);
+    ctx.fillStyle = '#00ff88'; ctx.beginPath(); ctx.moveTo(kyiv.x, kyiv.y - 9); ctx.lineTo(kyiv.x - 8, kyiv.y + 7); ctx.lineTo(kyiv.x + 8, kyiv.y + 7); ctx.closePath(); ctx.fill();
+    ctx.font = "11px 'Share Tech Mono'"; ctx.fillStyle = '#9debc6'; ctx.fillText('KYIV GS', kyiv.x + 12, kyiv.y + 3);
 
     // history ground track
     drawTrack(ctx, width, height, history, 'rgba(34,211,238,.90)', false);
@@ -770,47 +666,23 @@ function drawOrbitMap(sat, history) {
 
     // solar point
     const sun = project(sat.solar_lon_deg, sat.solar_lat_deg, width, height);
-    ctx.fillStyle = 'rgba(247,201,72,.16)';
-    ctx.beginPath();
-    ctx.arc(sun.x, sun.y, 34, 0, Math.PI * 2);
-    ctx.fill();
-    ctx.fillStyle = '#f7c948';
-    ctx.beginPath();
-    ctx.arc(sun.x, sun.y, 4, 0, Math.PI * 2);
-    ctx.fill();
+    ctx.fillStyle = 'rgba(247,201,72,.16)'; ctx.beginPath(); ctx.arc(sun.x, sun.y, 34, 0, Math.PI * 2); ctx.fill();
+    ctx.fillStyle = '#f7c948'; ctx.beginPath(); ctx.arc(sun.x, sun.y, 4, 0, Math.PI * 2); ctx.fill();
 
     // satellite footprint and marker
     const p = project(sat.longitude_deg, sat.latitude_deg, width, height);
     const fp = clamp((sat.footprint_km / 40075) * width, 28, width * .23);
-    ctx.strokeStyle = 'rgba(34,211,238,.25)';
-    ctx.lineWidth = 1.5;
-    ctx.setLineDash([3, 5]);
-    ctx.beginPath();
-    ctx.arc(p.x, p.y, fp, 0, Math.PI * 2);
-    ctx.stroke();
-    ctx.setLineDash([]);
-    ctx.fillStyle = 'rgba(34,211,238,.15)';
-    ctx.beginPath();
-    ctx.arc(p.x, p.y, 20, 0, Math.PI * 2);
-    ctx.fill();
-    ctx.fillStyle = '#f7c948';
-    ctx.beginPath();
-    ctx.arc(p.x, p.y, 6, 0, Math.PI * 2);
-    ctx.fill();
-    ctx.strokeStyle = '#22d3ee';
-    ctx.lineWidth = 1;
-    ctx.strokeRect(p.x - 10, p.y - 10, 20, 20);
-    ctx.font = "12px 'Share Tech Mono'";
-    ctx.fillStyle = '#e2eeff';
-    ctx.fillText('ISS', p.x + 13, p.y - 13);
+    ctx.strokeStyle = 'rgba(34,211,238,.25)'; ctx.lineWidth = 1.5; ctx.setLineDash([3, 5]); ctx.beginPath(); ctx.arc(p.x, p.y, fp, 0, Math.PI * 2); ctx.stroke(); ctx.setLineDash([]);
+    ctx.fillStyle = 'rgba(34,211,238,.15)'; ctx.beginPath(); ctx.arc(p.x, p.y, 20, 0, Math.PI * 2); ctx.fill();
+    ctx.fillStyle = '#f7c948'; ctx.beginPath(); ctx.arc(p.x, p.y, 6, 0, Math.PI * 2); ctx.fill();
+    ctx.strokeStyle = '#22d3ee'; ctx.lineWidth = 1; ctx.strokeRect(p.x - 10, p.y - 10, 20, 20);
+    ctx.font = "12px 'Share Tech Mono'"; ctx.fillStyle = '#e2eeff'; ctx.fillText('ISS', p.x + 13, p.y - 13);
 }
 
 function drawTrack(ctx, width, height, history, color, dashed) {
     if (!history || history.length < 2) return;
     ctx.save();
-    ctx.strokeStyle = color;
-    ctx.lineWidth = 2;
-    if (dashed) ctx.setLineDash([7, 7]);
+    ctx.strokeStyle = color; ctx.lineWidth = 2; if (dashed) ctx.setLineDash([7, 7]);
     ctx.beginPath();
     let prev = null;
     history.forEach((point, i) => {
@@ -818,8 +690,7 @@ function drawTrack(ctx, width, height, history, color, dashed) {
         if (!prev || Math.abs(p.x - prev.x) > width / 2) ctx.moveTo(p.x, p.y); else ctx.lineTo(p.x, p.y);
         prev = p;
     });
-    ctx.stroke();
-    ctx.restore();
+    ctx.stroke(); ctx.restore();
 }
 
 function drawPredictedTrack(ctx, width, height, sat, history) {
@@ -828,28 +699,22 @@ function drawPredictedTrack(ctx, width, height, sat, history) {
     let dlon = prev ? last.longitude_deg - prev.longitude_deg : 8;
     let dlat = prev ? last.latitude_deg - prev.latitude_deg : 2;
     if (Math.abs(dlon) > 120) dlon = dlon > 0 ? dlon - 360 : dlon + 360;
-    dlon *= .55;
-    dlat *= .55;
+    dlon *= .55; dlat *= .55;
     const predicted = [];
     let lon = sat.longitude_deg, lat = sat.latitude_deg;
     for (let i = 0; i < 120; i++) {
         lon += dlon * .18;
         lat += dlat * .18;
-        if (lat > 51.6 || lat < -51.6) {
-            dlat *= -1;
-            lat = clamp(lat, -51.6, 51.6);
-        }
+        if (lat > 51.6 || lat < -51.6) { dlat *= -1; lat = clamp(lat, -51.6, 51.6); }
         lon = ((lon + 180) % 360 + 360) % 360 - 180;
-        predicted.push({longitude_deg: lon, latitude_deg: lat});
+        predicted.push({ longitude_deg: lon, latitude_deg: lat });
     }
     drawTrack(ctx, width, height, predicted, 'rgba(247,201,72,.82)', true);
 }
 
 function drawTerminator(ctx, width, height, sat) {
     ctx.save();
-    ctx.strokeStyle = 'rgba(247,201,72,.28)';
-    ctx.lineWidth = 1;
-    ctx.setLineDash([5, 6]);
+    ctx.strokeStyle = 'rgba(247,201,72,.28)'; ctx.lineWidth = 1; ctx.setLineDash([5, 6]);
     ctx.beginPath();
     for (let lon = -180; lon <= 180; lon += 3) {
         const dl = rad(lon - sat.solar_lon_deg);
@@ -858,8 +723,7 @@ function drawTerminator(ctx, width, height, sat) {
         const p = project(lon, lat, width, height);
         lon === -180 ? ctx.moveTo(p.x, p.y) : ctx.lineTo(p.x, p.y);
     }
-    ctx.stroke();
-    ctx.restore();
+    ctx.stroke(); ctx.restore();
 }
 
 async function boot() {
