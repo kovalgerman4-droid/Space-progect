@@ -1,4 +1,3 @@
-
 @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Rajdhani:wght@400;500;600;700&family=Orbitron:wght@500;700;900&display=swap');
 
 :root {
@@ -72,11 +71,11 @@ main {
 }
 
 .topbar {
-    height: 82px;
+    height: 72px;
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 14px 30px;
+    padding: 12px 30px;
     border-bottom: 1px solid var(--line);
     background: linear-gradient(180deg, rgba(3, 8, 18, .98), rgba(6, 14, 27, .93));
     backdrop-filter: blur(12px);
@@ -89,8 +88,8 @@ main {
 }
 
 .brand-icon {
-    width: 44px;
-    height: 44px;
+    width: 40px;
+    height: 40px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -111,14 +110,14 @@ h1 {
     margin: 0;
     font-family: 'Orbitron', monospace;
     font-weight: 900;
-    font-size: 22px;
+    font-size: 20px;
     letter-spacing: 3px;
 }
 
 .brand-subtitle {
     margin-top: 3px;
     font-family: 'Share Tech Mono', monospace;
-    font-size: 11px;
+    font-size: 10px;
     color: var(--muted);
     letter-spacing: 5px;
 }
@@ -168,14 +167,14 @@ h1 {
 }
 
 .tab {
-    height: 54px;
+    height: 46px;
     cursor: pointer;
     border: 0;
     border-right: 1px solid var(--line);
     color: #7f9ac2;
     background: rgba(4, 9, 18, .38);
     font-family: 'Share Tech Mono', monospace;
-    font-size: 15px;
+    font-size: 14px;
     letter-spacing: 4px;
     text-transform: uppercase;
     position: relative;
@@ -233,7 +232,7 @@ h1 {
 
 main {
     width: min(1780px, calc(100% - 34px));
-    margin: 18px auto 30px;
+    margin: 14px auto 18px;
 }
 
 .page {
@@ -258,19 +257,14 @@ main {
     gap: 14px;
 }
 
-.uav-grid {
-    display: grid;
-    grid-template-columns: 335px minmax(650px, 1fr) 380px;
-    gap: 16px;
-}
-
 .ai-grid {
     display: grid;
     grid-template-columns: 1.05fr 1fr;
+    grid-template-rows: auto 1fr;
     grid-template-areas:
         "alg load"
         "analytics insights";
-    gap: 16px;
+    gap: 12px;
 }
 
 .algorithms-panel {
@@ -298,11 +292,11 @@ main {
 }
 
 .panel-head {
-    min-height: 40px;
+    min-height: 36px;
     display: flex;
     align-items: center;
     gap: 9px;
-    padding: 9px 13px;
+    padding: 8px 13px;
     border-bottom: 1px solid rgba(54, 151, 221, .18);
     background: rgba(34, 211, 238, .035);
 }
@@ -311,15 +305,15 @@ main {
     margin: 0;
     flex: 1;
     font-family: 'Share Tech Mono', monospace;
-    font-size: 11.5px;
-    letter-spacing: 1.6px;
+    font-size: 11px;
+    letter-spacing: 1.4px;
     color: #c8d8ef;
     text-transform: uppercase;
 }
 
 .panel-head em {
     padding: 3px 8px;
-    font-size: 10px;
+    font-size: 9.5px;
     font-style: normal;
 }
 
@@ -686,6 +680,11 @@ button {
     letter-spacing: 1.4px;
 }
 
+.action-btn:hover {
+    border-color: rgba(56, 189, 248, .7);
+    color: var(--cyan);
+}
+
 /* Compact mission-status ring for the right column of the sat tab */
 .ring {
     --score: 80%;
@@ -868,23 +867,241 @@ button {
     margin-top: 4px;
 }
 
-.controls-panel {
-    padding-bottom: 12px;
-}
-
-.control-row {
-    display: grid;
-    grid-template-columns: 130px minmax(220px, 1fr) 100px 100px;
+/* ===== UAV TAB — compact single-screen layout ===== */
+.uav-toprow {
+    display: flex;
+    flex-direction: column;
     gap: 10px;
-    align-items: center;
-    padding: 14px;
+    margin-bottom: 14px;
 }
 
-.control-row label {
+.uav-controlbar {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 9px 16px;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    background: linear-gradient(180deg, rgba(8, 19, 36, .90), rgba(3, 9, 18, .90));
+    box-shadow: 0 10px 30px rgba(0, 0, 0, .22);
+}
+
+.uav-controlbar label {
     color: var(--muted);
-    font-family: 'Share Tech Mono';
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 10.5px;
+    letter-spacing: 1.4px;
+    white-space: nowrap;
+}
+
+.uav-controlbar .scenario-select {
+    width: auto;
+    min-width: 190px;
+    margin: 0;
+    flex: 0 0 auto;
+    padding: 7px 10px;
+    font-size: 11.5px;
+}
+
+.uav-controlbar .action-btn {
+    padding: 7px 14px;
+    font-size: 10.5px;
+}
+
+.uav-time {
+    margin-left: auto;
+    font-family: 'Share Tech Mono', monospace;
+    color: var(--muted);
+    font-size: 12px;
+    white-space: nowrap;
+}
+
+.uav-toprow .riskbar {
+    margin: 0;
+    height: 26px;
+}
+
+.uav-toprow .mono-line {
+    margin: 0;
+    font-size: 10.5px;
+    padding: 7px 10px;
+}
+
+.uav-main-grid {
+    display: grid;
+    grid-template-columns: 1fr 290px;
+    gap: 14px;
+    align-items: stretch;
+    margin-bottom: 14px;
+}
+
+.uav-telemetry-panel,
+.uav-status-panel {
+    display: flex;
+    flex-direction: column;
+}
+
+.uav-card-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
+    padding: 12px;
+    flex: 1;
+}
+
+.uav-card-grid .data-card {
+    min-height: 0;
+    padding: 9px 10px;
+}
+
+.uav-card-grid .data-card small {
+    font-size: 9px;
+    letter-spacing: 1px;
+}
+
+.uav-card-grid .data-card strong {
+    font-size: 18px;
+    margin: 4px 0;
+}
+
+.uav-card-grid .spark {
+    display: block;
+    width: 100%;
+    height: 28px;
+    min-height: 0;
+}
+
+.uav-status-panel .safe-orb {
+    width: 92px;
+    height: 92px;
+    margin: 16px auto 8px;
+    box-shadow: 0 0 30px rgba(0, 255, 136, .2);
+}
+
+.uav-status-panel .safe-orb strong {
+    font-size: 0;
+    line-height: 0;
+}
+
+.uav-status-panel .safe-orb strong::before {
+    content: '✓';
+    font-size: 24px;
+    line-height: 1;
+}
+
+.uav-status-panel .safe-orb.caution strong::before,
+.uav-status-panel .safe-orb.danger strong::before {
+    content: '⚠';
+}
+
+.uav-status-panel .safe-orb b {
     font-size: 11px;
-    letter-spacing: 1.5px;
+    letter-spacing: 2px;
+    margin: 3px 0 0;
+}
+
+.uav-status-panel .param-list {
+    padding: 0 12px 10px;
+    flex: 1;
+}
+
+.uav-status-panel .param-list p {
+    padding: 5px 0;
+    font-size: 10px;
+}
+
+.ai-output-panel .event-log {
+    max-height: 118px;
+    padding: 7px 10px;
+}
+
+#droneScenarioButtons[hidden] {
+    display: none !important;
+}
+
+.status-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 12px;
+    padding: 8px 4px 0;
+    border-top: 1px solid var(--line);
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 10px;
+    color: var(--muted);
+    letter-spacing: 1px;
+}
+
+.status-footer b {
+    color: var(--green);
+}
+
+.uav-page.active {
+    display: flex;
+    flex-direction: column;
+    height: calc(100vh - 148px);
+    min-height: 460px;
+}
+
+.uav-page .uav-toprow {
+    flex: 0 0 auto;
+}
+
+.uav-page .uav-main-grid {
+    flex: 1 1 auto;
+    min-height: 0;
+}
+
+.uav-page .uav-telemetry-panel,
+.uav-page .uav-status-panel {
+    min-height: 0;
+}
+
+.uav-page .uav-card-grid {
+    overflow-y: auto;
+}
+
+.uav-page .ai-output-panel {
+    flex: 0 0 128px;
+    margin-top: 0;
+    display: flex;
+    flex-direction: column;
+}
+
+.uav-page .ai-output-panel .event-log {
+    flex: 1;
+    min-height: 0;
+    max-height: none;
+}
+
+.uav-page .status-footer {
+    flex: 0 0 auto;
+}
+
+@media (max-width: 1100px) {
+    .uav-main-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .uav-page.active {
+        height: auto;
+        min-height: 0;
+    }
+}
+
+@media (max-width: 720px) {
+    .uav-card-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .uav-controlbar {
+        flex-wrap: wrap;
+        height: auto;
+    }
+
+    .uav-time {
+        margin-left: 0;
+    }
 }
 
 .riskbar {
@@ -927,12 +1144,6 @@ button {
     overflow: hidden;
     white-space: nowrap;
     text-overflow: ellipsis;
-}
-
-.telemetry-cards {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 12px;
 }
 
 .data-card {
@@ -1019,20 +1230,6 @@ button {
     font-family: 'Orbitron';
 }
 
-.safe-orb .orb-icon-svg {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin-bottom: 4px;
-}
-
-.safe-orb .orb-icon-svg svg {
-    width: 42px;
-    height: 42px;
-    color: var(--green);
-    filter: drop-shadow(0 0 8px var(--green));
-}
-
 .safe-orb b {
     color: var(--green);
     letter-spacing: 3px;
@@ -1051,10 +1248,8 @@ button {
     box-shadow: 0 0 54px rgba(247, 201, 72, .25);
 }
 
-.safe-orb.caution .orb-icon-svg svg,
 .safe-orb.caution b {
     color: var(--yellow);
-    filter: drop-shadow(0 0 8px var(--yellow));
 }
 
 .safe-orb.danger {
@@ -1063,81 +1258,56 @@ button {
     box-shadow: 0 0 70px rgba(255, 49, 88, .34);
 }
 
-.safe-orb.danger .orb-icon-svg svg,
 .safe-orb.danger b {
     color: var(--red);
-    filter: drop-shadow(0 0 8px var(--red));
 }
 
+/* ===== AI ANALYTICS TAB — compact single-screen layout ===== */
 .algorithm-list,
 .insight-list,
 .bar-list {
-    padding: 14px;
+    padding: 10px;
     display: grid;
-    gap: 10px;
+    gap: 7px;
 }
 
 .algorithm-list div,
 .insight-list div {
     display: grid;
-    grid-template-columns: 42px 1fr auto;
-    gap: 12px;
+    grid-template-columns: 32px 1fr auto;
+    gap: 9px;
     align-items: center;
-    padding: 12px;
+    padding: 8px 10px;
     border: 1px solid rgba(54, 151, 221, .16);
     background: rgba(8, 24, 48, .54);
-    border-radius: 8px;
+    border-radius: 7px;
 }
 
 .algorithm-list i,
 .insight-list i {
-    width: 36px;
-    height: 36px;
+    width: 28px;
+    height: 28px;
     display: flex;
     align-items: center;
     justify-content: center;
     border-radius: 6px;
     background: rgba(34, 211, 238, .06);
     border: 1px solid rgba(34, 211, 238, .15);
-}
-
-.algorithm-list i svg,
-.insight-list i svg {
-    width: 20px;
-    height: 20px;
-}
-
-.algorithm-list i.orange svg {
-    filter: drop-shadow(0 0 4px var(--orange));
-}
-
-.algorithm-list i.cyan svg {
-    filter: drop-shadow(0 0 4px var(--cyan));
-}
-
-.algorithm-list i.green svg {
-    filter: drop-shadow(0 0 4px var(--green));
-}
-
-.algorithm-list i.purple svg {
-    filter: drop-shadow(0 0 4px var(--purple));
-}
-
-.algorithm-list i.yellow svg {
-    filter: drop-shadow(0 0 4px var(--yellow));
+    font-size: 14px;
 }
 
 .algorithm-list b,
 .insight-list b {
     display: block;
-    margin-bottom: 3px;
+    margin-bottom: 2px;
+    font-size: 12.5px;
 }
 
 .algorithm-list small,
 .insight-list small {
     color: var(--muted);
-    font-size: 12px;
-    line-height: 1.25;
+    font-size: 10.5px;
+    line-height: 1.2;
 }
 
 .algorithm-list em.idle {
@@ -1148,13 +1318,13 @@ button {
 
 .bar-list p {
     display: grid;
-    grid-template-columns: 210px 60px 1fr;
-    gap: 12px;
+    grid-template-columns: 160px 46px 1fr;
+    gap: 10px;
     align-items: center;
     margin: 0;
-    padding: 9px 0;
+    padding: 5px 0;
     font-family: 'Share Tech Mono';
-    font-size: 12px;
+    font-size: 11px;
 }
 
 .bar-list span {
@@ -1167,7 +1337,7 @@ button {
 }
 
 .bar-list i {
-    height: 7px;
+    height: 6px;
     background: rgba(255, 255, 255, .06);
     border-radius: 8px;
     overflow: hidden;
@@ -1183,22 +1353,24 @@ button {
 }
 
 .analytics-panel {
-    min-height: 470px;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
 }
 
 .kpi-grid {
     display: grid;
     grid-template-columns: repeat(5, 1fr);
-    gap: 10px;
-    padding: 14px;
+    gap: 6px;
+    padding: 8px;
 }
 
 .kpi-grid div,
 .kpi-strip div {
     background: rgba(8, 24, 48, .56);
     border: 1px solid rgba(54, 151, 221, .16);
-    border-radius: 7px;
-    padding: 13px;
+    border-radius: 6px;
+    padding: 5px 8px;
 }
 
 .kpi-grid b,
@@ -1206,31 +1378,41 @@ button {
     display: block;
     color: var(--cyan);
     font-family: 'Orbitron';
-    font-size: 22px;
-    margin: 5px 0;
+    font-size: 14px;
+    margin: 2px 0;
+}
+
+.kpi-grid small,
+.kpi-strip small {
+    font-size: 8px;
+    line-height: 1.2;
 }
 
 .kpi-grid span {
     color: var(--muted);
     font-family: 'Share Tech Mono';
-    font-size: 10px;
+    font-size: 8px;
     text-transform: uppercase;
 }
 
 .chart-box {
-    margin: 0 14px 12px;
-    padding: 12px;
+    margin: 0 10px 10px;
+    padding: 9px;
     background: rgba(3, 8, 18, .68);
     border: 1px solid rgba(54, 151, 221, .15);
     border-radius: 7px;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
 }
 
 .chart-title {
     color: var(--muted);
     font-family: 'Share Tech Mono';
-    font-size: 12px;
-    letter-spacing: 1.4px;
-    margin-bottom: 8px;
+    font-size: 11px;
+    letter-spacing: 1.2px;
+    margin-bottom: 6px;
 }
 
 .chart-title em {
@@ -1243,35 +1425,38 @@ button {
 
 #aiMissionChart {
     width: 100%;
-    height: 190px;
+    height: 100%;
+    min-height: 90px;
     display: block;
+    flex: 1;
 }
 
 .kpi-strip {
     display: grid;
     grid-template-columns: repeat(6, 1fr);
-    gap: 10px;
-    padding: 0 14px 14px;
+    gap: 6px;
+    padding: 0 8px 8px;
 }
 
 .kpi-strip b {
-    font-size: 18px;
+    font-size: 13px;
 }
 
 .ai-footer {
     grid-template-columns: repeat(6, 1fr);
 }
 
+.ai-footer div {
+    min-height: 50px;
+    padding: 8px 14px;
+}
+
+.ai-footer b {
+    font-size: 14px;
+    margin-top: 3px;
+}
+
 @media (max-width: 1580px) {
-    .uav-grid {
-        grid-template-columns: 1fr;
-    }
-
-    .ai-grid {
-        grid-template-columns: 1fr;
-        grid-template-areas: "alg" "load" "analytics" "insights";
-    }
-
     .telemetry-cards {
         grid-template-columns: repeat(2, 1fr);
     }
@@ -1281,9 +1466,80 @@ button {
     }
 }
 
+.ai-page.active {
+    display: flex;
+    flex-direction: column;
+    height: calc(100vh - 148px);
+    min-height: 480px;
+}
+
+.ai-page .ai-grid {
+    flex: 1 1 auto;
+    min-height: 0;
+    grid-template-rows: minmax(0, 0.62fr) minmax(0, 1.38fr);
+}
+
+.ai-page .ai-footer {
+    flex: 0 0 auto;
+    margin-top: 12px;
+}
+
+.ai-page .algorithms-panel,
+.ai-page .load-panel,
+.ai-page .analytics-panel,
+.ai-page .insights-panel {
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+}
+
+.ai-page .algorithm-list,
+.ai-page .bar-list,
+.ai-page .insight-list {
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow-y: auto;
+}
+
+.ai-page .analytics-panel .kpi-grid {
+    flex: 0 0 auto;
+}
+
+.ai-page .analytics-panel .chart-box {
+    flex: 1 1 auto;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+}
+
+.ai-page .analytics-panel .kpi-strip {
+    flex: 0 0 auto;
+}
+
+.ai-page #aiMissionChart {
+    flex: 1 1 auto;
+    min-height: 0;
+    width: 100%;
+    height: auto;
+}
+
 @media (max-width: 1220px) {
     .sat-grid {
         grid-template-columns: 260px minmax(0, 1fr) 260px;
+    }
+
+    .ai-grid {
+        grid-template-columns: 1fr;
+        grid-template-areas: "alg" "load" "analytics" "insights";
+    }
+
+    .ai-page.active {
+        height: auto;
+        min-height: 0;
+    }
+
+    .ai-page .ai-grid {
+        grid-template-rows: none;
     }
 }
 
@@ -1315,11 +1571,7 @@ button {
         width: calc(100% - 18px);
     }
 
-    .kpi-grid, .kpi-strip, .telemetry-cards {
-        grid-template-columns: 1fr;
-    }
-
-    .control-row {
+    .kpi-grid, .kpi-strip {
         grid-template-columns: 1fr;
     }
 
