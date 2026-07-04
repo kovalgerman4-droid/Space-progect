@@ -83,6 +83,7 @@ def _compact_drone(sample: dict) -> dict:
         "efficiency_percent",
         "status",
         "heat_power_W",
+        "electrical_power_W",
         "voltage_V",
         "throttle_percent",
         "magnet_health_percent",
