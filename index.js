@@ -375,6 +375,7 @@ function updateDrone(drone, history) {
     setText('drMagValue', fmt(drone.magnet_health_percent, 1, '%'));
     setText('drEffValue', fmt(drone.efficiency_percent, 1, '%'));
     setText('drBattValue', fmt(drone.battery_soc_percent, 0, '%'));
+    setText('drBattBig', fmt(drone.battery_soc_percent, 1, '%'));
     setText('drThrottleValue', fmt(drone.throttle_percent, 0, '%'));
     setText('drHeatRateValue', fmt(drone.heating_rate_C_per_s, 3, '°C/s'));
     setText('drCoolRateValue', fmt(drone.cooling_rate_C_per_s, 3, '°C/s'));
