@@ -982,8 +982,8 @@ class DroneSimulator:
         self.last_sample = sample
         return sample
 
-    def simulation_meta() -> dict:
-        return {
-            "satellite_scenarios": [asdict(s) for s in SATELLITE_SCENARIOS],
-            "drone_scenarios": DRONE_SCENARIOS,
-        }
+def simulation_meta() -> dict:
+    return {
+        "satellite_scenarios": [asdict(s) for s in SATELLITE_SCENARIOS],
+                "drone_scenarios": DRONE_SCENARIOS,
+    }
