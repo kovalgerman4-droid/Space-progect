@@ -29,9 +29,13 @@ def wrap_lon(lon_deg: float) -> float:
     return ((lon_deg + 180.0) % 360.0) - 180.0
 
 
-def phase_smooth(current: float, target: float, alpha: float, noise: float = 0.0) -> float:
-    """Smooth first-order response with optional sensor/model noise."""
-    return current + alpha * (target - current) + random.gauss(0.0, noise)
+def phase_smooth(current: float, target: float, alpha: float, noise: float = 0.0, rng=random) -> float:
+    """Smooth first-order response with optional sensor/model noise.
+
+    `rng` defaults to the global `random` module (identical to the old behaviour).
+    Pass a `random.Random(seed)` instance for a reproducible simulation.
+    """
+    return current + alpha * (target - current) + rng.gauss(0.0, noise)
 
 
 def gauss_score(value: float, center: float, sigma: float) -> float:
@@ -59,13 +63,27 @@ class SatelliteConfig:
 
     earth_radius_km: float = 6371.0
     mu_earth_km3_s2: float = 398600.4418
+    j2: float = 1.08263e-3  # коефіцієнт сплюснутості Землі (для вузлової прецесії)
 
     inclination_deg: float = 51.64
     mean_altitude_km: float = 419.5
-    mean_velocity_kmh: float = 27570.0
-    orbital_period_min: float = 92.68
+    mean_velocity_kmh: float = 27570.0  # довідкове значення; реальна швидкість рахується динамічно з vis-viva
+    orbital_period_min: float = 92.68  # довідкове значення; реальний період рахується динамічно
 
     sim_step_s: float = 6.0
+
+    # --- Атмосферне гальмування (експоненційна атмосфера + формула Кінга-Хеле) ---
+    ballistic_coefficient_m2_per_kg: float = 0.010  # Cd*A/m, ISS-масштаб
+    atm_ref_altitude_km: float = 400.0
+    atm_ref_density_kg_m3: float = 3.0e-12  # густина атмосфери на atm_ref_altitude_km
+    atm_scale_height_km: float = 58.0
+
+    # --- Ємність енергосистеми станції (для перерахунку power_balance -> SoC) ---
+    station_battery_capacity_kWh: float = 95.0
+
+    # --- Наукові ліміти для скорингу (NASA short-term spaceflight limits) ---
+    co2_limit_mmhg: float = 5.3
+    cabin_pressure_tolerance_psi: float = 0.2
 
 
 @dataclass
@@ -224,8 +242,11 @@ def satellite_scenario_by_key(key: str) -> SatelliteScenario:
 
 
 class SatelliteSimulator:
-    def __init__(self, cfg: SatelliteConfig | None = None):
+    def __init__(self, cfg: SatelliteConfig | None = None, seed: int | None = None):
         self.cfg = cfg or SatelliteConfig()
+        # Якщо seed не задано, поведінка ідентична попередній версії (глобальний random).
+        # Якщо seed задано - симуляція стає повністю відтворюваною.
+        self.rng = random.Random(seed) if seed is not None else random
         self.scenario = SATELLITE_SCENARIOS[0]
         self.reset()
 
@@ -237,31 +258,34 @@ class SatelliteSimulator:
         self.t_s = 0.0
         self.start_time_utc = datetime.now(timezone.utc)
 
-        self.phase0 = random.uniform(0.0, 2.0 * math.pi)
-        self.raan0_deg = random.uniform(-180.0, 180.0)
+        self.phase0 = self.rng.uniform(0.0, 2.0 * math.pi)
+        self.raan0_deg = self.rng.uniform(-180.0, 180.0)
 
-        self.cabin_temp_c = 23.3 + random.uniform(-0.3, 0.3)
-        self.cabin_humidity_pct = 46.0 + random.uniform(-2.0, 2.0)
-        self.cabin_pressure_psi = 14.70 + random.uniform(-0.025, 0.025)
-        self.co2_mmhg = 3.15 + random.uniform(-0.25, 0.25)
-        self.o2_mmhg = 159.0 + random.uniform(-0.6, 0.6)
+        self.cabin_temp_c = 23.3 + self.rng.uniform(-0.3, 0.3)
+        self.cabin_humidity_pct = 46.0 + self.rng.uniform(-2.0, 2.0)
+        self.cabin_pressure_psi = 14.70 + self.rng.uniform(-0.025, 0.025)
+        self.co2_mmhg = 3.15 + self.rng.uniform(-0.25, 0.25)
+        self.o2_mmhg = 159.0 + self.rng.uniform(-0.6, 0.6)
 
-        self.solar_power_kw = 88.0 + random.uniform(-4.0, 4.0)
-        self.battery_soc_pct = 92.0 + random.uniform(-2.5, 2.5)
+        self.solar_power_kw = 88.0 + self.rng.uniform(-4.0, 4.0)
+        self.battery_soc_pct = 92.0 + self.rng.uniform(-2.5, 2.5)
         self.power_balance_kw = 0.0
 
-        self.radiation_index = 11.0 + random.uniform(-2.0, 2.0)
-        self.geomagnetic_kp = 2.2 + random.uniform(-0.6, 0.6)
-        self.comm_quality_pct = 96.0 + random.uniform(-2.0, 1.0)
+        self.radiation_index = 11.0 + self.rng.uniform(-2.0, 2.0)
+        self.geomagnetic_kp = 2.2 + self.rng.uniform(-0.6, 0.6)
+        self.comm_quality_pct = 96.0 + self.rng.uniform(-2.0, 1.0)
 
-        self.attitude_error_deg = 0.04 + random.uniform(0.0, 0.03)
+        self.attitude_error_deg = 0.04 + self.rng.uniform(0.0, 0.03)
         self.delta_v_total_ms = 0.0
 
-        self.surface_temp_c = 15.0 + random.uniform(-4.0, 4.0)
-        self.wind_speed_kmh = 18.0 + random.uniform(-5.0, 5.0)
-        self.cloud_cover_pct = 46.0 + random.uniform(-14.0, 14.0)
+        self.surface_temp_c = 15.0 + self.rng.uniform(-4.0, 4.0)
+        self.wind_speed_kmh = 18.0 + self.rng.uniform(-5.0, 5.0)
+        self.cloud_cover_pct = 46.0 + self.rng.uniform(-14.0, 14.0)
 
         self.drag_altitude_loss_km = 0.0
+        # Попередня висота потрібна для оцінки густини атмосфери ρ(h) на цьому кроці
+        # (density-модель для формули Кінга-Хеле, див. step()).
+        self.prev_altitude_km = self.cfg.mean_altitude_km
         self.last_sample: SatelliteTelemetry | None = None
 
     def step(self) -> SatelliteTelemetry:
@@ -281,14 +305,32 @@ class SatelliteSimulator:
         lat_rad = math.asin(math.sin(inc) * math.sin(theta))
         latitude_deg = math.degrees(lat_rad)
 
+        # J2-прецесія висхідного вузла (реальна орбіта МКС дрейфує ~ -5 deg/добу
+        # через сплюснутість Землі; раніше raan0_deg був статичним - це не фізично).
+        prev_radius_km = cfg.earth_radius_km + self.prev_altitude_km
+        raan_rate_deg_s = (
+                -1.5 * math.degrees(n) * cfg.j2 * (cfg.earth_radius_km / prev_radius_km) ** 2 * math.cos(inc)
+        )
+        current_raan_deg = self.raan0_deg + raan_rate_deg_s * t
+
         inertial_lon_deg = math.degrees(math.atan2(math.cos(inc) * math.sin(theta), math.cos(theta)))
         earth_rotation_deg = 360.0 * (t / 86164.0)
-        longitude_deg = wrap_lon(self.raan0_deg + inertial_lon_deg - earth_rotation_deg)
+        longitude_deg = wrap_lon(current_raan_deg + inertial_lon_deg - earth_rotation_deg)
 
+        # Атмосферне гальмування: експоненційна атмосфера ρ(h) = ρ0 * exp(-(h-h0)/H)
+        # + втрата висоти за оберт за формулою Кінга-Хеле: Δa/orbit = -2π * B * ρ(h) * a^2.
+        # На відміну від попередньої версії, втрата ТІЛЬКИ монотонно накопичується -
+        # без маневру reboost орбіта сама по собі ніколи "не загоюється".
         if sc.drag_strength > 0:
-            self.drag_altitude_loss_km += 0.0025 * dt / 60.0 * sc.drag_strength
-        else:
-            self.drag_altitude_loss_km *= 0.995
+            rho_kg_m3 = cfg.atm_ref_density_kg_m3 * math.exp(
+                -(self.prev_altitude_km - cfg.atm_ref_altitude_km) / cfg.atm_scale_height_km
+            )
+            semi_major_m = prev_radius_km * 1000.0
+            delta_a_per_orbit_m = (
+                    -2.0 * math.pi * cfg.ballistic_coefficient_m2_per_kg * rho_kg_m3 * semi_major_m ** 2
+            )
+            decay_km_per_s = -delta_a_per_orbit_m / period_s / 1000.0  # додатне значення = втрата висоти
+            self.drag_altitude_loss_km += decay_km_per_s * dt * sc.drag_strength
 
         altitude_km = (
                 cfg.mean_altitude_km
@@ -299,26 +341,56 @@ class SatelliteSimulator:
                 + sc.altitude_wave_km * math.sin(0.018 * t + 0.8)
         )
         altitude_km = clamp(altitude_km, 405.0, 431.0)
+        self.prev_altitude_km = altitude_km
 
         radius_km = cfg.earth_radius_km + altitude_km
         velocity_kmh = math.sqrt(cfg.mu_earth_km3_s2 / radius_km) * 3600.0
         velocity_kmh += 12.0 * math.sin(0.65 * theta + 1.4)
-        velocity_kmh += sc.control_jitter * random.gauss(0.0, 25.0)
+        velocity_kmh += sc.control_jitter * self.rng.gauss(0.0, 25.0)
         velocity_ms = velocity_kmh * 1000.0 / 3600.0
 
         orbital_period_min = 60.0 * 2.0 * math.pi * radius_km / velocity_kmh
         horizon_half_angle = math.acos(cfg.earth_radius_km / radius_km)
         footprint_km = 2.0 * cfg.earth_radius_km * horizon_half_angle
 
-        # Sun / eclipse model.
+        # Sun position: схилення Сонця (наближення) + підсонячна довгота (ECEF).
         doy = now_sim.timetuple().tm_yday
         utc_hours = now_sim.hour + now_sim.minute / 60.0 + now_sim.second / 3600.0
         solar_lat_deg = 23.44 * math.sin(2.0 * math.pi * (doy - 80.0) / 365.2422)
         solar_lon_deg = wrap_lon(180.0 - utc_hours * 15.0)
 
+        # sun_sep_deg лишається для косметичної моделі погоди під супутником нижче.
         sun_sep_deg = angular_distance_deg(latitude_deg, longitude_deg, solar_lat_deg, solar_lon_deg)
-        eclipse_threshold = 119.0 if sc.key == "eclipse" else 108.0
-        visibility = "daylight" if sun_sep_deg < eclipse_threshold else "eclipsed"
+
+        # Затемнення: справжня векторна геометрія (циліндрична модель тіні Землі)
+        # у інерціальній системі координат, замість кутового порогу "на око".
+        j2000_epoch = datetime(2000, 1, 1, 12, 0, 0, tzinfo=timezone.utc)
+        days_since_j2000 = (now_sim - j2000_epoch).total_seconds() / 86400.0
+        gmst_deg = (280.46061837 + 360.98564736629 * days_since_j2000) % 360.0
+        sun_ra_deg = (gmst_deg + solar_lon_deg) % 360.0
+
+        raan_rad = math.radians(current_raan_deg)
+        sat_x = radius_km * (
+                    math.cos(raan_rad) * math.cos(theta) - math.sin(raan_rad) * math.sin(theta) * math.cos(inc))
+        sat_y = radius_km * (
+                    math.sin(raan_rad) * math.cos(theta) + math.cos(raan_rad) * math.sin(theta) * math.cos(inc))
+        sat_z = radius_km * math.sin(theta) * math.sin(inc)
+
+        dec_rad = math.radians(solar_lat_deg)
+        ra_rad = math.radians(sun_ra_deg)
+        sun_ux = math.cos(dec_rad) * math.cos(ra_rad)
+        sun_uy = math.cos(dec_rad) * math.sin(ra_rad)
+        sun_uz = math.sin(dec_rad)
+
+        sun_proj_km = sat_x * sun_ux + sat_y * sun_uy + sat_z * sun_uz
+        perp_dist_km = math.sqrt(max(radius_km ** 2 - sun_proj_km ** 2, 0.0))
+
+        # "eclipse"-сценарій імітує довшу тіньову ділянку (напр. інша пора року) -
+        # трохи ширший ефективний радіус тіні замість штучного кутового порогу.
+        shadow_radius_km = cfg.earth_radius_km * (1.08 if sc.key == "eclipse" else 1.0)
+        in_shadow = sun_proj_km < 0.0 and perp_dist_km < shadow_radius_km
+
+        visibility = "eclipsed" if in_shadow else "daylight"
         daylight_factor = 1.0 if visibility == "daylight" else 0.0
 
         # Synthetic surface weather below the satellite.
@@ -328,19 +400,21 @@ class SatelliteSimulator:
         lat_cooling = 0.47 * abs(latitude_deg)
 
         surface_target = 31.0 * solar_factor + seasonal + longitude_wave - lat_cooling + 4.0
-        self.surface_temp_c = phase_smooth(self.surface_temp_c, clamp(surface_target, -50.0, 44.0), 0.15, 0.14)
+        self.surface_temp_c = phase_smooth(self.surface_temp_c, clamp(surface_target, -50.0, 44.0), 0.15, 0.14,
+                                           rng=self.rng)
 
         wind_target = 10.0 + 24.0 * abs(math.sin(math.radians(latitude_deg * 1.6)))
         wind_target += 8.0 * self.cloud_cover_pct / 100.0
         if sc.key == "geomagnetic":
             wind_target += 1.5 * math.sin(0.004 * t)
-        self.wind_speed_kmh = clamp(phase_smooth(self.wind_speed_kmh, wind_target, 0.14, 0.35), 0.0, 82.0)
+        self.wind_speed_kmh = clamp(phase_smooth(self.wind_speed_kmh, wind_target, 0.14, 0.35, rng=self.rng), 0.0,
+                                    82.0)
 
         cloud_target = 42.0 + 30.0 * math.sin(0.00082 * t + math.radians(longitude_deg * 0.9))
         cloud_target += 16.0 * math.cos(math.radians(latitude_deg * 1.25))
         cloud_target += 10.0 * (1.0 - solar_factor)
-        self.cloud_cover_pct = clamp(phase_smooth(self.cloud_cover_pct, clamp(cloud_target, 0.0, 100.0), 0.13, 0.7),
-                                     0.0, 100.0)
+        self.cloud_cover_pct = clamp(
+            phase_smooth(self.cloud_cover_pct, clamp(cloud_target, 0.0, 100.0), 0.13, 0.7, rng=self.rng), 0.0, 100.0)
 
         # Onboard environment.
         crew_cycle = 0.5 + 0.5 * math.sin(2.0 * math.pi * (utc_hours - 6.0) / 24.0)
@@ -348,24 +422,27 @@ class SatelliteSimulator:
         thermal_load = 0.40 * daylight_factor + 0.35 * experiment_load + 0.20 * crew_cycle
 
         temp_target = 22.8 + 1.0 * thermal_load + 0.45 * math.sin(0.0009 * t + 0.3) + sc.thermal_bias_c
-        self.cabin_temp_c = clamp(phase_smooth(self.cabin_temp_c, clamp(temp_target, 20.8, 29.5), 0.13, 0.025), 20.5,
-                                  30.0)
+        self.cabin_temp_c = clamp(
+            phase_smooth(self.cabin_temp_c, clamp(temp_target, 20.8, 29.5), 0.13, 0.025, rng=self.rng), 20.5, 30.0)
 
         humidity_target = 43.0 + 8.5 * crew_cycle + 3.0 * math.sin(0.0011 * t + 1.0) + sc.humidity_bias
         humidity_target -= 0.9 * (self.cabin_temp_c - 23.0)
         self.cabin_humidity_pct = clamp(
-            phase_smooth(self.cabin_humidity_pct, clamp(humidity_target, 28.0, 72.0), 0.13, 0.10), 24.0, 75.0)
+            phase_smooth(self.cabin_humidity_pct, clamp(humidity_target, 28.0, 72.0), 0.13, 0.10, rng=self.rng),
+            24.0, 75.0)
 
         pressure_target = 14.70 + 0.04 * math.sin(0.00045 * t + 2.3) + sc.pressure_bias
-        self.cabin_pressure_psi = clamp(phase_smooth(self.cabin_pressure_psi, pressure_target, 0.10, 0.0025), 14.45,
-                                        14.98)
+        self.cabin_pressure_psi = clamp(
+            phase_smooth(self.cabin_pressure_psi, pressure_target, 0.10, 0.0025, rng=self.rng), 14.45, 14.98)
 
         co2_target = 2.8 + 1.05 * crew_cycle + 0.75 * experiment_load + sc.co2_bias
         co2_target += 0.32 * max(0.0, math.sin(0.0023 * t + 2.1))
-        self.co2_mmhg = clamp(phase_smooth(self.co2_mmhg, clamp(co2_target, 1.8, 7.4), 0.16, 0.018), 1.6, 7.8)
+        self.co2_mmhg = clamp(
+            phase_smooth(self.co2_mmhg, clamp(co2_target, 1.8, 7.4), 0.16, 0.018, rng=self.rng), 1.6, 7.8)
 
         o2_target = 159.3 - 0.50 * (self.co2_mmhg - 3.2) + 0.7 * math.sin(0.0007 * t + 1.9)
-        self.o2_mmhg = clamp(phase_smooth(self.o2_mmhg, clamp(o2_target, 153.5, 164.5), 0.13, 0.025), 153.0, 165.0)
+        self.o2_mmhg = clamp(
+            phase_smooth(self.o2_mmhg, clamp(o2_target, 153.5, 164.5), 0.13, 0.025, rng=self.rng), 153.0, 165.0)
 
         # Energy model.
         if visibility == "daylight":
@@ -376,8 +453,8 @@ class SatelliteSimulator:
             solar_target = 23.0 + 8.0 * math.sin(0.0013 * t + 0.9)
             solar_target *= sc.eclipse_power_multiplier
 
-        self.solar_power_kw = clamp(phase_smooth(self.solar_power_kw, clamp(solar_target, 2.0, 124.0), 0.18, 0.22), 0.0,
-                                    128.0)
+        self.solar_power_kw = clamp(
+            phase_smooth(self.solar_power_kw, clamp(solar_target, 2.0, 124.0), 0.18, 0.22, rng=self.rng), 0.0, 128.0)
 
         station_load_kw = 72.0 + 8.0 * crew_cycle + 5.5 * experiment_load
         if sc.key == "thermal":
@@ -386,7 +463,9 @@ class SatelliteSimulator:
             station_load_kw += 7.0
 
         self.power_balance_kw = self.solar_power_kw - station_load_kw
-        self.battery_soc_pct = clamp(self.battery_soc_pct + (self.power_balance_kw / 95.0) * (dt / 60.0), 8.0, 100.0)
+        self.battery_soc_pct = clamp(
+            self.battery_soc_pct + (self.power_balance_kw / cfg.station_battery_capacity_kWh) * (dt / 60.0),
+            8.0, 100.0)
 
         # Space weather / communication.
         if sc.key == "geomagnetic":
@@ -396,7 +475,7 @@ class SatelliteSimulator:
         else:
             kp_target = 2.2 + 0.8 * math.sin(0.0007 * t + 0.4)
 
-        self.geomagnetic_kp = phase_smooth(self.geomagnetic_kp, clamp(kp_target, 0.0, 9.0), 0.15, 0.04)
+        self.geomagnetic_kp = phase_smooth(self.geomagnetic_kp, clamp(kp_target, 0.0, 9.0), 0.15, 0.04, rng=self.rng)
 
         south_atlantic_factor = 1.0 if -55 < latitude_deg < 5 and -90 < longitude_deg < -20 else 0.0
         polar_factor = clamp((abs(latitude_deg) - 45.0) / 8.0, 0.0, 1.0)
@@ -405,14 +484,15 @@ class SatelliteSimulator:
         radiation_target *= sc.radiation_multiplier
         radiation_target += sc.radiation_spike * max(0.0, math.sin(0.0035 * t + 1.0))
         self.radiation_index = clamp(
-            phase_smooth(self.radiation_index, clamp(radiation_target, 3.0, 100.0), 0.18, 0.35), 0.0, 100.0)
+            phase_smooth(self.radiation_index, clamp(radiation_target, 3.0, 100.0), 0.18, 0.35, rng=self.rng),
+            0.0, 100.0)
 
         comm_target = 97.0 - 0.18 * self.radiation_index - 3.5 * max(0.0, self.geomagnetic_kp - 5.0)
         comm_target += sc.comm_quality_bias
-        if random.random() < sc.comm_drop_chance:
-            comm_target -= random.uniform(12.0, 35.0)
-        self.comm_quality_pct = clamp(phase_smooth(self.comm_quality_pct, clamp(comm_target, 0.0, 100.0), 0.20, 0.55),
-                                      0.0, 100.0)
+        if self.rng.random() < sc.comm_drop_chance:
+            comm_target -= self.rng.uniform(12.0, 35.0)
+        self.comm_quality_pct = clamp(
+            phase_smooth(self.comm_quality_pct, clamp(comm_target, 0.0, 100.0), 0.20, 0.55, rng=self.rng), 0.0, 100.0)
 
         # Attitude / maneuver model.
         maneuver_active = False
@@ -424,10 +504,16 @@ class SatelliteSimulator:
         if maneuver_active:
             attitude_target += 0.32 + 0.10 * math.sin(0.04 * t)
             self.delta_v_total_ms += sc.maneuver_delta_v_ms * dt / 130.0
-        attitude_target += sc.control_jitter * abs(random.gauss(0.0, 0.25))
-        self.attitude_error_deg = phase_smooth(self.attitude_error_deg, clamp(attitude_target, 0.0, 1.4), 0.22, 0.006)
+        attitude_target += sc.control_jitter * abs(self.rng.gauss(0.0, 0.25))
+        self.attitude_error_deg = phase_smooth(self.attitude_error_deg, clamp(attitude_target, 0.0, 1.4), 0.22, 0.006,
+                                               rng=self.rng)
 
         # Scientific-ish health scores.
+        # NOTE: cfg.co2_limit_mmhg / cfg.cabin_pressure_tolerance_psi (NASA short-term limits)
+        # свідомо НЕ підставлені напряму в сигми нижче - це змінило б чутливість
+        # system_status (NOMINAL/WATCH/ALERT/CRITICAL) і зламало б відкалібровану поведінку
+        # демо-сценаріїв. Використовуйте їх для окремого, явного "compliance"-індикатора,
+        # а не для заміни існуючих gauss_score сигм без окремого регресійного тестування.
         temp_ok = gauss_score(self.cabin_temp_c, 23.8, 1.45)
         hum_ok = gauss_score(self.cabin_humidity_pct, 47.0, 10.5)
         pressure_ok = gauss_score(self.cabin_pressure_psi, 14.70, 0.08)
@@ -552,6 +638,10 @@ class DroneConfig:
     winding_resistance: float = 0.060
     thermal_capacity: float = 58.0
     cooling_tau: float = 42.0
+    # Частка споживаної електричної потужності (V*I), яка йде в корисну механічну
+    # роботу гвинта, а НЕ в тепло. Типово 0.85-0.90 для здорового BLDC-мотора+ESC
+    # на крейсерському режимі. Використовується в новій моделі heat_power = V*I*(1-η).
+    mechanical_efficiency: float = 0.86
 
     min_current: float = 3.0
     cruise_current: float = 20.0
@@ -822,8 +912,13 @@ class DroneSimulator:
 
         Icurrent = clamp(self.current + random.gauss(0.0, cfg.current_sensor_noise), 0.0, cfg.Imax * 1.08)
 
-        # Joule heating: P = I^2 * R, Q += P * dt
-        heat_power = (Icurrent ** 2) * cfg.winding_resistance
+        # Напруга потрібна тут, ще до розрахунку теплової потужності (нижче).
+        voltage = self.estimate_voltage(Icurrent)
+
+        # Electrical power P = V * I (уся споживана потужність), з якої частка
+        # mechanical_efficiency йде в корисну механічну роботу гвинта, а решта - в тепло.
+        electrical_power = voltage * Icurrent
+        heat_power = electrical_power * (1.0 - cfg.mechanical_efficiency)
         self.heat_energy += heat_power * dt
 
         heating_rate = heat_power / cfg.thermal_capacity
@@ -834,7 +929,6 @@ class DroneSimulator:
         self.temperature = clamp(self.temperature + dT, cfg.ambient_temp - 1.0, cfg.Tmax + 15.0)
         Tcurrent = self.temperature
 
-        voltage = self.estimate_voltage(Icurrent)
         self.update_battery(voltage, Icurrent, dt)
         self.update_magnet_health(Tcurrent, Icurrent, dt)
 
