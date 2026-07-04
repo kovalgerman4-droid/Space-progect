@@ -30,7 +30,7 @@ body {
     min-height: 100vh;
     overflow-x: hidden;
     background-image: linear-gradient(var(--grid-color) 1px, transparent 1px),
-                      linear-gradient(90deg, var(--grid-color) 1px, transparent 1px);
+    linear-gradient(90deg, var(--grid-color) 1px, transparent 1px);
     background-size: 40px 40px;
 }
 
@@ -54,8 +54,12 @@ body {
 }
 
 @keyframes twinkle {
-    from { opacity: 0.1; }
-    to { opacity: 0.9; }
+    from {
+        opacity: 0.1;
+    }
+    to {
+        opacity: 0.9;
+    }
 }
 
 /* ── LAYOUT ── */
@@ -150,8 +154,12 @@ header::after {
 }
 
 @keyframes pulse {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0.3; }
+    0%, 100% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0.3;
+    }
 }
 
 /* ── TABS ── */
@@ -628,11 +636,11 @@ canvas.mini-wave {
     .sat-grid, .uav-grid {
         grid-template-columns: 1fr;
     }
-    
+
     .col-left, .col-center, .col-right {
         order: unset;
     }
-    
+
     footer.metric-strip {
         grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
     }
@@ -642,54 +650,38 @@ canvas.mini-wave {
     header {
         padding: 16px;
     }
-    
+
     .brand h1 {
         font-size: 16px;
     }
-    
+
     .tabs {
         padding: 0 16px;
         top: 60px;
     }
-    
+
     .tab {
         padding: 12px 16px;
         font-size: 11px;
     }
-    
+
     .tab span {
         font-size: 16px;
     }
-    
+
     main {
         padding: 12px;
     }
-    
+
     .card-body {
         padding: 12px;
     }
-    
+
     .metric-strip {
         grid-template-columns: 1fr 1fr;
     }
-    
+
     .map-strip {
         grid-template-columns: repeat(3, 1fr);
     }
-}
-
-/* ════════════════════════════════════════ HIDE UNUSED METRICS ════════════════════════════════════════ */
-
-#kpValue,
-#bzValue,
-#atmDensity,
-#orbitalPeriodFoot,
-#kyivPass,
-#uavAvgCurrent,
-#uavAvgTemp,
-#uavTMargin,
-#uavBattEnergy,
-#uavFlightTime,
-.metric-strip {
-    display: none !important;
 }
