@@ -436,6 +436,55 @@
             </div>
         </div>
         <div class="uav-main-grid">
+    <div class="uav-left-col stack">
+        <section class="panel uav-telemetry-panel">
+            <div class="panel-head">
+                <span class="led"></span>
+                <h2>ТЕЛЕМЕТРІЯ БПЛА · РЕАЛЬНИЙ ЧАС</h2>
+                <em>UAV-02 / <span id="uavScenarioName">Normal mission</span></em>
+            </div>
+            <div class="uav-card-grid">
+                <div class="data-card"><small>ICURRENT</small><strong class="cyan" id="drCurrentValue">--</strong><canvas class="spark" id="drCurrentChart"></canvas></div>
+                <div class="data-card"><small>TCURRENT</small><strong class="orange" id="drTempValue">--</strong><canvas class="spark" id="drTempChart"></canvas></div>
+                <div class="data-card"><small>RISK K</small><strong class="purple" id="drRiskValue">--</strong><canvas class="spark" id="drRiskChart"></canvas></div>
+                <div class="data-card"><small>P = I²R</small><strong class="orange" id="drHeatValue">--</strong><canvas class="spark" id="drHeatChart"></canvas></div>
+                <div class="data-card"><small>VOLTAGE</small><strong class="green" id="drVoltageValue">--</strong><canvas class="spark" id="drVoltageChart"></canvas></div>
+                <div class="data-card"><small>RPM</small><strong class="cyan" id="drRpmValue">--</strong><canvas class="spark" id="drRpmChart"></canvas></div>
+                <div class="data-card"><small>MAGNET HEALTH</small><strong class="green" id="drMagValue">--</strong><canvas class="spark" id="drMagChart"></canvas></div>
+                <div class="data-card"><small>EFFICIENCY</small><strong class="cyan" id="drEffValue">--</strong><canvas class="spark" id="drEffChart"></canvas></div>
+            </div>
+        </section>
+
+        <section class="panel ai-output-panel">
+            <div class="panel-head">
+                <span class="led"></span>
+                <h2>AI OUTPUT · АНАЛІЗ БПЛА</h2>
+                <em>PHYSICS ENGINE v1.0</em>
+            </div>
+            <div class="event-log" id="droneEventLog"></div>
+        </section>
+    </div>
+
+    <aside class="panel uav-status-panel">
+        <div class="panel-head">
+            <h2>СТАТУС БПЛА</h2>
+        </div>
+        <div class="safe-orb caution" id="droneOrb">
+            <strong>⚠</strong>
+            <b id="drStatusText" class="yellow">CAUTION</b>
+        </div>
+        
+        <div class="param-list">
+            <p><span>Фаза польоту</span><b id="drPhase">PAYLOAD / WIND LOAD</b></p>
+            <p><span>Термозапас</span><b id="drMargin">44.7 °C</b></p>
+            <p><span>Ризик демагнетизації</span><b id="drDemag">0.000</b></p>
+            <p><span>Акумулятор</span><b id="drBattBig" class="green">90.2%</b></p>
+            <p><span>GPS Fix</span><b>3D • LOCKED</b></p>
+            <p><span>Час польоту</span><b id="drMissionTime">25:03:28</b></p>
+        </div>
+    </aside>
+</div>
+        <!-- <div class="uav-main-grid">
             <section class="panel uav-telemetry-panel">
                 <div class="panel-head">
         <span class="led">
@@ -511,7 +560,7 @@
                     <p><span>Час польоту</span><b id="drMissionTime">--</b></p>
                 </div>
             </aside>
-        </div>
+        </div> -->
         <section class="panel ai-output-panel">
             <div class="panel-head">
         <span class="led">
