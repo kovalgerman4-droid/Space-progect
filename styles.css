@@ -1476,7 +1476,7 @@ button {
 .ai-page .ai-grid {
     flex: 1 1 auto;
     min-height: 0;
-    grid-template-rows: minmax(0, 0.62fr) minmax(0, 1.38fr);
+    grid-template-rows: minmax(120px, 1fr) 340px;
 }
 
 .ai-page .ai-footer {
