@@ -159,7 +159,11 @@ h1 {
     border-bottom: 1px solid var(--line);
     background: rgba(5, 11, 23, .76);
 }
-
+.tabs .tab span {
+    font-size: 1.8rem; /* Збільште це значення (наприклад, до 2rem або 2.5rem), щоб зробити іконку більшою */
+    display: inline-block;
+    vertical-align: middle;
+}
 .tab {
     height: 46px;
     cursor: pointer;
