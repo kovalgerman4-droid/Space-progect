@@ -702,22 +702,20 @@ def status_from_drone_risk(k: float) -> str:
     return "DANGER"
 
 
-def calculate_drone_risk(Tcurrent: float, Icurrent: float, rpm: float, voltage: float, cfg: DroneConfig) -> float:
+def calculate_drone_risk(Tcurrent: float, Icurrent: float, cfg: DroneConfig) -> float:
     t_norm = clamp(Tcurrent / cfg.Tmax, 0.0, 1.35)
+    i_norm = clamp(Icurrent / cfg.Imax, 0.0, 1.35)
+
     thermal_part = cfg.temp_weight * (t_norm ** 2.25)
+    current_part = cfg.current_weight * (i_norm ** 2.00)
 
-    # Очікувані оберти на цій напрузі за майже повного газу - опорна точка
-    # "здорового" мотора. Якщо реальні оберти суттєво нижчі за очікувані,
-    # а струм при цьому високий - це ознака розмагнічування ротора
-    # (мотор споживає струм, але не видає механічну роботу/оберти).
-    expected_rpm = voltage * cfg.motor_kv * 0.9
-    actual_rpm_ratio = clamp(rpm / max(expected_rpm, 1.0), 0.0, 1.0)
-    current_ratio = clamp(Icurrent / cfg.Imax, 0.0, 1.0)
+    coupled_penalty = 0.0
+    if Tcurrent > 72.0 and Icurrent > 32.0:
+        t_hot = (Tcurrent - 72.0) / max(1.0, cfg.Tmax - 72.0)
+        i_hot = (Icurrent - 32.0) / max(1.0, cfg.Imax - 32.0)
+        coupled_penalty = 0.13 * t_hot * i_hot
 
-    divergence = max(0.0, current_ratio - actual_rpm_ratio)
-    divergence_part = cfg.current_weight * divergence * 1.5
-
-    return clamp(thermal_part + divergence_part, 0.0, 1.0)
+    return clamp(thermal_part + current_part + coupled_penalty, 0.0, 1.0)
 
 
 class MissionProfile:
@@ -920,13 +918,9 @@ class DroneSimulator:
         voltage = self.estimate_voltage(Icurrent)
 
         # Electrical power P = V * I (уся споживана потужність), з якої частка
-        # dynamic_efficiency йде в корисну механічну роботу гвинта, а решта - в тепло.
-        # ККД тепер динамічний: деградовані магніти (magnet_health) не дають
-        # мотору ефективно перетворювати струм в обертовий момент, тому більша
-        # частка енергії йде саме в тепло, а не в корисну роботу.
+        # mechanical_efficiency йде в корисну механічну роботу гвинта, а решта - в тепло.
         electrical_power = voltage * Icurrent
-        dynamic_efficiency = cfg.mechanical_efficiency * (self.magnet_health / 100.0)
-        heat_power = electrical_power * (1.0 - dynamic_efficiency)
+        heat_power = electrical_power * (1.0 - cfg.mechanical_efficiency)
 
         self.heat_energy += heat_power * dt
 
@@ -946,20 +940,14 @@ class DroneSimulator:
         if Tcurrent > 80.0:
             heat_derate -= clamp((Tcurrent - 80.0) / 28.0, 0.0, 0.25)
 
-        # Ідеальні оберти, які контролер ХОЧЕ отримати за поточного струму/напруги.
-        rpm_ideal = voltage * cfg.motor_kv * (0.16 + 0.84 * throttle)
-
-        # РЕАЛЬНІ оберти падають пропорційно деградації магнітів (magnet_health),
-        # навіть якщо струм максимальний - саме так виникає розбіжність
-        # "струм росте, а оберти падають" при перегріві/розмагнічуванні.
-        rpm = rpm_ideal * (self.magnet_health / 100.0) * heat_derate + random.gauss(0.0, 45.0)
+        rpm = voltage * cfg.motor_kv * (0.16 + 0.84 * throttle) * heat_derate + random.gauss(0.0, 45.0)
         rpm = max(0.0, rpm)
 
         # Horizontal speed depends on RPM (8-75 km/h range)
         horizontal_speed_kmh = 8.0 + (rpm / 15000.0) * 67.0
         horizontal_speed_kmh = clamp(horizontal_speed_kmh, 5.0, 75.0)
 
-        risk = calculate_drone_risk(Tcurrent, Icurrent, rpm, voltage, cfg)
+        risk = calculate_drone_risk(Tcurrent, Icurrent, cfg)
         status = status_from_drone_risk(risk)
 
         demag_risk = clamp((Tcurrent - 70.0) / max(1.0, cfg.Tmax - 70.0), 0.0, 1.0) ** 2
