@@ -172,6 +172,79 @@ function drawSparkline(id, values, options = {}) {
     }
 }
 
+// Приладова шкала (як стрічка швидкості/висоти в реальних приладах) замість лінійного графіка.
+// Показує поточне значення як позицію повзунка на шкалі мін→макс, з підписами меж.
+function drawScaleGauge(id, value, min, max, options = {}) {
+    const canvas = $(id);
+    const prepared = prepareCanvas(canvas);
+    if (!prepared) return;
+    const {ctx, width, height} = prepared;
+    ctx.clearRect(0, 0, width, height);
+    if (!Number.isFinite(Number(value))) return;
+
+    const colorMap = {
+        cyan: '#22d3ee', blue: '#38bdf8', green: '#00ff88',
+        orange: '#fb923c', red: '#ff3158', purple: '#c084fc', yellow: '#f7c948',
+    };
+    const color = colorMap[options.color] || colorMap.cyan;
+    const v = clamp(Number(value), min, max);
+
+    const padX = 6;
+    const trackY = height * 0.38;
+    const left = padX, right = width - padX, trackW = right - left;
+
+    // базова лінія шкали
+    ctx.strokeStyle = 'rgba(140,170,205,.30)';
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(left, trackY);
+    ctx.lineTo(right, trackY);
+    ctx.stroke();
+
+    // поділки
+    const ticks = options.ticks || 6;
+    ctx.strokeStyle = 'rgba(140,170,205,.45)';
+    ctx.lineWidth = 1;
+    for (let i = 0; i <= ticks; i++) {
+        const x = left + trackW * (i / ticks);
+        const h = (i === 0 || i === ticks) ? 7 : (i === ticks / 2 ? 6 : 4);
+        ctx.beginPath();
+        ctx.moveTo(x, trackY - h / 2);
+        ctx.lineTo(x, trackY + h / 2);
+        ctx.stroke();
+    }
+
+    // заповнена частина до поточного значення
+    const pct = max > min ? (v - min) / (max - min) : 0;
+    const px = left + trackW * clamp(pct, 0, 1);
+    ctx.strokeStyle = color;
+    ctx.lineWidth = 3;
+    ctx.beginPath();
+    ctx.moveTo(left, trackY);
+    ctx.lineTo(px, trackY);
+    ctx.stroke();
+
+    // повзунок-покажчик
+    ctx.fillStyle = color;
+    ctx.beginPath();
+    ctx.moveTo(px, trackY - 8);
+    ctx.lineTo(px - 5, trackY - 1);
+    ctx.lineTo(px + 5, trackY - 1);
+    ctx.closePath();
+    ctx.fill();
+    ctx.beginPath();
+    ctx.arc(px, trackY + 4, 2.4, 0, Math.PI * 2);
+    ctx.fill();
+
+    // підписи меж шкали
+    ctx.font = "9.5px 'Share Tech Mono'";
+    ctx.fillStyle = 'rgba(170,195,225,.9)';
+    ctx.textAlign = 'left';
+    ctx.fillText(options.minLabel ?? String(Math.round(min)), left, height - 2);
+    ctx.textAlign = 'right';
+    ctx.fillText(options.maxLabel ?? String(Math.round(max)), right, height - 2);
+}
+
 function setBars(id, pct) {
     const el = $(id);
     if (!el) return;
@@ -341,11 +414,13 @@ function updateSatellite(sat, history) {
     setBars('satBattBars', sat.battery_soc_pct);
     setBars('satCommBars', sat.comm_quality_pct);
 
-    drawSparkline('satLatSpark', history.map(x => x.latitude_deg), {min: -55, max: 55, thin: true});
-    drawSparkline('satLonSpark', history.map(x => x.longitude_deg), {min: -180, max: 180, thin: true});
-    drawSparkline('satAltSpark', history.map(x => x.altitude_km), {min: 405, max: 432, thin: true, color: 'blue'});
-    drawSparkline('satVelSpark', history.map(x => x.velocity_kmh), {thin: true, color: 'cyan'});
-    drawSparkline('satRadSpark', history.map(x => x.radiation_index), {min: 0, max: 80, thin: true, color: 'orange'});
+    // Реалістичні прилад-шкали замість ліній графіка: показують позицію поточного
+    // значення на реальному діапазоні (як стрічка швидкості/висоти в кабіні).
+    drawScaleGauge('satLatSpark', sat.latitude_deg, -55, 55, {color: 'cyan', minLabel: '55°S', maxLabel: '55°N'});
+    drawScaleGauge('satLonSpark', sat.longitude_deg, -180, 180, {color: 'cyan', minLabel: '180°W', maxLabel: '180°E'});
+    drawScaleGauge('satAltSpark', sat.altitude_km, 405, 432, {color: 'blue', minLabel: '405 км', maxLabel: '432 км'});
+    drawScaleGauge('satVelSpark', sat.velocity_kmh, 27000, 28000, {color: 'cyan', minLabel: '27000', maxLabel: '28000'});
+    drawScaleGauge('satRadSpark', sat.radiation_index, 0, 80, {color: 'orange', minLabel: '0', maxLabel: '80'});
     drawSparkline('kpSpark', history.map(x => x.geomagnetic_kp), {min: 0, max: 9, color: 'green'});
     drawSparkline('bzSpark', history.map((x, i) => -1.2 + Math.sin(i * .12) * 1.7 + (x.geomagnetic_kp - 2) * .35), {
         min: -8,
