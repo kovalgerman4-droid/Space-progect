@@ -871,7 +871,7 @@ class DroneSimulator:
             heating_rate = 0.0
 
             # Прискорене експоненційне охолодження прямо до 0°C
-            cooling_rate = self.temperature * 0.15
+            cooling_rate = self.temperature * 0.20
             self.temperature = max(0.0, self.temperature - cooling_rate * dt)
             Tcurrent = self.temperature
 
