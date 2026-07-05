@@ -965,11 +965,11 @@ class DroneSimulator:
         demag_risk = clamp((Tcurrent - 70.0) / max(1.0, cfg.Tmax - 70.0), 0.0, 1.0) ** 2
         thermal_margin = cfg.Tmax - Tcurrent
 
-        efficiency = 87.0
+        efficiency = 100.0
         efficiency -= 9.0 * throttle ** 2
         efficiency -= 0.11 * max(0.0, Tcurrent - 55.0)
         efficiency -= 5.0 * (1.0 - self.magnet_health / 100.0)
-        efficiency = clamp(efficiency, 45.0, 90.0)
+        efficiency = clamp(efficiency, 45.0, 100.0)
 
         sample = DroneTelemetry(
             t=self.t,
