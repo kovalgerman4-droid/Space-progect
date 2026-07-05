@@ -949,9 +949,17 @@ class DroneSimulator:
         self.update_magnet_health(Tcurrent, Icurrent, dt)
 
         throttle = clamp(Icurrent / cfg.Imax, 0.0, 1.0)
+
+        # Дерейт обертів через перегрів. Раніше ефект "замерзав" на -25% вже при
+        # ~87°C і більше не рухався навіть при 105°C - тепер він масштабується
+        # аж до абсолютної теплової стелі (Tmax+15), тож при справжньому
+        # перегріві (близько до 105°C) оберти реально провалюються, а не
+        # тримаються на одному рівні попри критичний risk/DANGER статус.
         heat_derate = 1.0
+        derate_ceiling = cfg.Tmax + 15.0
         if Tcurrent > 80.0:
-            heat_derate -= clamp((Tcurrent - 80.0) / 28.0, 0.0, 0.25)
+            derate_range = max(1.0, derate_ceiling - 80.0)
+            heat_derate -= clamp((Tcurrent - 80.0) / derate_range, 0.0, 0.85)
 
         # Ідеальні оберти, які контролер ХОЧЕ отримати за поточного струму/напруги.
         rpm_ideal = voltage * cfg.motor_kv * (0.16 + 0.84 * throttle)
