@@ -941,7 +941,14 @@ class DroneSimulator:
         cooling_rate = (self.temperature - cfg.ambient_temp) / cfg.cooling_tau
         esc_extra_heat = 0.006 * max(0.0, Icurrent - 24.0)
 
-        dT = (heating_rate - cooling_rate + esc_extra_heat) * dt + random.gauss(0.0, cfg.temp_sensor_noise)
+        # Дрібне "живе" коливання температури (турбулентність повітря, нерівномірне
+        # обдування радіатора обертами гвинта тощо). Дві синусоїди з різними
+        # періодами і фазами, середнє значення = 0 - тому це НЕ додає і не забирає
+        # тепло за цикл і ніяк не змінює загальний тренд нагріву/охолодження чи
+        # пороги теплового дерейту/замка, лише робить лінію на графіку живою.
+        temp_wave = (math.sin(self.t * 0.15) * 0.10 + math.sin(self.t * 0.037 + 0.9) * 0.06)
+
+        dT = (heating_rate - cooling_rate + esc_extra_heat) * dt + temp_wave + random.gauss(0.0, cfg.temp_sensor_noise)
         self.temperature = clamp(self.temperature + dT, cfg.ambient_temp - 1.0, cfg.Tmax + 15.0)
         Tcurrent = self.temperature
 
