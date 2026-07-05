@@ -111,7 +111,7 @@ function drawSparkline(id, values, options = {}) {
     ctx.clearRect(0, 0, width, height);
 
     const clean = values.filter((v) => Number.isFinite(Number(v))).map(Number);
-    if (clean.length < 2) return;
+    if (clean.length < 1) return;
 
     let min = options.min ?? Math.min(...clean);
     let max = options.max ?? Math.max(...clean);
@@ -125,7 +125,8 @@ function drawSparkline(id, values, options = {}) {
         max += pad;
     }
 
-    ctx.strokeStyle = 'rgba(80, 220, 255, .12)';
+    // Технічна сітка на задньому плані (трохи приглушена)
+    ctx.strokeStyle = 'rgba(80, 220, 255, .06)';
     ctx.lineWidth = 1;
     for (let i = 1; i < 4; i++) {
         const y = (height / 4) * i;
@@ -137,39 +138,35 @@ function drawSparkline(id, values, options = {}) {
 
     const color = options.color || 'cyan';
     const palettes = {
-        cyan: ['rgba(34,211,238,.92)', 'rgba(0,255,136,.85)'],
-        orange: ['rgba(251,146,60,.92)', 'rgba(247,201,72,.85)'],
-        red: ['rgba(255,49,88,.95)', 'rgba(251,146,60,.85)'],
-        purple: ['rgba(192,132,252,.94)', 'rgba(56,189,248,.78)'],
-        green: ['rgba(0,255,136,.94)', 'rgba(34,211,238,.75)'],
-        blue: ['rgba(56,189,248,.92)', 'rgba(34,211,238,.78)'],
+        cyan: ['rgba(34,211,238,.95)', 'rgba(34,211,238,.15)'],
+        orange: ['rgba(251,146,60,.95)', 'rgba(251,146,60,.15)'],
+        red: ['rgba(255,49,88,.95)', 'rgba(255,49,88,.15)'],
+        purple: ['rgba(192,132,252,.95)', 'rgba(192,132,252,.15)'],
+        green: ['rgba(0,255,136,.95)', 'rgba(0,255,136,.15)'],
+        blue: ['rgba(56,189,248,.95)', 'rgba(56,189,248,.15)'],
     };
     const p = palettes[color] || palettes.cyan;
-    const grad = ctx.createLinearGradient(0, 0, width, 0);
-    grad.addColorStop(0, p[0]);
-    grad.addColorStop(1, p[1]);
 
-    const points = clean.map((v, i) => ({
-        x: (i / (clean.length - 1)) * width,
-        y: height - ((v - min) / (max - min)) * height,
-    }));
+    // Розрахунок параметрів стовпчиків
+    const count = clean.length;
+    const gap = 1.5; // Проміжок між стовпчиками в пікселях
+    const barWidth = Math.max(1.5, (width / count) - gap);
 
-    ctx.beginPath();
-    points.forEach((pt, i) => i ? ctx.lineTo(pt.x, pt.y) : ctx.moveTo(pt.x, pt.y));
-    ctx.strokeStyle = grad;
-    ctx.lineWidth = options.thin ? 1.3 : 2;
-    ctx.stroke();
+    // Малювання гістограми
+    clean.forEach((v, i) => {
+        const x = (i / count) * width;
+        const barHeight = ((v - min) / (max - min)) * height;
+        const clampedHeight = Math.max(2, Math.min(height, barHeight)); // Щоб навіть мінімальні значення було видно
+        const y = height - clampedHeight;
 
-    if (!options.noFill) {
-        ctx.lineTo(width, height);
-        ctx.lineTo(0, height);
-        ctx.closePath();
-        const fill = ctx.createLinearGradient(0, 0, 0, height);
-        fill.addColorStop(0, p[0].replace('.92', '.16').replace('.94', '.16').replace('.95', '.16'));
-        fill.addColorStop(1, 'rgba(0,0,0,0)');
-        ctx.fillStyle = fill;
-        ctx.fill();
-    }
+        // Вертикальний градієнт для кожного стовпчика (яскравіше зверху, згасає до низу)
+        const barGrad = ctx.createLinearGradient(0, y, 0, height);
+        barGrad.addColorStop(0, p[0]);
+        barGrad.addColorStop(1, p[1]);
+
+        ctx.fillStyle = barGrad;
+        ctx.fillRect(x, y, barWidth, clampedHeight);
+    });
 }
 
 // Приладова шкала (як стрічка швидкості/висоти в реальних приладах) замість лінійного графіка.
