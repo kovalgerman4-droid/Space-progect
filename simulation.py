@@ -776,11 +776,18 @@ class MissionProfile:
         burst = self.burst_extra_current if t < self.burst_until else 0.0
         wind_wave = (math.sin(t * 0.19) * 0.55 + math.sin(t * 0.047 + 1.3) * 0.45) * p["wind_wave"]
 
+        # Залишаємо легкий тротлінг тільки для безпечних температур (імітація
+        # реального польотника, який трохи бере газ назад, поки ще не критично).
         thermal_derate = 0.0
-        if temperature > 76.0:
-            thermal_derate += (temperature - 76.0) * 0.55
-        if temperature > 84.0:
-            thermal_derate += (temperature - 84.0) * 1.40
+        if temperature > 76.0 and temperature < 85.0:
+            thermal_derate += (temperature - 76.0) * 0.3
+
+        # Якщо температура пішла вище 85°C - ізоляція плавиться, магніти деградують,
+        # ESC втрачає контроль над ефективністю і починає вливати МАКСИМУМ струму,
+        # намагаючись компенсувати падіння обертів (тепловий замок).
+        if temperature >= 85.0:
+            # Струм не ріжеться, а навпаки - польотник панікує і дає газ в підлогу
+            burst += 5.0
 
         target = self.phase_target_current * p["current_multiplier"] + burst + wind_wave - thermal_derate
         return clamp(target, self.cfg.min_current, self.cfg.Imax * 1.03), self.phase_name
@@ -1010,4 +1017,3 @@ def simulation_meta() -> dict:
         "satellite_scenarios": [asdict(s) for s in SATELLITE_SCENARIOS],
         "drone_scenarios": DRONE_SCENARIOS,
     }
-    
