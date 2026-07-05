@@ -641,7 +641,7 @@ class DroneConfig:
     # Частка споживаної електричної потужності (V*I), яка йде в корисну механічну
     # роботу гвинта, а НЕ в тепло. Типово 0.85-0.90 для здорового BLDC-мотора+ESC
     # на крейсерському режимі. Використовується в новій моделі heat_power = V*I*(1-η).
-    mechanical_efficiency: float = 1.0
+    mechanical_efficiency: float = 0.86
 
     min_current: float = 3.0
     cruise_current: float = 20.0
