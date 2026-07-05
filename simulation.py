@@ -965,11 +965,18 @@ class DroneSimulator:
         demag_risk = clamp((Tcurrent - 70.0) / max(1.0, cfg.Tmax - 70.0), 0.0, 1.0) ** 2
         thermal_margin = cfg.Tmax - Tcurrent
 
+        # Теплова частка тепер ДОМІНУЄ над throttle: рахуємо, наскільки Tcurrent
+        # наблизилась до Tmax (0 - холодний мотор, 1 - точно на межі Tmax),
+        # і беремо це в квадрат, щоб штраф різко зростав саме біля перегріву.
+        # Завдяки цьому ефективність падає слідом за температурою навіть тоді,
+        # коли throttle вже скинутий (через теплову інерцію мотор ще гарячий).
+        temp_ratio = clamp((Tcurrent - 40.0) / (cfg.Tmax - 40.0), 0.0, 1.4)
+
         efficiency = 100.0
-        efficiency -= 9.0 * throttle ** 2
-        efficiency -= 0.11 * max(0.0, Tcurrent - 55.0)
+        efficiency -= 45.0 * temp_ratio ** 2
+        efficiency -= 6.0 * throttle ** 2
         efficiency -= 5.0 * (1.0 - self.magnet_health / 100.0)
-        efficiency = clamp(efficiency, 45.0, 100.0)
+        efficiency = clamp(efficiency, 20.0, 100.0)
 
         sample = DroneTelemetry(
             t=self.t,
@@ -1003,3 +1010,4 @@ def simulation_meta() -> dict:
         "satellite_scenarios": [asdict(s) for s in SATELLITE_SCENARIOS],
         "drone_scenarios": DRONE_SCENARIOS,
     }
+    
