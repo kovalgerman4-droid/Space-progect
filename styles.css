@@ -8,9 +8,9 @@
     --card2: rgba(3, 8, 18, .92);
     --line: rgba(54, 151, 221, .22);
     --line2: rgba(68, 209, 255, .42);
-    --text: #e2eeff;
-    --muted: #6685ad;
-    --dim: #385170;
+    --text: #eef5ff;
+    --muted: #93add0;
+    --dim: #4d6989;
     --cyan: #22d3ee;
     --blue: #38bdf8;
     --green: #00ff88;
@@ -34,6 +34,8 @@ body {
     min-height: 100vh;
     color: var(--text);
     font-family: 'Rajdhani', system-ui, sans-serif;
+    font-size: 16px;
+    font-weight: 500;
     background: radial-gradient(circle at 18% 0%, rgba(34, 211, 238, .13), transparent 32%),
     radial-gradient(circle at 80% 5%, rgba(0, 255, 136, .055), transparent 34%),
     linear-gradient(rgba(54, 151, 221, .05) 1px, transparent 1px),
@@ -165,11 +167,12 @@ h1 {
     cursor: pointer;
     border: 0;
     border-right: 1px solid var(--line);
-    color: #7f9ac2;
+    color: #a9bfdd;
     background: rgba(4, 9, 18, .38);
     font-family: 'Share Tech Mono', monospace;
-    font-size: 14px;
-    letter-spacing: 4px;
+    font-size: 15px;
+    font-weight: 700;
+    letter-spacing: 3px;
     text-transform: uppercase;
     position: relative;
     transition: .2s;
@@ -275,22 +278,24 @@ main {
     margin: 0;
     flex: 1;
     font-family: 'Share Tech Mono', monospace;
-    font-size: 11px;
-    letter-spacing: 1.4px;
-    color: #c8d8ef;
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: 1.2px;
+    color: #eaf3ff;
     text-transform: uppercase;
 }
 
 .panel-head em {
-    padding: 3px 8px;
-    font-size: 9.5px;
+    padding: 4px 9px;
+    font-size: 11px;
     font-style: normal;
 }
 
 .panel-head strong {
     font-family: 'Share Tech Mono', monospace;
-    font-size: 11px;
-    color: var(--muted);
+    font-size: 13px;
+    font-weight: 700;
+    color: #b9cbe8;
     white-space: nowrap;
 }
 
@@ -313,16 +318,17 @@ main {
     min-height: 40px;
     display: grid;
     grid-template-columns: 1fr auto;
+    grid-template-rows: auto auto;
     align-items: center;
-    gap: 8px;
-    padding: 7px 10px;
+    row-gap: 7px;
+    column-gap: 8px;
+    padding: 10px 12px 12px;
     border: 1px solid rgba(54, 151, 221, .16);
     border-radius: 6px;
     background: rgba(8, 24, 48, .55);
 }
 
 .telemetry-row i,
-.telemetry-row .micro,
 .telemetry-row small {
     display: none;
 }
@@ -330,16 +336,18 @@ main {
 .telemetry-row b {
     display: block;
     font-family: 'Share Tech Mono', monospace;
-    color: #95a9c5;
-    font-size: 9.5px;
+    color: #b4c6e4;
+    font-size: 11.5px;
+    font-weight: 700;
     letter-spacing: 1.1px;
     text-transform: uppercase;
 }
 
 .telemetry-row strong {
-    color: #dceaff;
+    color: #f2f8ff;
     font-family: 'Share Tech Mono', monospace;
-    font-size: 13px;
+    font-weight: 700;
+    font-size: 17px;
     white-space: nowrap;
     text-align: right;
 }
@@ -348,15 +356,25 @@ main {
     grid-column: 2;
 }
 
+/* Шкала-індикатор (як приладова стрічка) під значенням, замість графіка */
+.telemetry-row .micro {
+    grid-column: 1 / -1;
+    grid-row: 2;
+    display: block;
+    width: 100%;
+    height: 24px;
+}
+
 .data-card small,
 .kpi-grid small,
 .kpi-strip small,
 .metric-strip small {
     display: block;
     font-family: 'Share Tech Mono', monospace;
-    color: #95a9c5;
-    font-size: 10px;
-    letter-spacing: 1.4px;
+    color: #b4c6e4;
+    font-size: 11.5px;
+    font-weight: 700;
+    letter-spacing: 1.2px;
     text-transform: uppercase;
 }
 
@@ -385,9 +403,9 @@ main {
 
 .map-wrap {
     position: relative;
-    height: min(30vh, 340px);
-    min-height: 260px;
-    max-width: 760px;
+    height: min(64vh, 640px); /* Було min(30vh, 340px) — карта тепер значно більша, це головний елемент вкладки */
+    min-height: 460px;
+    max-width: 100%;
     margin: 0 auto;
     background: radial-gradient(circle at 50% 52%, rgba(34, 211, 238, .08), transparent 64%), #02060f;
 }
@@ -413,9 +431,11 @@ main {
 .map-legend {
     left: 10px;
     top: 10px;
-    padding: 8px 10px;
-    color: #a8bbd4;
-    max-width: 190px;
+    padding: 10px 12px;
+    color: #ccdcf2;
+    font-size: 12px;
+    font-weight: 600;
+    max-width: 210px;
 }
 
 .map-legend p { margin: 0 0 5px; }
@@ -448,10 +468,12 @@ main {
 .map-readout {
     right: 10px;
     bottom: 10px;
-    padding: 7px 10px;
+    padding: 8px 12px;
     color: var(--green);
+    font-size: 13px;
+    font-weight: 700;
     text-align: right;
-    line-height: 1.4;
+    line-height: 1.5;
 }
 
 .paused-flag {
@@ -479,19 +501,20 @@ main {
 
 .event-row {
     display: grid;
-    grid-template-columns: 60px 8px 1fr auto;
+    grid-template-columns: 66px 8px 1fr auto;
     align-items: center;
     gap: 9px;
-    padding: 7px 9px;
+    padding: 8px 10px;
     border: 1px solid rgba(54, 151, 221, .14);
     border-left: 2px solid rgba(54, 151, 221, .5);
     border-radius: 5px;
     background: rgba(8, 24, 48, .5);
     font-family: 'Share Tech Mono', monospace;
-    font-size: 11px;
+    font-size: 12.5px;
+    font-weight: 600;
 }
 
-.event-row em { color: var(--muted); font-style: normal; font-size: 10px; }
+.event-row em { color: var(--muted); font-style: normal; font-size: 11.5px; font-weight: 700; }
 
 .event-dot {
     width: 6px;
@@ -509,7 +532,7 @@ main {
 }
 
 .event-row strong { color: var(--cyan); }
-.event-row b { font-size: 9px; letter-spacing: 1px; color: var(--muted); }
+.event-row b { font-size: 10.5px; letter-spacing: 1px; font-weight: 700; color: var(--muted); }
 .event-row.warning { border-left-color: var(--yellow); }
 .event-row.warning .event-dot { background: var(--yellow); box-shadow: 0 0 8px var(--yellow); }
 .event-row.warning b { color: var(--yellow); }
@@ -564,17 +587,17 @@ main {
 
 .param-list p {
     margin: 0;
-    padding: 7px 0;
+    padding: 8px 0;
     display: flex;
     justify-content: space-between;
     gap: 10px;
     border-bottom: 1px solid rgba(54, 151, 221, .14);
     font-family: 'Share Tech Mono';
-    font-size: 11px;
+    font-size: 13px;
 }
 
-.param-list span { color: var(--muted); }
-.param-list b { color: #e2eeff; font-weight: 500; text-align: right; }
+.param-list span { color: var(--muted); font-weight: 600; }
+.param-list b { color: #f2f8ff; font-weight: 700; text-align: right; }
 
 .scenario-panel { padding-bottom: 10px; }
 
@@ -620,10 +643,10 @@ main {
 
 .compact-ai .algorithm-list { padding: 8px 10px 10px; gap: 6px; }
 .compact-ai .algorithm-list div { grid-template-columns: 26px 1fr auto; gap: 8px; padding: 8px 9px; }
-.compact-ai .algorithm-list i { width: 24px; height: 24px; font-size: 12px; }
-.compact-ai .algorithm-list b { font-size: 12px; }
-.compact-ai .algorithm-list small { font-size: 10px; display: block; }
-.compact-ai .algorithm-list em { font-size: 9px; padding: 3px 6px; }
+.compact-ai .algorithm-list i { width: 24px; height: 24px; font-size: 13px; }
+.compact-ai .algorithm-list b { font-size: 13px; font-weight: 700; }
+.compact-ai .algorithm-list small { font-size: 11.5px; font-weight: 600; display: block; }
+.compact-ai .algorithm-list em { font-size: 10px; font-weight: 700; padding: 3px 7px; }
 
 .metric-strip {
     margin-top: 14px;
@@ -708,8 +731,8 @@ main {
     isolation: isolate;
 }
 
-.uav-card-grid .data-card small { font-size: 9px; letter-spacing: 1px; flex: 0 0 auto; }
-.uav-card-grid .data-card strong { font-size: 18px; margin: 4px 0; flex: 0 0 auto; }
+.uav-card-grid .data-card small { font-size: 11px; font-weight: 700; letter-spacing: 1px; flex: 0 0 auto; }
+.uav-card-grid .data-card strong { font-size: 20px; margin: 4px 0; flex: 0 0 auto; }
 
 .uav-card-grid .spark {
     display: block;
@@ -763,7 +786,7 @@ main {
 .battery-bars span { flex: 1; width: auto; height: 8px; border-radius: 2px; }
 
 .uav-status-panel .param-list { padding: 0 12px 10px; flex: 1; }
-.uav-status-panel .param-list p { padding: 5px 0; font-size: 10px; }
+.uav-status-panel .param-list p { padding: 6px 0; font-size: 12.5px; }
 
 .ai-output-panel .event-log { max-height: 118px; padding: 7px 10px; }
 
@@ -890,13 +913,14 @@ main {
 
 .mono-line {
     margin: 0 14px;
-    padding: 9px 10px;
+    padding: 10px 12px;
     background: rgba(5, 20, 40, .88);
     border: 1px solid rgba(54, 151, 221, .16);
     border-radius: 5px;
-    color: var(--blue);
+    color: #6fd8ff;
     font-family: 'Share Tech Mono';
-    font-size: 12px;
+    font-size: 13px;
+    font-weight: 600;
     overflow: hidden;
     white-space: nowrap;
     text-overflow: ellipsis;
@@ -910,7 +934,7 @@ main {
     border-radius: 8px;
 }
 
-.data-card strong { display: block; font-family: 'Orbitron'; font-size: 24px; margin: 6px 0; }
+.data-card strong { display: block; font-family: 'Orbitron'; font-weight: 700; font-size: 25px; margin: 6px 0; }
 
 .cyan { color: var(--cyan) !important; }
 .green { color: var(--green) !important; }
@@ -919,7 +943,7 @@ main {
 .yellow { color: var(--yellow) !important; }
 .red { color: var(--red) !important; }
 
-.data-card span { display: block; color: var(--muted); font-family: 'Share Tech Mono'; font-size: 10px; }
+.data-card span { display: block; color: var(--muted); font-family: 'Share Tech Mono'; font-size: 11.5px; font-weight: 600; }
 
 .spark { width: 100%; height: 42px; display: block; }
 
@@ -1009,23 +1033,24 @@ main {
     font-size: 14px;
 }
 
-.algorithm-list b, .insight-list b { display: block; margin-bottom: 2px; font-size: 12.5px; }
-.algorithm-list small, .insight-list small { color: var(--muted); font-size: 10.5px; line-height: 1.2; }
+.algorithm-list b, .insight-list b { display: block; margin-bottom: 3px; font-size: 14px; font-weight: 700; }
+.algorithm-list small, .insight-list small { color: var(--muted); font-size: 12px; font-weight: 600; line-height: 1.3; }
 .algorithm-list em.idle { color: var(--blue); border-color: rgba(56, 189, 248, .45); background: rgba(56, 189, 248, .06); }
 
 .bar-list p {
     display: grid;
-    grid-template-columns: 160px 46px 1fr;
+    grid-template-columns: 170px 52px 1fr;
     gap: 10px;
     align-items: center;
     margin: 0;
-    padding: 5px 0;
+    padding: 6px 0;
     font-family: 'Share Tech Mono';
-    font-size: 11px;
+    font-size: 13px;
+    font-weight: 600;
 }
 
-.bar-list span { color: #c8d8ef; }
-.bar-list b { text-align: right; color: var(--cyan); }
+.bar-list span { color: #dbe8fb; }
+.bar-list b { text-align: right; color: var(--cyan); font-weight: 700; font-size: 14px; }
 .bar-list i { height: 6px; background: rgba(255, 255, 255, .06); border-radius: 8px; overflow: hidden; }
 .bar-list u { display: block; height: 100%; width: 0; background: linear-gradient(90deg, var(--cyan), var(--green)); text-decoration: none; transition: width .25s; }
 
@@ -1033,9 +1058,9 @@ main {
 
 .kpi-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; padding: 8px; }
 .kpi-grid div, .kpi-strip div { background: rgba(8, 24, 48, .56); border: 1px solid rgba(54, 151, 221, .16); border-radius: 6px; padding: 5px 8px; }
-.kpi-grid b, .kpi-strip b { display: block; color: var(--cyan); font-family: 'Orbitron'; font-size: 14px; margin: 2px 0; }
-.kpi-grid small, .kpi-strip small { font-size: 8px; line-height: 1.2; }
-.kpi-grid span { color: var(--muted); font-family: 'Share Tech Mono'; font-size: 8px; text-transform: uppercase; }
+.kpi-grid b, .kpi-strip b { display: block; color: var(--cyan); font-family: 'Orbitron'; font-weight: 700; font-size: 16px; margin: 2px 0; }
+.kpi-grid small, .kpi-strip small { font-size: 9.5px; line-height: 1.25; }
+.kpi-grid span { color: var(--muted); font-family: 'Share Tech Mono'; font-size: 9.5px; font-weight: 600; text-transform: uppercase; }
 
 .chart-box {
     margin: 0 10px 10px;
@@ -1107,16 +1132,30 @@ main {
 }
 .ai-page .ai-footer { flex: 0 0 auto; margin-top: 12px; }
 
-.ai-page .algorithms-panel, .ai-page .load-panel, .ai-page .analytics-panel, .ai-page .insights-panel {
+.ai-page .algorithms-panel, .ai-page .load-panel, .ai-page .insights-panel {
     display: flex;
     flex-direction: column;
     min-height: 0;
 }
 
+/* Панель "АНАЛІТИКА МІСІЇ" тепер компактна: не розтягується на всю висоту рядка,
+   а займає лише стільки місця, скільки реально потрібно її вмісту. */
+.ai-page .analytics-panel {
+    display: flex;
+    flex-direction: column;
+    align-self: start;
+    max-height: 420px;
+}
+
+.ai-page .ai-grid {
+    grid-template-rows: auto auto;
+}
+
 .ai-page .algorithm-list, .ai-page .bar-list, .ai-page .insight-list { flex: 1 1 auto; min-height: 0; overflow-y: auto; }
 .ai-page .analytics-panel .kpi-grid { flex: 0 0 auto; }
 .ai-page .analytics-panel .chart-box {
-    min-height: 240px; /* Забезпечує, що графік не сплющиться */
+    min-height: 140px; /* Було 240px — суттєво зменшено, графік більше не займає весь екран */
+    max-height: 190px;
 }
 .ai-page .analytics-panel .kpi-strip { flex: 0 0 auto; }
 .ai-page #aiMissionChart { flex: 1 1 auto; min-height: 0; width: 100%; height: auto; }
