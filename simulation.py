@@ -702,22 +702,20 @@ def status_from_drone_risk(k: float) -> str:
     return "DANGER"
 
 
-def calculate_drone_risk(Tcurrent: float, Icurrent: float, rpm: float, voltage: float, cfg: DroneConfig) -> float:
+def calculate_drone_risk(Tcurrent: float, Icurrent: float, cfg: DroneConfig) -> float:
     t_norm = clamp(Tcurrent / cfg.Tmax, 0.0, 1.35)
+    i_norm = clamp(Icurrent / cfg.Imax, 0.0, 1.35)
+
     thermal_part = cfg.temp_weight * (t_norm ** 2.25)
+    current_part = cfg.current_weight * (i_norm ** 2.00)
 
-    # Очікувані оберти на цій напрузі за майже повного газу - опорна точка
-    # "здорового" мотора. Якщо реальні оберти суттєво нижчі за очікувані,
-    # а струм при цьому високий - це ознака розмагнічування ротора
-    # (мотор споживає струм, але не видає механічну роботу/оберти).
-    expected_rpm = voltage * cfg.motor_kv * 0.9
-    actual_rpm_ratio = clamp(rpm / max(expected_rpm, 1.0), 0.0, 1.0)
-    current_ratio = clamp(Icurrent / cfg.Imax, 0.0, 1.0)
+    coupled_penalty = 0.0
+    if Tcurrent > 72.0 and Icurrent > 32.0:
+        t_hot = (Tcurrent - 72.0) / max(1.0, cfg.Tmax - 72.0)
+        i_hot = (Icurrent - 32.0) / max(1.0, cfg.Imax - 32.0)
+        coupled_penalty = 0.13 * t_hot * i_hot
 
-    divergence = max(0.0, current_ratio - actual_rpm_ratio)
-    divergence_part = cfg.current_weight * divergence * 1.5
-
-    return clamp(thermal_part + divergence_part, 0.0, 1.0)
+    return clamp(thermal_part + current_part + coupled_penalty, 0.0, 1.0)
 
 
 class MissionProfile:
@@ -776,18 +774,11 @@ class MissionProfile:
         burst = self.burst_extra_current if t < self.burst_until else 0.0
         wind_wave = (math.sin(t * 0.19) * 0.55 + math.sin(t * 0.047 + 1.3) * 0.45) * p["wind_wave"]
 
-        # Залишаємо легкий тротлінг тільки для безпечних температур (імітація
-        # реального польотника, який трохи бере газ назад, поки ще не критично).
         thermal_derate = 0.0
-        if temperature > 76.0 and temperature < 85.0:
-            thermal_derate += (temperature - 76.0) * 0.3
-
-        # Якщо температура пішла вище 85°C - ізоляція плавиться, магніти деградують,
-        # ESC втрачає контроль над ефективністю і починає вливати МАКСИМУМ струму,
-        # намагаючись компенсувати падіння обертів (тепловий замок).
-        if temperature >= 85.0:
-            # Струм не ріжеться, а навпаки - польотник панікує і дає газ в підлогу
-            burst += 5.0
+        if temperature > 76.0:
+            thermal_derate += (temperature - 76.0) * 0.55
+        if temperature > 84.0:
+            thermal_derate += (temperature - 84.0) * 1.40
 
         target = self.phase_target_current * p["current_multiplier"] + burst + wind_wave - thermal_derate
         return clamp(target, self.cfg.min_current, self.cfg.Imax * 1.03), self.phase_name
@@ -871,7 +862,7 @@ class DroneSimulator:
             heating_rate = 0.0
 
             # Прискорене експоненційне охолодження прямо до 0°C
-            cooling_rate = self.temperature * 0.15
+            cooling_rate = self.temperature * 0.20
             self.temperature = max(0.0, self.temperature - cooling_rate * dt)
             Tcurrent = self.temperature
 
@@ -927,13 +918,9 @@ class DroneSimulator:
         voltage = self.estimate_voltage(Icurrent)
 
         # Electrical power P = V * I (уся споживана потужність), з якої частка
-        # dynamic_efficiency йде в корисну механічну роботу гвинта, а решта - в тепло.
-        # ККД тепер динамічний: деградовані магніти (magnet_health) не дають
-        # мотору ефективно перетворювати струм в обертовий момент, тому більша
-        # частка енергії йде саме в тепло, а не в корисну роботу.
+        # mechanical_efficiency йде в корисну механічну роботу гвинта, а решта - в тепло.
         electrical_power = voltage * Icurrent
-        dynamic_efficiency = cfg.mechanical_efficiency * (self.magnet_health / 100.0)
-        heat_power = electrical_power * (1.0 - dynamic_efficiency)
+        heat_power = electrical_power * (1.0 - cfg.mechanical_efficiency)
 
         self.heat_energy += heat_power * dt
 
@@ -941,14 +928,7 @@ class DroneSimulator:
         cooling_rate = (self.temperature - cfg.ambient_temp) / cfg.cooling_tau
         esc_extra_heat = 0.006 * max(0.0, Icurrent - 24.0)
 
-        # Дрібне "живе" коливання температури (турбулентність повітря, нерівномірне
-        # обдування радіатора обертами гвинта тощо). Дві синусоїди з різними
-        # періодами і фазами, середнє значення = 0 - тому це НЕ додає і не забирає
-        # тепло за цикл і ніяк не змінює загальний тренд нагріву/охолодження чи
-        # пороги теплового дерейту/замка, лише робить лінію на графіку живою.
-        temp_wave = (math.sin(self.t * 0.15) * 0.10 + math.sin(self.t * 0.037 + 0.9) * 0.06)
-
-        dT = (heating_rate - cooling_rate + esc_extra_heat) * dt + temp_wave + random.gauss(0.0, cfg.temp_sensor_noise)
+        dT = (heating_rate - cooling_rate + esc_extra_heat) * dt + random.gauss(0.0, cfg.temp_sensor_noise)
         self.temperature = clamp(self.temperature + dT, cfg.ambient_temp - 1.0, cfg.Tmax + 15.0)
         Tcurrent = self.temperature
 
@@ -956,49 +936,28 @@ class DroneSimulator:
         self.update_magnet_health(Tcurrent, Icurrent, dt)
 
         throttle = clamp(Icurrent / cfg.Imax, 0.0, 1.0)
-
-        # Дерейт обертів через перегрів. Раніше ефект "замерзав" на -25% вже при
-        # ~87°C і більше не рухався навіть при 105°C - тепер він масштабується
-        # аж до абсолютної теплової стелі (Tmax+15), тож при справжньому
-        # перегріві (близько до 105°C) оберти реально провалюються, а не
-        # тримаються на одному рівні попри критичний risk/DANGER статус.
         heat_derate = 1.0
-        derate_ceiling = cfg.Tmax + 15.0
         if Tcurrent > 80.0:
-            derate_range = max(1.0, derate_ceiling - 80.0)
-            heat_derate -= clamp((Tcurrent - 80.0) / derate_range, 0.0, 0.85)
+            heat_derate -= clamp((Tcurrent - 80.0) / 28.0, 0.0, 0.25)
 
-        # Ідеальні оберти, які контролер ХОЧЕ отримати за поточного струму/напруги.
-        rpm_ideal = voltage * cfg.motor_kv * (0.16 + 0.84 * throttle)
-
-        # РЕАЛЬНІ оберти падають пропорційно деградації магнітів (magnet_health),
-        # навіть якщо струм максимальний - саме так виникає розбіжність
-        # "струм росте, а оберти падають" при перегріві/розмагнічуванні.
-        rpm = rpm_ideal * (self.magnet_health / 100.0) * heat_derate + random.gauss(0.0, 45.0)
+        rpm = voltage * cfg.motor_kv * (0.16 + 0.84 * throttle) * heat_derate + random.gauss(0.0, 45.0)
         rpm = max(0.0, rpm)
 
         # Horizontal speed depends on RPM (8-75 km/h range)
         horizontal_speed_kmh = 8.0 + (rpm / 15000.0) * 67.0
         horizontal_speed_kmh = clamp(horizontal_speed_kmh, 5.0, 75.0)
 
-        risk = calculate_drone_risk(Tcurrent, Icurrent, rpm, voltage, cfg)
+        risk = calculate_drone_risk(Tcurrent, Icurrent, cfg)
         status = status_from_drone_risk(risk)
 
         demag_risk = clamp((Tcurrent - 70.0) / max(1.0, cfg.Tmax - 70.0), 0.0, 1.0) ** 2
         thermal_margin = cfg.Tmax - Tcurrent
 
-        # Теплова частка тепер ДОМІНУЄ над throttle: рахуємо, наскільки Tcurrent
-        # наблизилась до Tmax (0 - холодний мотор, 1 - точно на межі Tmax),
-        # і беремо це в квадрат, щоб штраф різко зростав саме біля перегріву.
-        # Завдяки цьому ефективність падає слідом за температурою навіть тоді,
-        # коли throttle вже скинутий (через теплову інерцію мотор ще гарячий).
-        temp_ratio = clamp((Tcurrent - 40.0) / (cfg.Tmax - 40.0), 0.0, 1.4)
-
-        efficiency = 100.0
-        efficiency -= 45.0 * temp_ratio ** 2
-        efficiency -= 6.0 * throttle ** 2
+        efficiency = 87.0
+        efficiency -= 9.0 * throttle ** 2
+        efficiency -= 0.11 * max(0.0, Tcurrent - 55.0)
         efficiency -= 5.0 * (1.0 - self.magnet_health / 100.0)
-        efficiency = clamp(efficiency, 20.0, 100.0)
+        efficiency = clamp(efficiency, 45.0, 90.0)
 
         sample = DroneTelemetry(
             t=self.t,
