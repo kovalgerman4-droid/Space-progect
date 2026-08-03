@@ -125,7 +125,7 @@ function drawSparkline(id, values, options = {}) {
         max += pad;
     }
 
-    // Технічна сітка на задньому плані (трохи приглушена)
+    // Technical grid in the background (slightly muted)
     ctx.strokeStyle = 'rgba(80, 220, 255, .06)';
     ctx.lineWidth = 1;
     for (let i = 1; i < 4; i++) {
