@@ -125,7 +125,7 @@ function drawSparkline(id, values, options = {}) {
         max += pad;
     }
 
-    // Технічна сітка на задньому плані (трохи приглушена)
+    // Technical grid in the background (slightly muted)
     ctx.strokeStyle = 'rgba(80, 220, 255, .06)';
     ctx.lineWidth = 1;
     for (let i = 1; i < 4; i++) {
@@ -147,19 +147,19 @@ function drawSparkline(id, values, options = {}) {
     };
     const p = palettes[color] || palettes.cyan;
 
-    // Розрахунок параметрів стовпчиків
+    // Calculation of column parameters
     const count = clean.length;
-    const gap = 1.5; // Проміжок між стовпчиками в пікселях
+    const gap = 1.5; // Spacing between columns in pixels
     const barWidth = Math.max(1.5, (width / count) - gap);
 
-    // Малювання гістограми
+    // Drawing a histogram
     clean.forEach((v, i) => {
         const x = (i / count) * width;
         const barHeight = ((v - min) / (max - min)) * height;
-        const clampedHeight = Math.max(2, Math.min(height, barHeight)); // Щоб навіть мінімальні значення було видно
+        const clampedHeight = Math.max(2, Math.min(height, barHeight)); // So that even the minimum values ​​are visible.
         const y = height - clampedHeight;
 
-        // Вертикальний градієнт для кожного стовпчика (яскравіше зверху, згасає до низу)
+        // Vertical gradient for each column
         const barGrad = ctx.createLinearGradient(0, y, 0, height);
         barGrad.addColorStop(0, p[0]);
         barGrad.addColorStop(1, p[1]);
@@ -169,8 +169,8 @@ function drawSparkline(id, values, options = {}) {
     });
 }
 
-// Приладова шкала (як стрічка швидкості/висоти в реальних приладах) замість лінійного графіка.
-// Показує поточне значення як позицію повзунка на шкалі мін→макс, з підписами меж.
+// An instrument scale (such as a speed or altitude scale on real instruments) instead of a linear graph.
+// Displays the current value as the position of a slider on a scale ranging from minimum to maximum, with corresponding markings.
 function drawScaleGauge(id, value, min, max, options = {}) {
     const canvas = $(id);
     const prepared = prepareCanvas(canvas);
@@ -190,7 +190,7 @@ function drawScaleGauge(id, value, min, max, options = {}) {
     const trackY = height * 0.38;
     const left = padX, right = width - padX, trackW = right - left;
 
-    // базова лінія шкали
+    // base line of the scale
     ctx.strokeStyle = 'rgba(140,170,205,.30)';
     ctx.lineWidth = 2;
     ctx.beginPath();
@@ -198,7 +198,7 @@ function drawScaleGauge(id, value, min, max, options = {}) {
     ctx.lineTo(right, trackY);
     ctx.stroke();
 
-    // поділки
+    // tick marks
     const ticks = options.ticks || 6;
     ctx.strokeStyle = 'rgba(140,170,205,.45)';
     ctx.lineWidth = 1;
@@ -211,7 +211,7 @@ function drawScaleGauge(id, value, min, max, options = {}) {
         ctx.stroke();
     }
 
-    // заповнена частина до поточного значення
+    // filled portion up to the current value
     const pct = max > min ? (v - min) / (max - min) : 0;
     const px = left + trackW * clamp(pct, 0, 1);
     ctx.strokeStyle = color;
@@ -221,7 +221,7 @@ function drawScaleGauge(id, value, min, max, options = {}) {
     ctx.lineTo(px, trackY);
     ctx.stroke();
 
-    // повзунок-покажчик
+    // slider/pointer indicator
     ctx.fillStyle = color;
     ctx.beginPath();
     ctx.moveTo(px, trackY - 8);
@@ -233,7 +233,7 @@ function drawScaleGauge(id, value, min, max, options = {}) {
     ctx.arc(px, trackY + 4, 2.4, 0, Math.PI * 2);
     ctx.fill();
 
-    // підписи меж шкали
+    // scale boundary labels
     ctx.font = "9.5px 'Share Tech Mono'";
     ctx.fillStyle = 'rgba(170,195,225,.9)';
     ctx.textAlign = 'left';
@@ -411,8 +411,8 @@ function updateSatellite(sat, history) {
     setBars('satBattBars', sat.battery_soc_pct);
     setBars('satCommBars', sat.comm_quality_pct);
 
-    // Реалістичні прилад-шкали замість ліній графіка: показують позицію поточного
-    // значення на реальному діапазоні (як стрічка швидкості/висоти в кабіні).
+    // Realistic instrument-style gauges instead of line graphs: show the position of the current
+    // value on a real range (like a speed/altitude tape in a cockpit).
     drawScaleGauge('satLatSpark', sat.latitude_deg, -55, 55, {color: 'cyan', minLabel: '55°S', maxLabel: '55°N'});
     drawScaleGauge('satLonSpark', sat.longitude_deg, -180, 180, {color: 'cyan', minLabel: '180°W', maxLabel: '180°E'});
     drawScaleGauge('satAltSpark', sat.altitude_km, 405, 432, {color: 'blue', minLabel: '405 км', maxLabel: '432 км'});
