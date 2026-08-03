@@ -9,14 +9,14 @@ from typing import Dict, List, Tuple
 
 # ============================================================
 #  SKY & SPACE SENTINEL - PURE PYTHON SIMULATION CORE
-#  Без PyQt, без графічного desktop-вікна.
+#  No PyQt, no graphical desktop window.
 #
-#  Тут живе тільки фізика / телеметрія:
+#  Only physics / telemetry lives here:
 #  - ISS-like satellite mission simulation
 #  - UAV / drone thermal-electric simulation
 #
-#  backend.py віддає ці дані як JSON, а index.html + script.js
-#  постійно забирають їх через fetch().
+#  backend.py serves this data as JSON, and index.html + script.js
+#  continuously fetch it via fetch().
 # ============================================================
 
 
@@ -63,25 +63,25 @@ class SatelliteConfig:
 
     earth_radius_km: float = 6371.0
     mu_earth_km3_s2: float = 398600.4418
-    j2: float = 1.08263e-3  # коефіцієнт сплюснутості Землі (для вузлової прецесії)
+    j2: float = 1.08263e-3  # Earth oblateness coefficient (for nodal precession)
 
     inclination_deg: float = 51.64
     mean_altitude_km: float = 419.5
-    mean_velocity_kmh: float = 27570.0  # довідкове значення; реальна швидкість рахується динамічно з vis-viva
-    orbital_period_min: float = 92.68  # довідкове значення; реальний період рахується динамічно
+    mean_velocity_kmh: float = 27570.0  # reference value; actual velocity is computed dynamically from vis-viva
+    orbital_period_min: float = 92.68  # reference value; actual period is computed dynamically
 
     sim_step_s: float = 6.0
 
-    # --- Атмосферне гальмування (експоненційна атмосфера + формула Кінга-Хеле) ---
-    ballistic_coefficient_m2_per_kg: float = 0.010  # Cd*A/m, ISS-масштаб
+    # --- Atmospheric drag (exponential atmosphere + King-Hele formula) ---
+    ballistic_coefficient_m2_per_kg: float = 0.010  # Cd*A/m, ISS scale
     atm_ref_altitude_km: float = 400.0
-    atm_ref_density_kg_m3: float = 3.0e-12  # густина атмосфери на atm_ref_altitude_km
+    atm_ref_density_kg_m3: float = 3.0e-12  # atmospheric density at atm_ref_altitude_km
     atm_scale_height_km: float = 58.0
 
-    # --- Ємність енергосистеми станції (для перерахунку power_balance -> SoC) ---
+    # --- Station power system capacity (for converting power_balance -> SoC) ---
     station_battery_capacity_kWh: float = 95.0
 
-    # --- Наукові ліміти для скорингу (NASA short-term spaceflight limits) ---
+    # --- Scientific limits for scoring (NASA short-term spaceflight limits) ---
     co2_limit_mmhg: float = 5.3
     cabin_pressure_tolerance_psi: float = 0.2
 
@@ -244,8 +244,8 @@ def satellite_scenario_by_key(key: str) -> SatelliteScenario:
 class SatelliteSimulator:
     def __init__(self, cfg: SatelliteConfig | None = None, seed: int | None = None):
         self.cfg = cfg or SatelliteConfig()
-        # Якщо seed не задано, поведінка ідентична попередній версії (глобальний random).
-        # Якщо seed задано - симуляція стає повністю відтворюваною.
+        # If seed is not provided, behavior is identical to the previous version (global random).
+        # If seed is provided, the simulation becomes fully reproducible.
         self.rng = random.Random(seed) if seed is not None else random
         self.scenario = SATELLITE_SCENARIOS[0]
         self.reset()
@@ -283,8 +283,8 @@ class SatelliteSimulator:
         self.cloud_cover_pct = 46.0 + self.rng.uniform(-14.0, 14.0)
 
         self.drag_altitude_loss_km = 0.0
-        # Попередня висота потрібна для оцінки густини атмосфери ρ(h) на цьому кроці
-        # (density-модель для формули Кінга-Хеле, див. step()).
+        # The previous altitude is needed to estimate atmospheric density ρ(h) at this step
+        # (density model for the King-Hele formula, see step()).
         self.prev_altitude_km = self.cfg.mean_altitude_km
         self.last_sample: SatelliteTelemetry | None = None
 
@@ -305,8 +305,8 @@ class SatelliteSimulator:
         lat_rad = math.asin(math.sin(inc) * math.sin(theta))
         latitude_deg = math.degrees(lat_rad)
 
-        # J2-прецесія висхідного вузла (реальна орбіта МКС дрейфує ~ -5 deg/добу
-        # через сплюснутість Землі; раніше raan0_deg був статичним - це не фізично).
+        # J2 precession of the ascending node (the real ISS orbit drifts ~ -5 deg/day
+        # due to Earth's oblateness; previously raan0_deg was static - that was not physical).
         prev_radius_km = cfg.earth_radius_km + self.prev_altitude_km
         raan_rate_deg_s = (
                 -1.5 * math.degrees(n) * cfg.j2 * (cfg.earth_radius_km / prev_radius_km) ** 2 * math.cos(inc)
@@ -317,10 +317,10 @@ class SatelliteSimulator:
         earth_rotation_deg = 360.0 * (t / 86164.0)
         longitude_deg = wrap_lon(current_raan_deg + inertial_lon_deg - earth_rotation_deg)
 
-        # Атмосферне гальмування: експоненційна атмосфера ρ(h) = ρ0 * exp(-(h-h0)/H)
-        # + втрата висоти за оберт за формулою Кінга-Хеле: Δa/orbit = -2π * B * ρ(h) * a^2.
-        # На відміну від попередньої версії, втрата ТІЛЬКИ монотонно накопичується -
-        # без маневру reboost орбіта сама по собі ніколи "не загоюється".
+        # Atmospheric drag: exponential atmosphere ρ(h) = ρ0 * exp(-(h-h0)/H)
+        # + altitude loss per orbit via the King-Hele formula: Δa/orbit = -2π * B * ρ(h) * a^2.
+        # Unlike the previous version, the loss ONLY accumulates monotonically -
+        # without a reboost maneuver the orbit never "heals" itself.
         if sc.drag_strength > 0:
             rho_kg_m3 = cfg.atm_ref_density_kg_m3 * math.exp(
                 -(self.prev_altitude_km - cfg.atm_ref_altitude_km) / cfg.atm_scale_height_km
@@ -329,7 +329,7 @@ class SatelliteSimulator:
             delta_a_per_orbit_m = (
                     -2.0 * math.pi * cfg.ballistic_coefficient_m2_per_kg * rho_kg_m3 * semi_major_m ** 2
             )
-            decay_km_per_s = -delta_a_per_orbit_m / period_s / 1000.0  # додатне значення = втрата висоти
+            decay_km_per_s = -delta_a_per_orbit_m / period_s / 1000.0  # positive value = altitude loss
             self.drag_altitude_loss_km += decay_km_per_s * dt * sc.drag_strength
 
         altitude_km = (
@@ -353,17 +353,17 @@ class SatelliteSimulator:
         horizon_half_angle = math.acos(cfg.earth_radius_km / radius_km)
         footprint_km = 2.0 * cfg.earth_radius_km * horizon_half_angle
 
-        # Sun position: схилення Сонця (наближення) + підсонячна довгота (ECEF).
+        # Sun position: solar declination (approximation) + sub-solar longitude (ECEF).
         doy = now_sim.timetuple().tm_yday
         utc_hours = now_sim.hour + now_sim.minute / 60.0 + now_sim.second / 3600.0
         solar_lat_deg = 23.44 * math.sin(2.0 * math.pi * (doy - 80.0) / 365.2422)
         solar_lon_deg = wrap_lon(180.0 - utc_hours * 15.0)
 
-        # sun_sep_deg лишається для косметичної моделі погоди під супутником нижче.
+        # sun_sep_deg is kept for the cosmetic under-satellite weather model below.
         sun_sep_deg = angular_distance_deg(latitude_deg, longitude_deg, solar_lat_deg, solar_lon_deg)
 
-        # Затемнення: справжня векторна геометрія (циліндрична модель тіні Землі)
-        # у інерціальній системі координат, замість кутового порогу "на око".
+        # Eclipse: true vector geometry (cylindrical Earth-shadow model)
+        # in the inertial coordinate frame, instead of an eyeballed angular threshold.
         j2000_epoch = datetime(2000, 1, 1, 12, 0, 0, tzinfo=timezone.utc)
         days_since_j2000 = (now_sim - j2000_epoch).total_seconds() / 86400.0
         gmst_deg = (280.46061837 + 360.98564736629 * days_since_j2000) % 360.0
@@ -385,8 +385,8 @@ class SatelliteSimulator:
         sun_proj_km = sat_x * sun_ux + sat_y * sun_uy + sat_z * sun_uz
         perp_dist_km = math.sqrt(max(radius_km ** 2 - sun_proj_km ** 2, 0.0))
 
-        # "eclipse"-сценарій імітує довшу тіньову ділянку (напр. інша пора року) -
-        # трохи ширший ефективний радіус тіні замість штучного кутового порогу.
+        # The "eclipse" scenario simulates a longer shadow segment (e.g. a different season) -
+        # a slightly wider effective shadow radius instead of an artificial angular threshold.
         shadow_radius_km = cfg.earth_radius_km * (1.08 if sc.key == "eclipse" else 1.0)
         in_shadow = sun_proj_km < 0.0 and perp_dist_km < shadow_radius_km
 
@@ -510,10 +510,10 @@ class SatelliteSimulator:
 
         # Scientific-ish health scores.
         # NOTE: cfg.co2_limit_mmhg / cfg.cabin_pressure_tolerance_psi (NASA short-term limits)
-        # свідомо НЕ підставлені напряму в сигми нижче - це змінило б чутливість
-        # system_status (NOMINAL/WATCH/ALERT/CRITICAL) і зламало б відкалібровану поведінку
-        # демо-сценаріїв. Використовуйте їх для окремого, явного "compliance"-індикатора,
-        # а не для заміни існуючих gauss_score сигм без окремого регресійного тестування.
+        # are deliberately NOT plugged directly into the sigmas below - that would change the
+        # sensitivity of system_status (NOMINAL/WATCH/ALERT/CRITICAL) and break the calibrated
+        # behavior of the demo scenarios. Use them for a separate, explicit "compliance"
+        # indicator, not to replace the existing gauss_score sigmas without separate regression testing.
         temp_ok = gauss_score(self.cabin_temp_c, 23.8, 1.45)
         hum_ok = gauss_score(self.cabin_humidity_pct, 47.0, 10.5)
         pressure_ok = gauss_score(self.cabin_pressure_psi, 14.70, 0.08)
@@ -638,9 +638,9 @@ class DroneConfig:
     winding_resistance: float = 0.060
     thermal_capacity: float = 58.0
     cooling_tau: float = 42.0
-    # Частка споживаної електричної потужності (V*I), яка йде в корисну механічну
-    # роботу гвинта, а НЕ в тепло. Типово 0.85-0.90 для здорового BLDC-мотора+ESC
-    # на крейсерському режимі. Використовується в новій моделі heat_power = V*I*(1-η).
+    # Fraction of the consumed electrical power (V*I) that goes into useful mechanical
+    # propeller work, and NOT into heat. Typically 0.85-0.90 for a healthy BLDC motor+ESC
+    # at cruise. Used in the new model heat_power = V*I*(1-η).
     mechanical_efficiency: float = 0.86
 
     min_current: float = 3.0
@@ -706,10 +706,10 @@ def calculate_drone_risk(Tcurrent: float, Icurrent: float, rpm: float, voltage: 
     t_norm = clamp(Tcurrent / cfg.Tmax, 0.0, 1.35)
     thermal_part = cfg.temp_weight * (t_norm ** 2.25)
 
-    # Очікувані оберти на цій напрузі за майже повного газу - опорна точка
-    # "здорового" мотора. Якщо реальні оберти суттєво нижчі за очікувані,
-    # а струм при цьому високий - це ознака розмагнічування ротора
-    # (мотор споживає струм, але не видає механічну роботу/оберти).
+    # Expected RPM at this voltage at near-full throttle - the reference point
+    # for a "healthy" motor. If actual RPM is significantly lower than expected
+    # while current stays high - this is a sign of rotor demagnetization
+    # (the motor draws current but does not produce mechanical work/rotation).
     expected_rpm = voltage * cfg.motor_kv * 0.9
     actual_rpm_ratio = clamp(rpm / max(expected_rpm, 1.0), 0.0, 1.0)
     current_ratio = clamp(Icurrent / cfg.Imax, 0.0, 1.0)
@@ -776,17 +776,17 @@ class MissionProfile:
         burst = self.burst_extra_current if t < self.burst_until else 0.0
         wind_wave = (math.sin(t * 0.19) * 0.55 + math.sin(t * 0.047 + 1.3) * 0.45) * p["wind_wave"]
 
-        # Залишаємо легкий тротлінг тільки для безпечних температур (імітація
-        # реального польотника, який трохи бере газ назад, поки ще не критично).
+        # We only apply light throttling for safe temperatures (simulating
+        # a real pilot who slightly backs off the throttle before it gets critical).
         thermal_derate = 0.0
         if temperature > 76.0 and temperature < 85.0:
             thermal_derate += (temperature - 76.0) * 0.3
 
-        # Якщо температура пішла вище 85°C - ізоляція плавиться, магніти деградують,
-        # ESC втрачає контроль над ефективністю і починає вливати МАКСИМУМ струму,
-        # намагаючись компенсувати падіння обертів (тепловий замок).
+        # If the temperature climbs above 85°C - insulation melts, magnets degrade,
+        # the ESC loses control over efficiency and starts pushing MAXIMUM current,
+        # trying to compensate for the drop in RPM (thermal lock-up).
         if temperature >= 85.0:
-            # Струм не ріжеться, а навпаки - польотник панікує і дає газ в підлогу
+            # Current isn't cut - quite the opposite, the flight controller panics and floors the throttle
             burst += 5.0
 
         target = self.phase_target_current * p["current_multiplier"] + burst + wind_wave - thermal_derate
@@ -858,30 +858,30 @@ class DroneSimulator:
         self.t += dt
 
         # ==========================================================
-        # === ІНТЕГРОВАНО: РЕАЛІСТИЧНЕ ЗНЕСТРУМЛЕННЯ (BLACKOUT) ===
+        # === INTEGRATED: REALISTIC POWER LOSS (BLACKOUT) ===
         # ==========================================================
         if self.battery_soc <= 0.0:
             self.battery_soc = 0.0
 
-            # Електричні метрики в нуль
+            # Electrical metrics to zero
             self.current = 0.0
             Icurrent = 0.0
             voltage = 0.0
             heat_power = 0.0
             heating_rate = 0.0
 
-            # Прискорене експоненційне охолодження прямо до 0°C
+            # Accelerated exponential cooling straight down to 0°C
             cooling_rate = self.temperature * 0.15
             self.temperature = max(0.0, self.temperature - cooling_rate * dt)
             Tcurrent = self.temperature
 
-            # Інерційне згасання обертів на основі попереднього кадру
+            # Inertial RPM decay based on the previous frame
             rpm = 0.0
             if self.last_sample:
                 rpm = max(0.0, self.last_sample.rpm - 2500.0 * dt)
             horizontal_speed_kmh = max(0.0, (rpm / 15000.0) * 67.0)
 
-            # Обнулення ризиків та ефективності системи
+            # Zeroing out risk and system efficiency
             risk = 0.0
             status = "SAFE (OFFLINE)"
             efficiency = 0.0
@@ -923,14 +923,14 @@ class DroneSimulator:
 
         Icurrent = clamp(self.current + random.gauss(0.0, cfg.current_sensor_noise), 0.0, cfg.Imax * 1.08)
 
-        # Напруга потрібна тут, ще до розрахунку теплової потужності (нижче).
+        # Voltage is needed here, before calculating the thermal power (below).
         voltage = self.estimate_voltage(Icurrent)
 
-        # Electrical power P = V * I (уся споживана потужність), з якої частка
-        # dynamic_efficiency йде в корисну механічну роботу гвинта, а решта - в тепло.
-        # ККД тепер динамічний: деградовані магніти (magnet_health) не дають
-        # мотору ефективно перетворювати струм в обертовий момент, тому більша
-        # частка енергії йде саме в тепло, а не в корисну роботу.
+        # Electrical power P = V * I (total power consumed), of which a fraction
+        # dynamic_efficiency goes into useful mechanical propeller work, and the rest into heat.
+        # Efficiency is now dynamic: degraded magnets (magnet_health) prevent the motor
+        # from efficiently converting current into torque, so a larger share of the
+        # energy goes into heat rather than useful work.
         electrical_power = voltage * Icurrent
         dynamic_efficiency = cfg.mechanical_efficiency * (self.magnet_health / 100.0)
         heat_power = electrical_power * (1.0 - dynamic_efficiency)
@@ -941,11 +941,11 @@ class DroneSimulator:
         cooling_rate = (self.temperature - cfg.ambient_temp) / cfg.cooling_tau
         esc_extra_heat = 0.006 * max(0.0, Icurrent - 24.0)
 
-        # Дрібне "живе" коливання температури (турбулентність повітря, нерівномірне
-        # обдування радіатора обертами гвинта тощо). Дві синусоїди з різними
-        # періодами і фазами, середнє значення = 0 - тому це НЕ додає і не забирає
-        # тепло за цикл і ніяк не змінює загальний тренд нагріву/охолодження чи
-        # пороги теплового дерейту/замка, лише робить лінію на графіку живою.
+        # Small "live" temperature fluctuation (air turbulence, uneven heatsink
+        # airflow from the propeller, etc). Two sine waves with different
+        # periods and phases, mean value = 0 - so this does NOT add or remove
+        # heat over a cycle and does not change the overall heating/cooling trend
+        # or the thermal derate/lockup thresholds, it just makes the chart line feel alive.
         temp_wave = (math.sin(self.t * 0.15) * 0.10 + math.sin(self.t * 0.037 + 0.9) * 0.06)
 
         dT = (heating_rate - cooling_rate + esc_extra_heat) * dt + temp_wave + random.gauss(0.0, cfg.temp_sensor_noise)
@@ -957,23 +957,23 @@ class DroneSimulator:
 
         throttle = clamp(Icurrent / cfg.Imax, 0.0, 1.0)
 
-        # Дерейт обертів через перегрів. Раніше ефект "замерзав" на -25% вже при
-        # ~87°C і більше не рухався навіть при 105°C - тепер він масштабується
-        # аж до абсолютної теплової стелі (Tmax+15), тож при справжньому
-        # перегріві (близько до 105°C) оберти реально провалюються, а не
-        # тримаються на одному рівні попри критичний risk/DANGER статус.
+        # RPM derate due to overheating. Previously the effect "froze" at -25% already at
+        # ~87°C and no longer moved even at 105°C - now it scales all the way
+        # up to the absolute thermal ceiling (Tmax+15), so at genuine
+        # overheating (close to 105°C) RPM actually collapses, instead of
+        # staying flat despite a critical risk/DANGER status.
         heat_derate = 1.0
         derate_ceiling = cfg.Tmax + 15.0
         if Tcurrent > 80.0:
             derate_range = max(1.0, derate_ceiling - 80.0)
             heat_derate -= clamp((Tcurrent - 80.0) / derate_range, 0.0, 0.85)
 
-        # Ідеальні оберти, які контролер ХОЧЕ отримати за поточного струму/напруги.
+        # Ideal RPM that the controller WANTS to achieve at the current current/voltage.
         rpm_ideal = voltage * cfg.motor_kv * (0.16 + 0.84 * throttle)
 
-        # РЕАЛЬНІ оберти падають пропорційно деградації магнітів (magnet_health),
-        # навіть якщо струм максимальний - саме так виникає розбіжність
-        # "струм росте, а оберти падають" при перегріві/розмагнічуванні.
+        # ACTUAL RPM drops proportionally to magnet degradation (magnet_health),
+        # even if current is at maximum - this is exactly how the "current rises
+        # while RPM drops" divergence occurs during overheating/demagnetization.
         rpm = rpm_ideal * (self.magnet_health / 100.0) * heat_derate + random.gauss(0.0, 45.0)
         rpm = max(0.0, rpm)
 
@@ -987,11 +987,11 @@ class DroneSimulator:
         demag_risk = clamp((Tcurrent - 70.0) / max(1.0, cfg.Tmax - 70.0), 0.0, 1.0) ** 2
         thermal_margin = cfg.Tmax - Tcurrent
 
-        # Теплова частка тепер ДОМІНУЄ над throttle: рахуємо, наскільки Tcurrent
-        # наблизилась до Tmax (0 - холодний мотор, 1 - точно на межі Tmax),
-        # і беремо це в квадрат, щоб штраф різко зростав саме біля перегріву.
-        # Завдяки цьому ефективність падає слідом за температурою навіть тоді,
-        # коли throttle вже скинутий (через теплову інерцію мотор ще гарячий).
+        # The thermal term now DOMINATES over throttle: we compute how close Tcurrent
+        # has gotten to Tmax (0 - cold motor, 1 - right at the Tmax limit),
+        # and square it so the penalty grows sharply right near overheating.
+        # This way efficiency drops in step with temperature even when
+        # throttle has already been cut (because of thermal inertia the motor is still hot).
         temp_ratio = clamp((Tcurrent - 40.0) / (cfg.Tmax - 40.0), 0.0, 1.4)
 
         efficiency = 100.0
