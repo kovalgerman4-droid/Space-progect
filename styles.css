@@ -356,7 +356,7 @@ main {
     grid-column: 2;
 }
 
-/* Шкала-індикатор (як приладова стрічка) під значенням, замість графіка */
+/* Gauge-style indicator strip below the value, instead of a chart */
 .telemetry-row .micro {
     grid-column: 1 / -1;
     grid-row: 2;
@@ -403,7 +403,7 @@ main {
 
 .map-wrap {
     position: relative;
-    height: min(64vh, 640px); /* Було min(30vh, 340px) — карта тепер значно більша, це головний елемент вкладки */
+    height: min(64vh, 640px); /* Was min(30vh, 340px) — the map is now much larger, the main element of the tab */
     min-height: 460px;
     max-width: 100%;
     margin: 0 auto;
@@ -749,7 +749,7 @@ main {
     margin: 16px auto 8px;
     box-shadow: 0 0 30px rgba(0, 255, 136, .2);
 }
-/* Кольори для тексту Ризику Двигуна (RISK K) динамічні */
+/* Text colors for Motor Risk (RISK K) are dynamic */
 .risk-good { color: var(--green) !important; }
 .risk-warning { color: var(--yellow) !important; }
 .risk-danger { color: var(--red) !important; }
@@ -760,7 +760,7 @@ main {
 .uav-status-panel .safe-orb.danger strong::before { content: '⚠'; }
 .uav-status-panel .safe-orb b { font-size: 11px; letter-spacing: 2px; margin: 3px 0 0; }
 .safe-orb strong {
-    font-size: 36px; /* Значок знаку оклику теж збільшуємо */
+    font-size: 36px; /* Warning icon also enlarged */
 }
 /* ---- NEW: battery block in the UAV status panel ---- */
 .uav-battery-block {
@@ -818,7 +818,7 @@ main {
 .uav-page .uav-main-grid { flex: 1 1 auto; min-height: 0; }
 .uav-page .uav-telemetry-panel, .uav-page .uav-status-panel { min-height: 0; }
 .uav-page .uav-card-grid { overflow-y: auto; }
-/* Відпускаємо висоту, дозволяючи сторінці бути природного розміру */
+/* Let the height be free, allowing the page to take its natural size */
 .uav-page.active, .ai-page.active {
     display: flex;
     flex-direction: column;
@@ -828,7 +828,7 @@ main {
 
 .uav-main-grid {
     display: grid;
-    grid-template-columns: 1fr 340px; /* Права колонка фіксована, ліва займає решту */
+    grid-template-columns: 1fr 340px; /* Right column fixed, left column takes the rest */
     gap: 14px;
     align-items: stretch;
     margin-bottom: 14px;
@@ -840,7 +840,7 @@ main {
     gap: 14px;
 }
 
-/* Прибираємо overflow-y: auto та задаємо гарні відступи */
+/* Remove overflow-y: auto and set nicer spacing */
 .uav-card-grid {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
@@ -849,7 +849,7 @@ main {
 }
 
 .uav-card-grid .data-card {
-    min-height: 140px; /* Збільшена висота карток для графіків */
+    min-height: 140px; /* Increased card height for charts */
     display: flex;
     flex-direction: column;
     justify-content: space-between;
@@ -857,19 +857,19 @@ main {
 
 .uav-card-grid .spark {
     width: 100%;
-    height: 46px; /* Більше місця для спарклайнів */
+    height: 46px; /* More room for sparklines */
     flex: 0 0 46px;
 }
 
 .uav-page .ai-output-panel {
-    flex: 1; /* Змушує AI панель заповнити залишок простору під картками */
+    flex: 1; /* Forces the AI panel to fill the remaining space under the cards */
     margin: 0;
 }
 
 @media (max-width: 1100px) {
     .uav-main-grid {
     display: grid;
-    grid-template-columns: 1fr 340px; /* Права колонка фіксована, ліва займає решту */
+    grid-template-columns: 1fr 340px; /* Right column fixed, left column takes the rest */
     gap: 14px;
     align-items: stretch;
     margin-bottom: 14px;
@@ -981,7 +981,7 @@ main {
 }
 
 .safe-orb b {
-    font-size: 28px; /* Було значно менше, тепер жирно і помітно */
+    font-size: 28px; /* Was significantly smaller, now bold and noticeable */
     letter-spacing: 2px;
     margin-top: 4px;
 }
@@ -1003,7 +1003,7 @@ main {
 
 .safe-orb.danger b { color: var(--red); }
 
-/* Прибираємо скроли всередині списків, даємо більше повітря */
+/* Remove scrolling inside lists, give more breathing room */
 .algorithm-list, .insight-list, .bar-list { 
     padding: 16px; 
     gap: 12px; 
@@ -1125,7 +1125,7 @@ main {
 
 .ai-page .ai-grid {
     display: grid;
-    grid-template-columns: 1fr 380px; /* Дві колонки: графіки + алгоритми */
+    grid-template-columns: 1fr 380px; /* Two columns: charts + algorithms */
     gap: 14px;
     align-items: stretch;
     height: auto;
@@ -1138,8 +1138,9 @@ main {
     min-height: 0;
 }
 
-/* Панель "АНАЛІТИКА МІСІЇ" тепер компактна: не розтягується на всю висоту рядка,
-   а займає лише стільки місця, скільки реально потрібно її вмісту. */
+/* The "MISSION ANALYTICS" panel is now compact: it no longer stretches
+   to the full row height, and only takes up as much space as its
+   content actually needs. */
 .ai-page .analytics-panel {
     display: flex;
     flex-direction: column;
@@ -1154,7 +1155,7 @@ main {
 .ai-page .algorithm-list, .ai-page .bar-list, .ai-page .insight-list { flex: 1 1 auto; min-height: 0; overflow-y: auto; }
 .ai-page .analytics-panel .kpi-grid { flex: 0 0 auto; }
 .ai-page .analytics-panel .chart-box {
-    min-height: 140px; /* Було 240px — суттєво зменшено, графік більше не займає весь екран */
+    min-height: 140px; /* Was 240px — significantly reduced, the chart no longer takes up the whole screen */
     max-height: 190px;
 }
 .ai-page .analytics-panel .kpi-strip { flex: 0 0 auto; }
@@ -1176,7 +1177,7 @@ main {
     flex-direction: column;
     gap: 14px;
 }
-/* Робимо блок навчання компактнішим */
+/* Make the training block more compact */
 .training-panel-small {
     background: var(--panel);
     border: 1px solid var(--line);
@@ -1185,7 +1186,7 @@ main {
 
 .training-panel-small .bar-list {
     display: grid;
-    grid-template-columns: repeat(2, 1fr); /* Моделі стануть у два ряди, компактно */
+    grid-template-columns: repeat(2, 1fr); /* Models will be arranged in two rows, compactly */
     gap: 8px;
     padding: 8px 4px;
 }
