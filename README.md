@@ -15,12 +15,11 @@ http://127.0.0.1:8000
 ```
 
 Структура:
-
-- `simulation.py` - чиста Python-симуляція супутника і дрона без PyQt
-- `backend.py` - FastAPI сервер, JSON API, static файли
-- `index.html` - вкладки MINISAT LAB / UAV SYSTEMS / AI ANALYTICS
-- `styles.css` - футуристична стилістика dashboard
-- `script.js` / `index.js` - fetch, оновлення UI, canvas-карта Землі, графіки
+- `simulation.py` - pure Python simulation of the satellite and drone (no PyQt)
+- `backend.py` - FastAPI server, JSON API, static files
+- `index.html` - tabs for MINISAT LAB / UAV SYSTEMS / AI ANALYTICS
+- `styles.css` - futuristic dashboard styling
+- `script.js` / `index.js` - fetch requests, UI updates, Earth map (Canvas), charts
 
 Основні endpoints:
 
